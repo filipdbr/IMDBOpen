@@ -80,12 +80,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Liquibase Core Dependency -->
+        <!-- Liquibase Core Dependency
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
-    </dependencies>
+    </dependencies> -->
 
     <build>
         <plugins>
