@@ -1,6 +1,6 @@
 package Web.Controllers;
 
-import Persistence.Entity.ProductEntity;
+import Entity.ProductEntity;
 import Web.Models.ProductDto;
 import Service.ProductService;
 import Web.Models.ProductCreateDto;
