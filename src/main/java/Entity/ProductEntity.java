@@ -1,4 +1,4 @@
-package Persistence.Entity;
+package Entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
  @Data
  @NoArgsConstructor
  @AllArgsConstructor
+
     public class ProductEntity {
 
         @Id  // JPA annotation

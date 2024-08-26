@@ -1,7 +1,7 @@
 package Service;
 
-import Persistence.Entity.ProductEntity;
-import Persistence.Repository.ProductRepository;
+import Entity.ProductEntity;
+import Persistence.Repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
+    private final IProductRepository productRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(IProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
