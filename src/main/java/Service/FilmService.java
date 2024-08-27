@@ -1,11 +1,12 @@
 package Service;
 
-import Entities.Business.Role.Role;
+import Entities.Business.Film.Film;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
-import Persistence.Repository.IRoleRepository;
-import Web.Model.DTO.RoleDTO;
+import Persistence.Repository.IFilmRepository;
+import Web.Model.DTO.FilmDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -13,105 +14,158 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RoleService {
+public class FilmService {
 
     @Autowired
-    private IRoleRepository roleRepository;
+    private IFilmRepository filmRepository;
 
     /**
-     * Finds roles based on multiple filters.
+     * Finds films based on multiple filters and sorting criteria.
      *
-     * @param roleName the name of the role
-     * @param filmId   the ID of the film associated with the role
-     * @param actorId  the ID of the actor associated with the role
-     * @return a list of RoleDTO objects
+     * @param nom         the name of the film
+     * @param annee       the release year of the film
+     * @param rating      the minimum rating of the film
+     * @param paysName    the country name associated with the film
+     * @param genreName   the genre name associated with the film
+     * @param sortBy      the field to sort by
+     * @return a list of FilmDTO objects
      */
-    public List<RoleDTO> findRolesWithFilters(String roleName, Long filmId, Long actorId) {
-        List<Role> roles = roleRepository.findAll();
+    public List<FilmDTO> findFilmsWithFiltersAndSorting(String nom, Integer annee, Double rating, String paysName, String genreName, String sortBy) {
+        // Fetch all films (consider optimizing this for performance with more specific queries)
+        List<Film> films = filmRepository.findAll();
 
         // Apply filters
-        if (StringUtils.hasText(roleName)) {
-            roles = roles.stream()
-                    .filter(role -> role.getRoleName().toLowerCase().contains(roleName.toLowerCase()))
+        if (StringUtils.hasText(nom)) {
+            films = films.stream().filter(film -> film.getNom().toLowerCase().contains(nom.toLowerCase())).collect(Collectors.toList());
+        }
+        if (annee != null) {
+            films = films.stream().filter(film -> film.getAnnee() == annee).collect(Collectors.toList());
+        }
+        if (rating != null) {
+            films = films.stream().filter(film -> film.getRating() >= rating).collect(Collectors.toList());
+        }
+        if (StringUtils.hasText(paysName)) {
+            films = films.stream().filter(film -> film.getPaysList().stream().anyMatch(pays -> pays.getName().equalsIgnoreCase(paysName))).collect(Collectors.toList());
+        }
+        if (StringUtils.hasText(genreName)) {
+            films = films.stream().filter(film -> film.getGenres().stream().anyMatch(genre -> genre.getName().equalsIgnoreCase(genreName))).collect(Collectors.toList());
+        }
+
+        // Apply sorting
+        if (StringUtils.hasText(sortBy)) {
+            boolean ascending = !sortBy.startsWith("-");
+            String sortField = ascending ? sortBy : sortBy.substring(1);
+
+            films = films.stream()
+                    .sorted((f1, f2) -> compareFilmsByField(f1, f2, sortField, ascending))
                     .collect(Collectors.toList());
         }
-        if (filmId != null) {
-            roles = roles.stream()
-                    .filter(role -> role.getFilm().getId().equals(filmId))
-                    .collect(Collectors.toList());
-        }
-        if (actorId != null) {
-            roles = roles.stream()
-                    .filter(role -> role.getActor().getId().equals(actorId))
-                    .collect(Collectors.toList());
+
+        if (films.isEmpty()) {
+            throw new EntityNotFoundException("No films found matching the criteria");
         }
 
-        if (roles.isEmpty()) {
-            throw new EntityNotFoundException("No roles found matching the criteria");
-        }
-
-        return roles.stream().map(RoleDTO::fromEntity).collect(Collectors.toList());
+        return films.stream().map(FilmDTO::fromEntity).collect(Collectors.toList());
     }
 
     /**
-     * Finds roles by role name.
+     * Compares two films based on a specific field for sorting.
      *
-     * @param roleName the name of the role
-     * @return a list of RoleDTO objects
+     * @param f1        the first film
+     * @param f2        the second film
+     * @param field     the field to sort by
+     * @param ascending whether the sort is ascending or descending
+     * @return an integer representing the comparison result
      */
-    public List<RoleDTO> findRolesByRoleName(String roleName) {
-        List<Role> roles = roleRepository.findByRoleName(roleName);
-        if (roles.isEmpty()) {
-            throw new EntityNotFoundException("No roles found with name: " + roleName);
+    private int compareFilmsByField(Film f1, Film f2, String field, boolean ascending) {
+        int comparison = 0;
+        switch (field) {
+            case "nom":
+                comparison = f1.getNom().compareToIgnoreCase(f2.getNom());
+                break;
+            case "annee":
+                comparison = Integer.compare(f1.getAnnee(), f2.getAnnee());
+                break;
+            case "rating":
+                comparison = Double.compare(f1.getRating(), f2.getRating());
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported sorting field: " + field);
         }
-        return roles.stream().map(RoleDTO::fromEntity).collect(Collectors.toList());
+        return ascending ? comparison : -comparison;
     }
 
     /**
-     * Creates a new role.
+     * Finds films by IMDb ID.
      *
-     * @param roleDTO the RoleDTO object to create
-     * @return the created RoleDTO object
+     * @param imdb the IMDb ID of the film
+     * @return a list of FilmDTO objects
      */
-    public RoleDTO createRole(RoleDTO roleDTO) {
-        if (roleDTO == null) {
-            throw new InvalidDataException("Role data cannot be null");
+    public List<FilmDTO> findFilmsByImdb(String imdb) {
+        List<Film> films = filmRepository.findByImdb(imdb);
+        if (films.isEmpty()) {
+            throw new EntityNotFoundException("No films found with IMDb ID: " + imdb);
         }
-        Role role = roleDTO.toEntity();
-        Role savedRole = roleRepository.save(role);
-        return RoleDTO.fromEntity(savedRole);
+        return films.stream().map(FilmDTO::fromEntity).collect(Collectors.toList());
     }
 
     /**
-     * Updates an existing role.
+     * Finds films by name.
      *
-     * @param id      the ID of the role to update
-     * @param roleDTO the RoleDTO object with updated data
-     * @return the updated RoleDTO object
+     * @param nom the name of the film
+     * @return a list of FilmDTO objects
      */
-    public RoleDTO updateRole(Long id, RoleDTO roleDTO) {
-        if (roleDTO == null) {
-            throw new InvalidDataException("Role data cannot be null");
+    public List<FilmDTO> findFilmsByName(String nom) {
+        List<Film> films = filmRepository.findByNomContainingIgnoreCase(nom);
+        if (films.isEmpty()) {
+            throw new EntityNotFoundException("No films found with name containing: " + nom);
         }
-        Role existingRole = roleRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Role not found with ID: " + id));
-
-        existingRole.setRoleName(roleDTO.getRoleName());
-        existingRole.setFilm(roleDTO.getFilm());  // Assuming the DTO contains a Film object or FilmDTO
-        existingRole.setActor(roleDTO.getActor());  // Assuming the DTO contains an Actor object or ActorDTO
-
-        Role updatedRole = roleRepository.save(existingRole);
-        return RoleDTO.fromEntity(updatedRole);
+        return films.stream().map(FilmDTO::fromEntity).collect(Collectors.toList());
     }
 
     /**
-     * Deletes a role by ID.
+     * Creates a new film.
      *
-     * @param id the ID of the role to delete
+     * @param filmDTO the FilmDTO object to create
+     * @return the created FilmDTO object
      */
-    public void deleteRole(Long id) {
-        Role role = roleRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Role not found with ID: " + id));
-        roleRepository.delete(role);
+    public FilmDTO createFilm(FilmDTO filmDTO) {
+        if (filmDTO == null) {
+            throw new InvalidDataException("Film data cannot be null");
+        }
+        Film film = filmDTO.toEntity();
+        Film savedFilm = filmRepository.save(film);
+        return FilmDTO.fromEntity(savedFilm);
+    }
+
+    /**
+     * Updates an existing film.
+     *
+     * @param id       the ID of the film to update
+     * @param filmDTO  the FilmDTO object with updated data
+     * @return the updated FilmDTO object
+     */
+    public FilmDTO updateFilm(Long id, FilmDTO filmDTO) {
+        if (filmDTO == null) {
+            throw new InvalidDataException("Film data cannot be null");
+        }
+        Film existingFilm = filmRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Film not found with ID: " + id));
+        existingFilm.setNom(filmDTO.getNom());
+        existingFilm.setAnnee(filmDTO.getAnnee());
+        existingFilm.setRating(filmDTO.getRating());
+        // Update other fields similarly
+
+        Film updatedFilm = filmRepository.save(existingFilm);
+        return FilmDTO.fromEntity(updatedFilm);
+    }
+
+    /**
+     * Deletes a film by ID.
+     *
+     * @param id the ID of the film to delete
+     */
+    public void deleteFilm(Long id) {
+        Film film = filmRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Film not found with ID: " + id));
+        filmRepository.delete(film);
     }
 }
