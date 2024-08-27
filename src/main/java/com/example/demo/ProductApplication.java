@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
 @EnableJpaRepositories("Persistence.Repository")
-@EntityScan("Persistence.Entity")
+@EntityScan("Entities.Business")
 @EnableWebMvc
 public class ProductApplication {
 

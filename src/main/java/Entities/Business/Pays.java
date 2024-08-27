@@ -1,62 +1,22 @@
 package Entities.Business;
 
-import Entities.Generic.IEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Data;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Pays  implements IEntity<Long> {
+public class Pays {
+
     @Id
-    private long id;
-    private String pays;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Pays() {
-
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long aLong) {
-
-    }
-
-    @Override
-    public LocalDateTime getCreatedDate() {
-        return null;
-    }
-
-    @Override
-    public void setCreatedDate(LocalDateTime createdDate) {
-
-    }
-
-    @Override
-    public LocalDateTime getUpdatedDate() {
-        return null;
-    }
-
-    @Override
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-
-    }
-
-    @Override
-    public boolean isDeleted() {
-        return false;
-    }
-
-    @Override
-    public void setDeleted(boolean deleted) {
-
-    }
+    @NotBlank(message = "Country name cannot be blank")
+    @Size(max = 100, message = "Country name should not exceed 100 characters")
+    private String name;
 }
