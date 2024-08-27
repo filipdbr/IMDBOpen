@@ -1,25 +1,22 @@
 package Entities.Business;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Pays {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Country name cannot be blank")
+    @Size(max = 100, message = "Country name should not exceed 100 characters")
     private String name;
-
-    public Pays() {
-        // No-argument constructor
-    }
-
-    public Pays(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 }
