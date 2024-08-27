@@ -54,4 +54,8 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
             @Param("genreName") String genreName,
             @Param("sortBy") String sortBy
     );
+
+    // Custom query method to find films by actor
+    @Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.idActeur = :actorId")
+    List<Film> findFilmsByActor(@Param("actorId") Long actorId);
 }

@@ -1,9 +1,13 @@
 package Service;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Film.Genre;
+import Entities.Business.Pays;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Persistence.Repository.IFilmRepository;
+import Persistence.Repository.IGenreRepository;
+import Persistence.Repository.IPaysRepository;
 import Web.Model.DTO.FilmDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,6 +22,10 @@ public class FilmService {
 
     @Autowired
     private IFilmRepository filmRepository;
+    @Autowired
+    private IGenreRepository genreRepository;
+    @Autowired
+    private IPaysRepository paysRepository;
 
     /**
      * Finds films based on multiple filters and sorting criteria.
@@ -167,5 +175,20 @@ public class FilmService {
     public void deleteFilm(Long id) {
         Film film = filmRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Film not found with ID: " + id));
         filmRepository.delete(film);
+    }
+
+    // Method to find films by actor ID
+    public List<Film> findFilmsByActor(Long actorId) {
+        return filmRepository.findFilmsByActor(actorId);
+    }
+
+    public Genre findOrCreateGenre(String genreName) {
+        return genreRepository.findByName(genreName)
+                .orElseGet(() -> genreRepository.save(new Genre(null, genreName)));
+    }
+
+    public Pays findOrCreatePays(String paysName) {
+        return paysRepository.findByName(paysName)
+                .orElseGet(() -> paysRepository.save(new Pays(null, paysName)));
     }
 }

@@ -1,7 +1,10 @@
 package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Film.Genre;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class FilmDTO {
@@ -15,6 +18,7 @@ public class FilmDTO {
     private String langue;
     private String resume;
     private String pays;
+    private List<Genre> genres;
 
     public static FilmDTO fromEntity(Film film) {
         FilmDTO dto = new FilmDTO();
@@ -28,6 +32,7 @@ public class FilmDTO {
         dto.setLangue(film.getLangue());
         dto.setResume(film.getResume());
         dto.setPays(film.getPays());
+        dto.setGenres(film.getGenres());
         return dto;
     }
 
@@ -43,6 +48,7 @@ public class FilmDTO {
         film.setLangue(this.langue);
         film.setResume(this.resume);
         film.setPays(this.pays);
+        film.setGenres(this.getGenres());
         return film;
     }
 }

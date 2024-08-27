@@ -1,5 +1,6 @@
 package Web.Controller;
 
+import Entities.Business.Film.Film;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Service.FilmService;
@@ -111,5 +112,11 @@ public class FilmController {
         } catch (Exception ex) {
             throw new RuntimeException("An error occurred while deleting the film", ex);  // Handled by the Global Exception Handler
         }
+    }
+
+    @GetMapping("/by-actor/{actorId}")
+    public ResponseEntity<List<Film>> getFilmsByActor(@PathVariable Long actorId) {
+        List<Film> films = filmService.findFilmsByActor(actorId);
+        return ResponseEntity.ok(films);
     }
 }
