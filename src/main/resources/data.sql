@@ -1,4 +1,0 @@
-INSERT INTO film (id,imdb,nom, annee,rating,url, lieu_tour, langue, resume, pays) VALUES
-    (1, 'tt0111161', 'The Shawshank Redemption', 1994, 9.3, 'https://www.imdb.com/title/tt0111161/', 'Mansfield, Ohio, USA', 'English', 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.', 'USA'),
-    (2, 'tt0068646', 'The Godfather', 1972, 9.2, 'https://www.imdb.com/title/tt0068646/', 'New York City, New York, USA', 'English', 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 'USA'),
-    (3, 'tt0071562', 'The Godfather: Part II', 1974, 9.0, 'https://www.imdb.com/title/tt0071562/', 'Lake Tahoe, California, USA', 'English', 'The early life and career of Vito Corleone in 1920s New York City is portrayed while his son, Michael, expands and tightens his grip on the family crime syndicate.', 'USA');

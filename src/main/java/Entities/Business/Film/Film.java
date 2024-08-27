@@ -37,7 +37,6 @@ public class Film implements IEntity<Long> {
     @DecimalMax(value = "10.0", inclusive = true, message = "Rating must be between 0.0 and 10.0")
     private double rating;
 
-    @NotBlank(message = "URL cannot be blank")
     @Size(max = 500, message = "URL should not exceed 500 characters")
     private String url;
 
@@ -71,42 +70,38 @@ public class Film implements IEntity<Long> {
     private List<Pays> paysList;
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
+    @Transient
     public LocalDateTime getCreatedDate() {
-        return null;
+        return null; // or implement as needed
     }
 
     @Override
+    @Transient
     public void setCreatedDate(LocalDateTime createdDate) {
-
+        // or implement as needed
     }
 
     @Override
+    @Transient
     public LocalDateTime getUpdatedDate() {
-        return null;
+        return null; // or implement as needed
     }
 
     @Override
+    @Transient
     public void setUpdatedDate(LocalDateTime updatedDate) {
-
+        // or implement as needed
     }
 
     @Override
+    @Transient
     public boolean isDeleted() {
-        return false;
+        return false; // or implement as needed
     }
 
     @Override
+    @Transient
     public void setDeleted(boolean deleted) {
-
+        // or implement as needed
     }
 }
