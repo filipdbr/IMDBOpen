@@ -2,7 +2,6 @@ package Persistence.Repository;
 
 
 
-import Entity.ProductEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository

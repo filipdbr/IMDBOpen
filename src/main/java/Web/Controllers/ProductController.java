@@ -1,6 +1,5 @@
 package Web.Controllers;
 
-import Entity.ProductEntity;
 import Web.Models.ProductDto;
 import Service.ProductService;
 import Web.Models.ProductCreateDto;
