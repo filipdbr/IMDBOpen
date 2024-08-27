@@ -1,12 +1,15 @@
 package Entities.Business.Film;
 
 import Entities.Business.Pays;
+import Entities.Business.Personne.Acteur;
+import Entities.Business.Role.Role;
 import Entities.Generic.IEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -53,6 +56,9 @@ public class Film implements IEntity<Long> {
     @Size(max = 255, message = "Country should not exceed 255 characters")
     private String pays;
 
+    @ManyToMany(mappedBy = "films")
+    private List<Acteur> acteurs = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "Film_Genre",
@@ -69,39 +75,42 @@ public class Film implements IEntity<Long> {
     )
     private List<Pays> paysList;
 
+    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Role> roles = new ArrayList<>();
+
     @Override
     @Transient
     public LocalDateTime getCreatedDate() {
-        return null; // or implement as needed
+        return null; // Implement as needed
     }
 
     @Override
     @Transient
     public void setCreatedDate(LocalDateTime createdDate) {
-        // or implement as needed
+        // Implement as needed
     }
 
     @Override
     @Transient
     public LocalDateTime getUpdatedDate() {
-        return null; // or implement as needed
+        return null; // Implement as needed
     }
 
     @Override
     @Transient
     public void setUpdatedDate(LocalDateTime updatedDate) {
-        // or implement as needed
+        // Implement as needed
     }
 
     @Override
     @Transient
     public boolean isDeleted() {
-        return false; // or implement as needed
+        return false; // Implement as needed
     }
 
     @Override
     @Transient
     public void setDeleted(boolean deleted) {
-        // or implement as needed
+        // Implement as needed
     }
 }

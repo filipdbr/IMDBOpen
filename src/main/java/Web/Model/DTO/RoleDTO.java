@@ -1,6 +1,7 @@
 package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Personne.Acteur;
 import Entities.Business.Personne.Personne;
 import Entities.Business.Role.Role;
 
@@ -9,13 +10,13 @@ public class RoleDTO {
     private Long id;
     private String roleName;
     private Film film;
-    private Personne actor;
+    private Acteur actor;
 
     // Default constructor
     public RoleDTO() {}
 
     // Parameterized constructor
-    public RoleDTO(Long id, String roleName, Film film, Personne actor) {
+    public RoleDTO(Long id, String roleName, Film film, Acteur actor) {
         this.id = id;
         this.roleName = roleName;
         this.film = film;
@@ -47,11 +48,11 @@ public class RoleDTO {
         this.film = film;
     }
 
-    public Personne getActor() {
+    public Acteur getActor() {
         return actor;
     }
 
-    public void setActor(Personne actor) {
+    public void setActor(Acteur actor) {
         this.actor = actor;
     }
 
