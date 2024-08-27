@@ -1,12 +1,10 @@
-package Utilities;
+package Utilities.CSVExtractors;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.opencsv.CSVReader;
-import Entities.Business.Film.Film;
 import Entities.Business.Film.Genre;
 import Entities.Business.Pays;
 import Service.FilmService;
