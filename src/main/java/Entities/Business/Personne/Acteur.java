@@ -1,0 +1,96 @@
+package Entities.Business.Personne;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "Acteur")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Acteur extends Personne {
+
+    // Primary key
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_acteur")
+    private Long idActeur;
+
+    // IMDB ID
+    @Column(name = "id_imdb")
+    private long idImdb;
+
+    // Size attribute
+    @Column(name = "taille")
+    private double taille;
+
+    // Relationship with Role
+    @OneToMany(mappedBy = "acteur", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Role> roles = new ArrayList<>();
+
+    // Creation and update timestamps
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
+
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
+
+    // Custom constructor
+    public Acteur(long idImdb, String nom, String prenom, LocalDateTime dateNaissance, double taille) {
+        super.setNom(nom);
+        super.setPrenom(prenom);
+        super.setDateNaissance(dateNaissance);
+        this.idImdb = idImdb;
+        this.taille = taille;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    // Implementations for IEntity methods
+    @Override
+    public Long getId() {
+        return this.idActeur;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.idActeur = id;
+    }
+
+    @Override
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    @Override
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    @Override
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    @Override
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    @Override
+    public boolean isDeleted() {
+        return false; // Modify as needed
+    }
+
+    @Override
+    public void setDeleted(boolean deleted) {
+        // Modify as needed
+    }
+}
