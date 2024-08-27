@@ -1,62 +1,24 @@
 package Entities.Business.Film;
 
-import Entities.Generic.IEntity;
-import lombok.*;
-import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
 
 @Entity
 @Data
-@Builder
-public class Genre implements IEntity<Long> {
-
+public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String genre;
+    private String name;
 
     public Genre() {
-
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long aLong) {
-
-    }
-
-    @Override
-    public LocalDateTime getCreatedDate() {
-        return null;
-    }
-
-    @Override
-    public void setCreatedDate(LocalDateTime createdDate) {
-
-    }
-
-    @Override
-    public LocalDateTime getUpdatedDate() {
-        return null;
-    }
-
-    @Override
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-
-    }
-
-    @Override
-    public boolean isDeleted() {
-        return false;
-    }
-
-    @Override
-    public void setDeleted(boolean deleted) {
-
+    public Genre(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }

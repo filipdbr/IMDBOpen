@@ -11,7 +11,7 @@ public class FilmDTO {
     private int annee;
     private double rating;
     private String url;
-    private String lieuTouf;
+    private String lieuTour;
     private String langue;
     private String resume;
     private String pays;
@@ -24,7 +24,7 @@ public class FilmDTO {
         dto.setAnnee(film.getAnnee());
         dto.setRating(film.getRating());
         dto.setUrl(film.getUrl());
-        dto.setLieuTouf(film.getLieuTouf());
+        dto.setLieuTour(film.getLieuTour());
         dto.setLangue(film.getLangue());
         dto.setResume(film.getResume());
         dto.setPays(film.getPays());
@@ -39,7 +39,7 @@ public class FilmDTO {
         film.setAnnee(this.annee);
         film.setRating(this.rating);
         film.setUrl(this.url);
-        film.setLieuTouf(this.lieuTouf);
+        film.setLieuTour(this.lieuTour);
         film.setLangue(this.langue);
         film.setResume(this.resume);
         film.setPays(this.pays);

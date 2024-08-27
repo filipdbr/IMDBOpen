@@ -5,10 +5,11 @@ import Entities.Generic.IEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Entity
 @Table(name = "Film")
@@ -17,14 +18,16 @@ import java.util.List;
 public class Film implements IEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String imdb;
     private String nom;
     private int annee;
     private double rating;
     private String url;
-    private String lieuTouf;
+    @Setter
+    @Getter
+    private String lieuTour;
     private String langue;
     private String resume;
     private String pays;
@@ -42,12 +45,32 @@ public class Film implements IEntity<Long> {
     private List<Pays> paysList;
 
     public Film() {
+        // No-argument constructor
+    }
 
+    public Film(Long id, String imdb, String nom, int annee, double rating, String url, String lieuTour, String langue, String resume, String pays, List<Genre> genres, List<Pays> paysList) {
+        this.id = id;
+        this.imdb = imdb;
+        this.nom = nom;
+        this.annee = annee;
+        this.rating = rating;
+        this.url = url;
+        this.lieuTour = lieuTour;
+        this.langue = langue;
+        this.resume = resume;
+        this.pays = pays;
+        this.genres = genres;
+        this.paysList = paysList;
     }
 
     @Override
-    public void setId(Long aLong) {
+    public Long getId() {
+        return id;
+    }
 
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
