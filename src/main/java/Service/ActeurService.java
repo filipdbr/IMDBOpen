@@ -2,12 +2,15 @@ package com.example.demo.service;
 
 import Entities.Business.Personne.Acteur;
 import Persistence.Repository.IActeurRepository;
+import Web.Model.DTO.ActeurDTO;
+import Web.Model.DTO.FilmDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ActeurService {
@@ -19,84 +22,92 @@ public class ActeurService {
         this.acteurRepository = acteurRepository;
     }
 
+    // Convert Entity to DTO
+    private ActeurDTO convertToDTO(Acteur acteur) {
+        return ActeurDTO.fromEntity(acteur);
+    }
+
+    // Convert DTO to Entity
+    private Acteur convertToEntity(ActeurDTO acteurDTO) {
+        return acteurDTO.toEntity();
+    }
+
     // Find by Name and First Name
-    public List<Acteur> findByNameAndFirstName(String name, String firstName) {
-        return acteurRepository.findByNomAndPrenom(name, firstName);
+    public List<ActeurDTO> findByNameAndFirstName(String name, String firstName) {
+        List<Acteur> acteurs = acteurRepository.findByNomAndPrenom(name, firstName);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Name
-    public List<Acteur> findByName(String name) {
-        return acteurRepository.findByNom(name);
+    public List<ActeurDTO> findByName(String name) {
+        List<Acteur> acteurs = acteurRepository.findByNom(name);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by First Name
-    public List<Acteur> findByFirstName(String firstName) {
-        return acteurRepository.findByPrenom(firstName);
+    public List<ActeurDTO> findByFirstName(String firstName) {
+        List<Acteur> acteurs = acteurRepository.findByPrenom(firstName);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by IMDb ID
-    public Optional<Acteur> findByImdbId(Long imdbId) {
-        return acteurRepository.findByIdImdb(imdbId);
+    public Optional<ActeurDTO> findByImdbId(Long imdbId) {
+        Optional<Acteur> acteur = acteurRepository.findByIdImdb(imdbId);
+        return acteur.map(this::convertToDTO);
     }
 
     // Find All by Role Name
-    public List<Acteur> findAllByRoleName(String roleName) {
-        return acteurRepository.findAllByRoleName(roleName);
+    public List<ActeurDTO> findAllByRoleName(String roleName) {
+        List<Acteur> acteurs = acteurRepository.findAllByRoleName(roleName);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Partial Match of Name (Case-insensitive)
-    public List<Acteur> findByNameContainingIgnoreCase(String partialName) {
-        return acteurRepository.findByNomContainingIgnoreCase(partialName);
+    public List<ActeurDTO> findByNameContainingIgnoreCase(String partialName) {
+        List<Acteur> acteurs = acteurRepository.findByNomContainingIgnoreCase(partialName);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Height greater than a specified value
-    public List<Acteur> findByHeightGreaterThan(double height) {
-        return acteurRepository.findByTailleGreaterThan(height);
+    public List<ActeurDTO> findByHeightGreaterThan(double height) {
+        List<Acteur> acteurs = acteurRepository.findByTailleGreaterThan(height);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Height smaller than a specified value
-    public List<Acteur> findByHeightLessThan(double height) {
-        return acteurRepository.findByTailleLessThan(height);
+    public List<ActeurDTO> findByHeightLessThan(double height) {
+        List<Acteur> acteurs = acteurRepository.findByTailleLessThan(height);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Date of Birth after a specific date
-    public List<Acteur> findByBirthDateAfter(LocalDateTime date) {
-        return acteurRepository.findByDateNaissanceAfter(date);
+    public List<ActeurDTO> findByBirthDateAfter(LocalDateTime date) {
+        List<Acteur> acteurs = acteurRepository.findByDateNaissanceAfter(date);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Date of Birth before a specific date
-    public List<Acteur> findByBirthDateBefore(LocalDateTime date) {
-        return acteurRepository.findByDateNaissanceBefore(date);
+    public List<ActeurDTO> findByBirthDateBefore(LocalDateTime date) {
+        List<Acteur> acteurs = acteurRepository.findByDateNaissanceBefore(date);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find by Date of Birth within a specific range
-    public List<Acteur> findByBirthDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        return acteurRepository.findByDateNaissanceBetween(startDate, endDate);
-    }
-
-    // Find by CreatedDate before a specific date
-    public List<Acteur> findByCreatedDateBefore(LocalDateTime date) {
-        return acteurRepository.findByCreatedDateBefore(date);
-    }
-
-    // Find by CreatedDate after a specific date
-    public List<Acteur> findByCreatedDateAfter(LocalDateTime date) {
-        return acteurRepository.findByCreatedDateAfter(date);
-    }
-
-    // Find by CreatedDate within a specific range
-    public List<Acteur> findByCreatedDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        return acteurRepository.findByCreatedDateBetween(startDate, endDate);
+    public List<ActeurDTO> findByBirthDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Acteur> acteurs = acteurRepository.findByDateNaissanceBetween(startDate, endDate);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find All Acteurs Ordered by Name (Alphabetical Order)
-    public List<Acteur> findAllByOrderByNameAsc() {
-        return acteurRepository.findAllByOrderByNomAsc();
+    public List<ActeurDTO> findAllByOrderByNameAsc() {
+        List<Acteur> acteurs = acteurRepository.findAllByOrderByNomAsc();
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find All Acteurs Ordered by Name (Reverse Alphabetical Order)
-    public List<Acteur> findAllByOrderByNameDesc() {
-        return acteurRepository.findAllByOrderByNomDesc();
+    public List<ActeurDTO> findAllByOrderByNameDesc() {
+        List<Acteur> acteurs = acteurRepository.findAllByOrderByNomDesc();
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Count Acteurs by Role Name
@@ -105,23 +116,32 @@ public class ActeurService {
     }
 
     // Find by Name or First Name (Case-insensitive search for either field)
-    public List<Acteur> findByNameIgnoreCaseOrFirstNameIgnoreCase(String name, String firstName) {
-        return acteurRepository.findByNomIgnoreCaseOrPrenomIgnoreCase(name, firstName);
+    public List<ActeurDTO> findByNameIgnoreCaseOrFirstNameIgnoreCase(String name, String firstName) {
+        List<Acteur> acteurs = acteurRepository.findByNomIgnoreCaseOrPrenomIgnoreCase(name, firstName);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     // Find Top 3 Acteurs by Height (e.g., tallest actors)
-    public List<Acteur> findTop3ByOrderByHeightDesc() {
-        return acteurRepository.findTop3ByOrderByTailleDesc();
+    public List<ActeurDTO> findTop3ByOrderByHeightDesc() {
+        List<Acteur> acteurs = acteurRepository.findTop3ByOrderByTailleDesc();
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    /* todo after we have the remaining classes we can add:
-        top N by Rating
-        actors by Country
-        actors by City
-        actors with most collaborations with specific directors
-        actors by age range
-        most frequent actor collaborations in films
-        actors by genre specialization
-     */
+    // Find Actors by Place of Birth City
+    public List<ActeurDTO> findByPlaceOfBirthCity(String city) {
+        List<Acteur> acteurs = acteurRepository.findByLieuNaissanceContainingIgnoreCase(city);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
+    // Find Actors by Place of Birth Country
+    public List<ActeurDTO> findByPlaceOfBirthCountry(String country) {
+        List<Acteur> acteurs = acteurRepository.findByLieuNaissanceContainingIgnoreCase(country);
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    // Find Actors by Film
+    public List<ActeurDTO> findByFilm(FilmDTO filmDTO) {
+        List<Acteur> acteurs = acteurRepository.findByFilmsContaining(filmDTO.toEntity());
+        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 }
