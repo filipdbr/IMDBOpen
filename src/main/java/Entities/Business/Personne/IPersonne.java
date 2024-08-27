@@ -1,6 +1,6 @@
-package Entity.Business.Personne;
+package Entities.Business.Personne;
 
-import Entity.Generic.IEntity;
+import Entities.Generic.IEntity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
