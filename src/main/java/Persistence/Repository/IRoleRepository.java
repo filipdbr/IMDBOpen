@@ -3,6 +3,7 @@ package Persistence.Repository;
 
 import Entities.Business.Role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * for the Role entity. Spring Data JPA will generate the implementation automatically
  * based on the method names.
  */
+@Repository
 public interface IRoleRepository extends JpaRepository<Role, Long> {
 
     /**

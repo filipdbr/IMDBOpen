@@ -1,45 +1,52 @@
 package Utilities.CSVExtractors;
 
+import Entities.Business.Role.Role;
+import Entities.Business.Film.Film;
+import Entities.Business.Personne.Acteur;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Entities.Business.Role.Role;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
-
 public class RoleExtractor {
 
-    public static List<Role> parseRolesFromCSV(String filePath) throws IOException {
+    public static List<Role> extractRolesFromCSV(String filePath, List<Film> films, List<Acteur> actors) {
         List<Role> roles = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            // Skip header row if present
-            reader.readNext();
-
+            String[] header = reader.readNext(); // Read the header row
             String[] line;
+
             while ((line = reader.readNext()) != null) {
                 try {
-                    // Extract data from each CSV line
-                    String roleName = line[0]; // Assuming role name is in the first column
-                    Long filmId = Long.parseLong(line[1]); // Assuming film ID is in the second column
-                    Long actorId = Long.parseLong(line[2]); // Assuming actor ID is in the third column
+                    // Parse and create a Role instance from the CSV data
+                    String roleName = line[0];
+                    String filmTitle = line[1];
+                    String actorName = line[2];
 
-                    // Create Role object without setting IDs (database-managed)
-                    Role role = new Role(roleName, null, null);
+                    // Find the corresponding Film and Acteur instances
+                    Film film = films.stream().filter(f -> f.getNom().equals(filmTitle)).findFirst().orElse(null);
+                    Acteur actor = actors.stream().filter(a -> a.getIdImdb() == Long.parseLong(actorName)).findFirst().orElse(null);
 
-                    // Potentially set film and actor references later using their IDs
+                    if (film != null && actor != null) {
+                        // Create a new Role instance
+                        Role role = new Role();
+                        role.setRoleName(roleName);
+                        role.setFilm(film);
+                        role.setActor(actor);
 
-                    roles.add(role);
-                } catch (NumberFormatException e) {
-                    // Handle invalid number formats during parsing
-                    System.err.println("Error parsing line: " + e.getMessage());
+                        roles.add(role);
+                    }
                 } catch (Exception e) {
-                    // Handle other potential exceptions
-                    System.err.println("Error parsing line: " + e.getMessage());
+                    System.err.println("Unexpected error: " + e.getMessage());
                 }
             }
+        } catch (IOException e) {
+            System.err.println("Error reading the CSV file: " + e.getMessage());
+            e.printStackTrace();
         } catch (CsvValidationException e) {
             throw new RuntimeException(e);
         }
