@@ -56,8 +56,8 @@ public interface IActeurRepository extends IGenericRepository<Acteur, Long> {
     List<Acteur> findAllByOrderByNomDesc();
 
     // Count Acteurs by Role Name
-    @Query("SELECT COUNT(a) FROM Acteur a JOIN a.roles r WHERE r.roleName = :roleNom")
-    long countByRoleName(@Param("roleNom") String roleNom);
+   // @Query("SELECT COUNT(a) FROM Acteur a JOIN a.roles r WHERE r.roleName = :roleNom")
+   // long countByRoleName(@Param("roleNom") String roleNom);
 
     // Find by Nom or Prenom (Case-insensitive search for either field)
     List<Acteur> findByNomIgnoreCaseOrPrenomIgnoreCase(String nom, String prenom);

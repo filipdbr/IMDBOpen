@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package Service;
 
 import Entities.Business.Personne.Acteur;
 import Persistence.Repository.IActeurRepository;
@@ -111,9 +111,9 @@ public class ActeurService {
     }
 
     // Count Acteurs by Role Name
-    public long countByRoleName(String roleName) {
-        return acteurRepository.countByRoleName(roleName);
-    }
+   // public long countByRoleName(String roleName) {
+   //     return acteurRepository.countByRoleName(roleName);
+    //}
 
     // Find by Name or First Name (Case-insensitive search for either field)
     public List<ActeurDTO> findByNameIgnoreCaseOrFirstNameIgnoreCase(String name, String firstName) {
