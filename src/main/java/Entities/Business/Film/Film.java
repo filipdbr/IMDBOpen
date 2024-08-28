@@ -32,7 +32,7 @@ public class Film implements IEntity<Long> {
     @Size(max = 255, message = "Film name should not exceed 255 characters")
     private String nom;
 
-    @Min(value = 1888, message = "Year must be greater than or equal to 1888")
+    @Min(value = 1788, message = "Year must be greater than or equal to 1788")
     @Max(value = 2100, message = "Year must be less than or equal to 2100")
     private int annee;
 

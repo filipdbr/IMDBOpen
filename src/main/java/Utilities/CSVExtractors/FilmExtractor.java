@@ -17,7 +17,7 @@ public class FilmExtractor {
         List<Film> films = new ArrayList<>();
 
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
-                .withCSVParser(new CSVParserBuilder().withSeparator(';').build()) // Set the separator to ';'
+                .withCSVParser(new CSVParserBuilder().withSeparator(';').build())  // Set the separator to ';'
                 .build()) {
 
             String[] header = reader.readNext(); // Read the header row
@@ -26,15 +26,28 @@ public class FilmExtractor {
             while ((line = reader.readNext()) != null) {
                 try {
                     // Parse and create a Film instance from the CSV data
-                    String nom = line[0];
-                    String resume = line[1];
-                    String pays = line[2];
+                    String imdb = line[0].isEmpty() ? "NA" : line[0];
+                    String nom = line[1].isEmpty() ? "NA" : line[1];
+                    String annee = line[2].isEmpty() ? "NA" : line[2];
+                    String rating = line[3].isEmpty() ? "NA" : line[3];
+                    String url = line[4].isEmpty() ? "NA" : line[4];
+                    String lieuTour = line[5].isEmpty() ? "NA" : line[5];
+                    String langue = line[6].isEmpty() ? "NA" : line[6];
+                    String resume = line[7].isEmpty() ? "NA" : line[7];
+                    String pays = line[8].isEmpty() ? "NA" : line[8];
 
                     // Create a new Film instance
                     Film film = new Film();
-                    film.setNom(nom);        // Set the name from CSV
-                    film.setResume(resume);  // Set the resume from CSV
-                    film.setPays(pays);      // Set the country from CSV
+                    film.setImdb(imdb);
+                    film.setNom(nom);
+                    film.setAnnee(annee.equals("NA") ? Integer.parseInt(line [2]) : Integer.parseInt(annee));
+                    film.setRating(rating.equals("NA") ? Double.parseDouble(line[3]) : Double.parseDouble(rating));
+                    film.setUrl(url);
+                    film.setLieuTour(lieuTour);
+                    film.setLangue(langue);
+                    film.setResume(resume);
+                    film.setPays(pays);
+
 
                     films.add(film);
                 } catch (Exception e) {

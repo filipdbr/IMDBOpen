@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Data
 public class ActeurDTO {
     private Long id;
-    private long idImdb;
+    private String idImdb;
     private double taille;
     private String nom;
     private String prenom;

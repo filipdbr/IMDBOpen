@@ -51,7 +51,7 @@ public class ActeurService {
     }
 
     // Find by IMDb ID
-    public Optional<ActeurDTO> findByImdbId(Long imdbId) {
+    public Optional<ActeurDTO> findByImdbId(String imdbId) {
         Optional<Acteur> acteur = acteurRepository.findByIdImdb(imdbId);
         return acteur.map(this::convertToDTO);
     }

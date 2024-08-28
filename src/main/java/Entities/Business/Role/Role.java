@@ -50,16 +50,16 @@ public class Role {
         this.roleName = roleName;
     }
 
-    public Film getFilm() {
-        return film;
+    public Film getImdb() {
+        return getImdb();
     }
 
     public void setFilm(Film film) {
         this.film = film;
     }
 
-    public Acteur getActor() {
-        return actor;
+    public Acteur getid_imdb() {
+        return getid_imdb();
     }
 
     public void setActor(Acteur actor) {
@@ -71,8 +71,8 @@ public class Role {
         return "Role{" +
                 "id=" + id +
                 ", roleName='" + roleName + '\'' +
-                ", film=" + film +
-                ", actor=" + actor +
+                ", film=" + getImdb() +
+                ", actor=" + getid_imdb() +
                 '}';
     }
 }

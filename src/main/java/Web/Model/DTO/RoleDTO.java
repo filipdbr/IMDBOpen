@@ -61,8 +61,8 @@ public class RoleDTO {
         return new RoleDTO(
                 role.getId(),
                 role.getRoleName(),
-                role.getFilm(),
-                role.getActor()
+                role.getImdb(),
+                role.getid_imdb()
         );
     }
 

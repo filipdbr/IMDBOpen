@@ -37,12 +37,12 @@ public class RoleService {
         }
         if (filmId != null) {
             roles = roles.stream()
-                    .filter(role -> role.getFilm().getId().equals(filmId))
+                    .filter(role -> role.getImdb().getId().equals(filmId))
                     .collect(Collectors.toList());
         }
         if (actorId != null) {
             roles = roles.stream()
-                    .filter(role -> role.getActor().getId().equals(actorId))
+                    .filter(role -> role.getid_imdb().getId().equals(actorId))
                     .collect(Collectors.toList());
         }
 

@@ -1164,3 +1164,9 @@ Wrong user name or password [28000-224]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:522)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
 	... 63 more
+2024-08-28 14:57:06.647786+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FILM" not found (this database is empty); SQL statement:
+insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) returning id [42104-224]
+2024-08-28 15:05:37.129805+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FILM" not found (this database is empty); SQL statement:
+insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) returning id [42104-224]

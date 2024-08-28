@@ -27,13 +27,13 @@ public class ActorExtractor {
             while ((line = reader.readNext()) != null) {
                 try {
                     // Parse and create an Acteur instance from the CSV data
-                    String identite = line[0];
-                    String dateNaissance = line[1];
+                    String identite = line[0].isEmpty() ? "NA" : line[0];
+                    String dateNaissance = line[1].isEmpty() ? "NA" : line[1];
 
                     // Create a new Acteur instance
                     Acteur acteur = new Acteur();
-                    acteur.setIdImdb(Long.parseLong(identite));
-                    acteur.setDateNaissance(LocalDateTime.parse(dateNaissance));
+                    acteur.setIdImdb(identite);
+                    acteur.setDateNaissance(dateNaissance.equals("NA") ? null : LocalDateTime.parse(dateNaissance));
 
                     actors.add(acteur);
                 } catch (Exception e) {

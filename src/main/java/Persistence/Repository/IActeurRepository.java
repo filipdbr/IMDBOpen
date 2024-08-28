@@ -25,7 +25,7 @@ public interface IActeurRepository extends JpaRepository<Acteur, Long> {
     List<Acteur> findByPrenom(String prenom);
 
     // Find by IMDb ID
-    Optional<Acteur> findByIdImdb(Long idImdb);
+    Optional<Acteur> findByIdImdb(String idImdb);
 
     // Find All by Role Name
     @Query("SELECT a FROM Acteur a JOIN a.roles r WHERE r.roleName = :roleNom")

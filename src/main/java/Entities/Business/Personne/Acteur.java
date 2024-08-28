@@ -26,7 +26,7 @@ public class Acteur extends Personne {
     private Long idActeur;
 
     @Column(name = "id_imdb")
-    private long idImdb;
+    private String idImdb;
 
     @Column(name = "taille")
     private double taille;
@@ -50,7 +50,7 @@ public class Acteur extends Personne {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Acteur(long idImdb, String nom, String prenom, LocalDateTime dateNaissance, double taille) {
+    public Acteur(String idImdb, String nom, String prenom, LocalDateTime dateNaissance, double taille) {
         super.setNom(nom);
         super.setPrenom(prenom);
         super.setDateNaissance(dateNaissance);
