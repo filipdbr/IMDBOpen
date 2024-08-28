@@ -2,6 +2,8 @@ package Utilities.CSVExtractors;
 
 import Entities.Business.Personne.Acteur;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
@@ -15,7 +17,10 @@ public class ActorExtractor {
     public static List<Acteur> extractActorsFromCSV(String filePath) {
         List<Acteur> actors = new ArrayList<>();
 
-        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
+                .withCSVParser(new CSVParserBuilder().withSeparator(';').build())  // Set the separator to ';'
+                .build()) {
+
             String[] header = reader.readNext(); // Read the header row
             String[] line;
 
@@ -32,14 +37,15 @@ public class ActorExtractor {
 
                     actors.add(acteur);
                 } catch (Exception e) {
-                    System.err.println("Unexpected error: " + e.getMessage());
+                    System.err.println("Error processing line: " + e.getMessage());
                 }
             }
         } catch (IOException e) {
             System.err.println("Error reading the CSV file: " + e.getMessage());
             e.printStackTrace();
         } catch (CsvValidationException e) {
-            throw new RuntimeException(e);
+            System.err.println("CSV validation error: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return actors;
