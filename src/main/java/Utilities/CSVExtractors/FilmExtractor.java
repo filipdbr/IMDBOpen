@@ -1,6 +1,7 @@
 package Utilities.CSVExtractors;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Pays;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -34,14 +35,15 @@ public class FilmExtractor {
                     String lieuTour = line[5].isEmpty() ? "NA" : line[5];
                     String langue = line[6].isEmpty() ? "NA" : line[6];
                     String resume = line[7].isEmpty() ? "NA" : line[7];
-                    String pays = line[8].isEmpty() ? "NA" : line[8];
+                    Pays pays = new Pays();
+                    pays = line[8].isEmpty() ? pays.getName( pays.setName("NA")) : line[8];
 
                     // Create a new Film instance
                     Film film = new Film();
                     film.setImdb(imdb);
                     film.setNom(nom);
-                    film.setAnnee(annee.equals("NA") ? Integer.parseInt(line [2]) : Integer.parseInt(annee));
-                    film.setRating(rating.equals("NA") ? Double.parseDouble(line[3]) : Double.parseDouble(rating));
+                    film.setAnnee(annee);
+                    film.setRating(rating);
                     film.setUrl(url);
                     film.setLieuTour(lieuTour);
                     film.setLangue(langue);

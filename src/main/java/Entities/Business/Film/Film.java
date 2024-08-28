@@ -32,13 +32,13 @@ public class Film implements IEntity<Long> {
     @Size(max = 255, message = "Film name should not exceed 255 characters")
     private String nom;
 
-    @Min(value = 1788, message = "Year must be greater than or equal to 1788")
-    @Max(value = 2100, message = "Year must be less than or equal to 2100")
-    private int annee;
+    @NotBlank(message = "Année cannot be blank")
+    @Size(max = 10, message = "Année should not exceed 10 characters")
+    private String annee;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "Rating must be between 0.0 and 10.0")
-    @DecimalMax(value = "10.0", inclusive = true, message = "Rating must be between 0.0 and 10.0")
-    private double rating;
+    @NotBlank(message = "Rating cannot be blank")
+    @Size(max = 4, message = "Rating should not exceed 4 characters")
+    private String rating;
 
     @Size(max = 500, message = "URL should not exceed 500 characters")
     private String url;
@@ -53,8 +53,10 @@ public class Film implements IEntity<Long> {
     @Size(max = 2000, message = "Summary should not exceed 2000 characters")
     private String resume;
 
+    @ManyToOne
+    @JoinColumn(name = "pays_id")
     @Size(max = 255, message = "Country should not exceed 255 characters")
-    private String pays;
+    private Pays pays;
 
     @ManyToMany(mappedBy = "films")
     private List<Acteur> acteurs = new ArrayList<>();

@@ -38,7 +38,7 @@ public class FilmService {
      * @param sortBy      the field to sort by
      * @return a list of FilmDTO objects
      */
-    public List<FilmDTO> findFilmsWithFiltersAndSorting(String nom, Integer annee, Double rating, String paysName, String genreName, String sortBy) {
+    public List<FilmDTO> findFilmsWithFiltersAndSorting(String nom, String annee, String rating, String paysName, String genreName, String sortBy) {
         // Fetch all films (consider optimizing this for performance with more specific queries)
         List<Film> films = filmRepository.findAll();
 
@@ -47,10 +47,10 @@ public class FilmService {
             films = films.stream().filter(film -> film.getNom().toLowerCase().contains(nom.toLowerCase())).collect(Collectors.toList());
         }
         if (annee != null) {
-            films = films.stream().filter(film -> film.getAnnee() == annee).collect(Collectors.toList());
+            films = films.stream().filter(film -> film.getAnnee().contains(annee)).collect(Collectors.toList());
         }
         if (rating != null) {
-            films = films.stream().filter(film -> film.getRating() >= rating).collect(Collectors.toList());
+            films = films.stream().filter(film -> film.getRating().contains(rating)).collect(Collectors.toList());
         }
         if (StringUtils.hasText(paysName)) {
             films = films.stream().filter(film -> film.getPaysList().stream().anyMatch(pays -> pays.getName().equalsIgnoreCase(paysName))).collect(Collectors.toList());
@@ -92,10 +92,10 @@ public class FilmService {
                 comparison = f1.getNom().compareToIgnoreCase(f2.getNom());
                 break;
             case "annee":
-                comparison = Integer.compare(f1.getAnnee(), f2.getAnnee());
+                comparison = CharSequence.compare(f1.getAnnee(), f2.getAnnee());
                 break;
             case "rating":
-                comparison = Double.compare(f1.getRating(), f2.getRating());
+                comparison = CharSequence.compare(f1.getRating(), f2.getRating());
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported sorting field: " + field);

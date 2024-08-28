@@ -2,6 +2,7 @@ package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Film.Genre;
+import Entities.Business.Pays;
 import lombok.Data;
 
 import java.util.List;
@@ -11,13 +12,13 @@ public class FilmDTO {
     private Long id;
     private String imdb;
     private String nom;
-    private int annee;
-    private double rating;
+    private String annee;
+    private String rating;
     private String url;
     private String lieuTour;
     private String langue;
     private String resume;
-    private String pays;
+    private Pays pays;
     private List<Genre> genres;
 
     public static FilmDTO fromEntity(Film film) {

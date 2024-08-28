@@ -1170,3 +1170,11 @@ insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values
 2024-08-28 15:05:37.129805+02:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FILM" not found (this database is empty); SQL statement:
 insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) returning id [42104-224]
+2024-08-28 15:10:09.971285+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) [*]returning id"
+Syntax error in SQL statement "insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) [*]returning id"; SQL statement:
+insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) returning id [42000-224]
+2024-08-28 15:24:04.108102+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) [*]returning id"
+Syntax error in SQL statement "insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) [*]returning id"; SQL statement:
+insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) returning id [42000-224]

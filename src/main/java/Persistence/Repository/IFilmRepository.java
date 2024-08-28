@@ -1,6 +1,8 @@
 package Persistence.Repository;
 
 import Entities.Business.Film.Film;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,10 +19,10 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     List<Film> findByNomContainingIgnoreCase(String nom);
 
     // Find films by release year
-    List<Film> findByAnnee(int annee);
+    List<Film> findByAnnee(@NotBlank(message = "Année cannot be blank") @Size(max = 10, message = "Année should not exceed 10 characters") String annee);
 
     // Find films with a rating above a certain threshold
-    List<Film> findByRatingGreaterThanEqual(double rating);
+    List<Film> findByRatingGreaterThanEqual(@NotBlank(message = "Rating cannot be blank") @Size(max = 4, message = "Rating should not exceed 4 characters") String rating);
 
     // Find films by country name (assuming 'paysList' contains 'Pays' entities)
     @Query("SELECT f FROM Film f JOIN f.paysList p WHERE p.name = :paysName")
@@ -49,8 +51,8 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
             + "CASE WHEN :sortBy = 'rating' THEN f.rating END DESC")
     List<Film> findFilmsWithFiltersAndSorting(
             @Param("nom") String nom,
-            @Param("annee") Integer annee,
-            @Param("rating") Double rating,
+            @Param("annee") String annee,
+            @Param("rating") String rating,
             @Param("paysName") String paysName,
             @Param("genreName") String genreName,
             @Param("sortBy") String sortBy

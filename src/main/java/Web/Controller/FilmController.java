@@ -24,8 +24,8 @@ public class FilmController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<FilmDTO>>> searchFilms(
             @RequestParam(required = false) String nom,
-            @RequestParam(required = false) Integer annee,
-            @RequestParam(required = false) Double rating,
+            @RequestParam(required = false) String annee,
+            @RequestParam(required = false) String rating,
             @RequestParam(required = false) String paysName,
             @RequestParam(required = false) String genreName,
             @RequestParam(required = false) String sortBy
