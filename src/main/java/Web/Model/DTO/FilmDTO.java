@@ -2,7 +2,7 @@ package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Film.Genre;
-import Entities.Business.Pays;
+import Entities.Business.Pays.Pays;
 import lombok.Data;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class FilmDTO {
     private String lieuTour;
     private String langue;
     private String resume;
-    private Pays pays;
+    private String pays;
     private List<Genre> genres;
 
     public static FilmDTO fromEntity(Film film) {
@@ -48,7 +48,7 @@ public class FilmDTO {
         film.setLieuTour(this.lieuTour);
         film.setLangue(this.langue);
         film.setResume(this.resume);
-        film.setPays(this.pays);
+        film.setPays(String.valueOf(this.pays));
         film.setGenres(this.getGenres());
         return film;
     }

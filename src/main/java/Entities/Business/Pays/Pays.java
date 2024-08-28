@@ -1,4 +1,4 @@
-package Entities.Business;
+package Entities.Business.Pays;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

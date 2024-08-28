@@ -1,7 +1,7 @@
 package Utilities.CSVExtractors;
 
 import Entities.Business.Film.Film;
-import Entities.Business.Pays;
+import Entities.Business.Pays.Pays;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -33,10 +33,13 @@ public class FilmExtractor {
                     String rating = line[3].isEmpty() ? "NA" : line[3];
                     String url = line[4].isEmpty() ? "NA" : line[4];
                     String lieuTour = line[5].isEmpty() ? "NA" : line[5];
-                    String langue = line[6].isEmpty() ? "NA" : line[6];
-                    String resume = line[7].isEmpty() ? "NA" : line[7];
+                    String langue = line[7].isEmpty() ? "NA" : line[7];
+                    String resume = line[8].isEmpty() ? "NA" : line[8];
+                    String paysName = line[9].isEmpty() ? "NA" : line[9];
+
+                    // Create a new Pays instance
                     Pays pays = new Pays();
-                    pays = line[8].isEmpty() ? pays.getName( pays.setName("NA")) : line[8];
+                    pays.setName(paysName);
 
                     // Create a new Film instance
                     Film film = new Film();
@@ -48,8 +51,7 @@ public class FilmExtractor {
                     film.setLieuTour(lieuTour);
                     film.setLangue(langue);
                     film.setResume(resume);
-                    film.setPays(pays);
-
+                    film.setPays(String.valueOf(pays));
 
                     films.add(film);
                 } catch (Exception e) {

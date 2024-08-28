@@ -2,7 +2,7 @@ package Service;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Film.Genre;
-import Entities.Business.Pays;
+import Entities.Business.Pays.Pays;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Persistence.Repository.IFilmRepository;
@@ -10,7 +10,6 @@ import Persistence.Repository.IGenreRepository;
 import Persistence.Repository.IPaysRepository;
 import Web.Model.DTO.FilmDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

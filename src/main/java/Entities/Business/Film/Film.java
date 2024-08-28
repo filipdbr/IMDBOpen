@@ -1,6 +1,6 @@
 package Entities.Business.Film;
 
-import Entities.Business.Pays;
+import Entities.Business.Pays.Pays;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Role.Role;
 import Entities.Generic.IEntity;
@@ -50,13 +50,11 @@ public class Film implements IEntity<Long> {
     @Size(max = 100, message = "Language should not exceed 100 characters")
     private String langue;
 
-    @Size(max = 2000, message = "Summary should not exceed 2000 characters")
+    @NotBlank(message = "Resume cannot be blank")
+    @Size(max = 10001, message = "Resume should not exceed 10001 characters")
     private String resume;
 
-    @ManyToOne
-    @JoinColumn(name = "pays_id")
-    @Size(max = 255, message = "Country should not exceed 255 characters")
-    private Pays pays;
+    private String pays;
 
     @ManyToMany(mappedBy = "films")
     private List<Acteur> acteurs = new ArrayList<>();

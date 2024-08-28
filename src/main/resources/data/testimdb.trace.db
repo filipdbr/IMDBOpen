@@ -1178,3 +1178,11 @@ insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) [*]returning id"
 Syntax error in SQL statement "insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) [*]returning id"; SQL statement:
 insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url) values (?,?,?,?,?,?,?,?,?) returning id [42000-224]
+2024-08-28 17:06:40.783338+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valeur trop longue pour la colonne "PAYS CHARACTER VARYING(255)": "'Pays(id=null, name=The mysterious owner of a costume shop rents a Santa Claus s... (375)"
+Value too long for column "PAYS CHARACTER VARYING(255)": "'Pays(id=null, name=The mysterious owner of a costume shop rents a Santa Claus s... (375)"; SQL statement:
+insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
+2024-08-28 17:11:17.955459+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valeur trop longue pour la colonne "RESUME CHARACTER VARYING(255)": "'The mysterious owner of a costume shop rents a Santa Claus suit to three very d... (355)"
+Value too long for column "RESUME CHARACTER VARYING(255)": "'The mysterious owner of a costume shop rents a Santa Claus suit to three very d... (355)"; SQL statement:
+insert into film (annee,imdb,langue,lieu_tour,nom,pays,rating,resume,url,id) values (?,?,?,?,?,?,?,?,?,default) [22001-224]
