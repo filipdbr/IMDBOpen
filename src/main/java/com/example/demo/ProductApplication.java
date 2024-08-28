@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.example.demo", "Utilities"}) // Ensure Utilities package is scanned
+@EntityScan(basePackages = {"Entities.Business"}) // Add this annotation
+@EnableJpaRepositories(basePackages = "Persistence.Repository") // Explicitly include the repository package
+@ComponentScan(basePackages = {"Entities.Business", "Utilities", "Persistence.Repository"}) // Ensure all relevant packages are scanned// Ensure Utilities package is scanned
 public class ProductApplication implements CommandLineRunner {
 
     @Autowired

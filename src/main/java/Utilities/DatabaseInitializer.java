@@ -26,14 +26,15 @@ public class DatabaseInitializer {
     private static final String DB_USER = "sa";
     private static final String DB_PASSWORD = "";
 
-    @Autowired
+@Autowired
     private IActeurRepository iActeurRepository;
 
-    @Autowired
+@Autowired
     private IFilmRepository iFilmRepository;
 
-    @Autowired
+@Autowired
     private IRoleRepository iRoleRepository;
+
 
     public void createDatabase() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
