@@ -43,7 +43,7 @@ public class Film implements IEntity<Long> {
     @Size(max = 500, message = "URL should not exceed 500 characters")
     private String url;
 
-    @Size(max = 255, message = "Filming location should not exceed 255 characters")
+    @Size(max = 2255, message = "Filming location should not exceed 2255 characters")
     private String lieuTour;
 
     @NotBlank(message = "Language cannot be blank")
