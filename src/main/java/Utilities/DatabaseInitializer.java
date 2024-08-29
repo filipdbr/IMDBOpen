@@ -42,7 +42,7 @@ public class DatabaseInitializer {
     public void createDatabase() {
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
-            String sql = "CREATE SCHEMA IF NOT EXISTS bxmjbjp0jbvthrec5wzc";
+            String sql = "CREATE SCHEMA IF NOT EXISTS bq6m2mlrafs4wqh3gcgt";
             statement.executeUpdate(sql);
             System.out.println("Database created or already exists.");
             createTablesIfNotExist(connection);
