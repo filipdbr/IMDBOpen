@@ -19,4 +19,16 @@ public class Pays {
     @NotBlank(message = "Country name cannot be blank")
     @Size(max = 56, message = "Country name should not exceed 255 characters")
     private String name;
+
+    public String getNom() {
+        return name;
+    }
+
+    public void setNom(String nom) {
+        this.name = nom;
+    }
+
+    public Pays orElseGet(Object o) {
+        return this;
+    }
 }

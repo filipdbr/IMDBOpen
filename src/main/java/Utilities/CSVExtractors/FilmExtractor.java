@@ -22,7 +22,7 @@ public class FilmExtractor {
     private FilmService filmService;
 
     @Autowired
-    private IPaysRepository paysRepository;
+    private PaysService paysService;
 
     public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
