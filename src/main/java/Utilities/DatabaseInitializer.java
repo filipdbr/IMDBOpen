@@ -12,9 +12,9 @@ import Utilities.CSVExtractors.RoleExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -22,9 +22,8 @@ import java.util.List;
 @Component
 public class DatabaseInitializer {
 
-    private static final String DB_URL = "jdbc:h2:mem:testimdb";
-    private static final String DB_USER = "sa";
-    private static final String DB_PASSWORD = "";
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private IActeurRepository iActeurRepository;
@@ -36,7 +35,7 @@ public class DatabaseInitializer {
     private IRoleRepository iRoleRepository;
 
     public void createDatabase() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             String sql = "CREATE SCHEMA IF NOT EXISTS testimdb";
             statement.executeUpdate(sql);
