@@ -3,7 +3,7 @@ package Utilities.CSVExtractors;
 import Entities.Business.Film.Film;
 import Entities.Business.Pays.Pays;
 import Persistence.Repository.IFilmRepository;
-import Persistence.Repository.IPaysRepository;
+import Service.PaysService;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -23,7 +23,7 @@ public class FilmExtractor {
     private IFilmRepository filmRepository;
 
     @Autowired
-    private IPaysRepository paysRepository;
+    private PaysService paysService;
 
     public List<Film> extractFilmsFromCSV(String filePath) {
         List<Film> films = new ArrayList<>();
@@ -54,8 +54,8 @@ public class FilmExtractor {
                         resume = resume.substring(0, 10000);  // Truncate to max length
                     }
 
-                    // Create or find a Pays instance
-                    Pays pays = filmRepository.findOrCreatePays(paysName);
+                    // Create or find a Pays instance using PaysService
+                    Pays pays = paysService.findOrCreatePays(paysName);
 
                     // Create a new Film instance
                     Film film = new Film();

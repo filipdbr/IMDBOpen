@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages = {"Entities.Business"}) // Add this annotation
 @EnableJpaRepositories(basePackages = "Persistence.Repository") // Explicitly include the repository package
-@ComponentScan(basePackages = {"Entities.Business", "Utilities", "Persistence.Repository"}) // Ensure all relevant packages are scanned// Ensure Utilities package is scanned
+@ComponentScan(basePackages = {"Entities.Business", "Utilities", "Persistence.Repository", "Service"}) // Ensure all relevant packages are scanned
 public class ProductApplication implements CommandLineRunner {
 
     @Autowired

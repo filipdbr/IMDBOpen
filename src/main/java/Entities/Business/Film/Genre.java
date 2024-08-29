@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import lombok.*;
 
 @Entity
+@Data
+@Builder
 @Table(name = "Genre")
 public class Genre {
 
@@ -15,7 +18,7 @@ public class Genre {
     private Long id;
 
     @NotBlank(message = "Genre name cannot be blank")
-    @Column(name = "nom")
+    @Column(unique = true, nullable = false)
     @Size(max = 100, message = "Genre name should not exceed 100 characters")
     private String name;
 
@@ -62,5 +65,9 @@ public class Genre {
 
     public void setFilms(List<Film> films) {
         this.films = films;
+    }
+
+    public Genre orElseGet(Object o) {
+        return this;
     }
 }
