@@ -13,23 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Acteur")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorValue("ACTEUR")
 public class Acteur extends Personne {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_acteur")
-    private Long idActeur;
 
     @Column(name = "id_imdb")
     private String idImdb;
-
-    @Column(name = "taille")
-    private double taille;
 
     // Many-to-Many relationship with Film
     @ManyToMany
@@ -50,23 +42,28 @@ public class Acteur extends Personne {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Acteur(String idImdb, String nom, String prenom, LocalDateTime dateNaissance, double taille) {
+    public Acteur(String idImdb, String nom, String prenom, LocalDateTime dateNaissance) {
         super.setNom(nom);
         super.setPrenom(prenom);
         super.setDateNaissance(dateNaissance);
         this.idImdb = idImdb;
-        this.taille = taille;
         this.createdDate = LocalDateTime.now();
     }
 
-    @Override
-    public Long getId() {
-        return this.idActeur;
+    public Long getIdActeur() {
+        return super.getId();
     }
 
-    @Override
-    public void setId(Long id) {
-        this.idActeur = id;
+    public void setIdActeur(Long id) {
+        super.setId(id);
+    }
+
+    public void setPersonne(Personne personne) {
+        this.setNom(personne.getNom());
+        this.setPrenom(personne.getPrenom());
+        this.setDateNaissance(personne.getDateNaissance());
+        this.setLieuNaissance(personne.getLieuNaissance());
+        this.setUrl(personne.getUrl());
     }
 
     @Override

@@ -75,6 +75,7 @@ public class FilmService {
         return films.stream().map(FilmDTO::fromEntity).collect(Collectors.toList());
     }
 
+
     /**
      * Compares two films based on a specific field for sorting.
      *
@@ -115,6 +116,8 @@ public class FilmService {
         }
         return films.stream().map(FilmDTO::fromEntity).collect(Collectors.toList());
     }
+
+
 
     /**
      * Finds films by name.
@@ -190,4 +193,5 @@ public class FilmService {
         return paysRepository.findByName(paysName)
                 .orElseGet(() -> paysRepository.save(new Pays(null, paysName)));
     }
+
 }

@@ -5,7 +5,7 @@ import Entities.Business.Personne.Acteur; // Import the Acteur class
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "Roles")
 public class Role {
 
     @Id
@@ -16,11 +16,11 @@ public class Role {
     private String roleName;
 
     @ManyToOne
-    @JoinColumn(name = "film_id", nullable = false)
+    @JoinColumn(name = "film_imdb", nullable = false)
     private Film film;
 
     @ManyToOne
-    @JoinColumn(name = "actor_id", nullable = false)
+    @JoinColumn(name = "actor_id_imdb", nullable = false)
     private Acteur actor; // Correctly reference Acteur
 
     // Default constructor

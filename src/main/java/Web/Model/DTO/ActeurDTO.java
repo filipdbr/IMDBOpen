@@ -1,10 +1,6 @@
-
-
 package Web.Model.DTO;
 
-import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
-import Entities.Business.Role.Role;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,7 +11,6 @@ import java.util.stream.Collectors;
 public class ActeurDTO {
     private Long id;
     private String idImdb;
-    private double taille;
     private String nom;
     private String prenom;
     private LocalDateTime dateNaissance;
@@ -26,7 +21,6 @@ public class ActeurDTO {
         ActeurDTO dto = new ActeurDTO();
         dto.setId(acteur.getIdActeur());
         dto.setIdImdb(acteur.getIdImdb());
-        dto.setTaille(acteur.getTaille());
         dto.setNom(acteur.getNom());
         dto.setPrenom(acteur.getPrenom());
         dto.setDateNaissance(acteur.getDateNaissance());
@@ -39,7 +33,6 @@ public class ActeurDTO {
         Acteur acteur = new Acteur();
         acteur.setIdActeur(this.id);
         acteur.setIdImdb(this.idImdb);
-        acteur.setTaille(this.taille);
         acteur.setNom(this.nom);
         acteur.setPrenom(this.prenom);
         acteur.setDateNaissance(this.dateNaissance);

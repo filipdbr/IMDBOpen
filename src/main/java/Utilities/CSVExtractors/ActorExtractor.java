@@ -1,53 +1,55 @@
 package Utilities.CSVExtractors;
 
+import Entities.Business.Personne.Personne;
 import Entities.Business.Personne.Acteur;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvValidationException;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActorExtractor {
 
-    public static List<Acteur> extractActorsFromCSV(String filePath) {
-        List<Acteur> actors = new ArrayList<>();
-
-        try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
-                .withCSVParser(new CSVParserBuilder().withSeparator(';').build())  // Set the separator to ';'
-                .build()) {
-
-            String[] header = reader.readNext(); // Read the header row
-            String[] line;
-
-            while ((line = reader.readNext()) != null) {
-                try {
-                    // Parse and create an Acteur instance from the CSV data
-                    String identite = line[0].isEmpty() ? "NA" : line[0];
-                    String dateNaissance = line[1].isEmpty() ? "NA" : line[1];
-
-                    // Create a new Acteur instance
-                    Acteur acteur = new Acteur();
-                    acteur.setIdImdb(identite);
-                    acteur.setDateNaissance(dateNaissance.equals("NA") ? null : LocalDateTime.parse(dateNaissance));
-
-                    actors.add(acteur);
-                } catch (Exception e) {
-                    System.err.println("Error processing line: " + e.getMessage());
-                }
+    public static List<Personne> extractPersonsFromCSV(String filePath) {
+        List<Personne> personnes = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(";");
+                Personne personne = new Personne();
+                String[] identite = values[1].split(" ", 2);
+                personne.setPrenom(identite[0]);
+                personne.setNom(identite.length > 1 ? identite[1] : "");
+                personne.setDateNaissance(LocalDateTime.parse(values[2].trim(), DateTimeFormatter.ofPattern("MMMM d yyyy")));
+                personne.setLieuNaissance(values[3]);
+                personne.setUrl(values[5]);
+                personnes.add(personne);
             }
         } catch (IOException e) {
-            System.err.println("Error reading the CSV file: " + e.getMessage());
-            e.printStackTrace();
-        } catch (CsvValidationException e) {
-            System.err.println("CSV validation error: " + e.getMessage());
             e.printStackTrace();
         }
+        return personnes;
+    }
 
-        return actors;
+    public static List<Acteur> extractActorsFromCSV(String filePath, List<Personne> personnes) {
+        List<Acteur> acteurs = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int index = 0;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(";");
+                Acteur acteur = new Acteur();
+                acteur.setIdImdb(values[0]);
+                acteur.setPersonne(personnes.get(index));
+                acteurs.add(acteur);
+                index++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return acteurs;
     }
 }

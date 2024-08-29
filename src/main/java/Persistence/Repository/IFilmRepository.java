@@ -59,6 +59,6 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     );
 
     // Custom query method to find films by actor
-    @Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.idActeur = :actorId")
+    @Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.id = :actorId")
     List<Film> findFilmsByActor(@Param("actorId") Long actorId);
 }

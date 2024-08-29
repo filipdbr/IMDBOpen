@@ -2,9 +2,11 @@ package Utilities;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
+import Entities.Business.Personne.Personne;
 import Entities.Business.Role.Role;
 import Persistence.Repository.IActeurRepository;
 import Persistence.Repository.IFilmRepository;
+import Persistence.Repository.IPersonneRepository;
 import Persistence.Repository.IRoleRepository;
 import Utilities.CSVExtractors.ActorExtractor;
 import Utilities.CSVExtractors.FilmExtractor;
@@ -34,6 +36,9 @@ public class DatabaseInitializer {
     @Autowired
     private IRoleRepository iRoleRepository;
 
+    @Autowired
+    private IPersonneRepository iPersonneRepository;
+
     public void createDatabase() {
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
@@ -51,22 +56,51 @@ public class DatabaseInitializer {
         DatabaseMetaData metaData = connection.getMetaData();
 
         // Check and create Film table
-        if (!tableExists(metaData, "FILM")) {
-            String createFilmTable = "CREATE TABLE FILM (id VARCHAR(255) PRIMARY KEY, nom VARCHAR(255), annee INT, rating DOUBLE, url VARCHAR(255), lieuTour VARCHAR(255), langue VARCHAR(255), resume VARCHAR(255), pays VARCHAR(255))";
+        if (!tableExists(metaData, "film")) {
+            String createFilmTable = "CREATE TABLE film (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "annee VARCHAR(10) NOT NULL, " +
+                    "langue VARCHAR(100) NOT NULL, " +
+                    "rating VARCHAR(4) NOT NULL, " +
+                    "resume VARCHAR(10001) NOT NULL, " +
+                    "url VARCHAR(500))";
             connection.createStatement().executeUpdate(createFilmTable);
             System.out.println("Film table created.");
         }
 
+        // Check and create Personne table
+        if (!tableExists(metaData, "personne")) {
+            String createPersonneTable = "CREATE TABLE personne (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "nom VARCHAR(255) NOT NULL, " +
+                    "prenom VARCHAR(255), " +
+                    "date_naissance DATETIME, " +
+                    "lieu_naissance VARCHAR(255))";
+            connection.createStatement().executeUpdate(createPersonneTable);
+            System.out.println("Personne table created.");
+        }
+
         // Check and create Acteur table
-        if (!tableExists(metaData, "ACTEUR")) {
-            String createActeurTable = "CREATE TABLE ACTEUR (id VARCHAR(255) PRIMARY KEY, identite VARCHAR(255), dateNaissance TIMESTAMP)";
+        if (!tableExists(metaData, "acteur")) {
+            String createActeurTable = "CREATE TABLE acteur (" +
+                    "id_acteur BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "personne_id BIGINT, " +
+                    "id_imdb VARCHAR(255), " +
+                    "taille DOUBLE, " +
+                    "FOREIGN KEY (personne_id) REFERENCES personne(id))";
             connection.createStatement().executeUpdate(createActeurTable);
             System.out.println("Acteur table created.");
         }
 
         // Check and create Role table
-        if (!tableExists(metaData, "ROLE")) {
-            String createRoleTable = "CREATE TABLE ROLE (id VARCHAR(255) PRIMARY KEY, roleName VARCHAR(255), filmId VARCHAR(255), actorId VARCHAR(255), FOREIGN KEY (filmId) REFERENCES FILM(id), FOREIGN KEY (actorId) REFERENCES ACTEUR(id))";
+        if (!tableExists(metaData, "role")) {
+            String createRoleTable = "CREATE TABLE role (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "role_name VARCHAR(255) NOT NULL, " +
+                    "film_id BIGINT NOT NULL, " +
+                    "actor_id BIGINT NOT NULL, " +
+                    "FOREIGN KEY (film_id) REFERENCES film(id), " +
+                    "FOREIGN KEY (actor_id) REFERENCES acteur(id_acteur))";
             connection.createStatement().executeUpdate(createRoleTable);
             System.out.println("Role table created.");
         }
@@ -83,8 +117,11 @@ public class DatabaseInitializer {
         List<Film> films = FilmExtractor.extractFilmsFromCSV("src/main/resources/CSV/films.csv");
         iFilmRepository.saveAll(films);
 
-        // Populate Acteur table
-        List<Acteur> acteurs = ActorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
+        // Populate Personne and Acteur tables
+        List<Personne> personnes = ActorExtractor.extractPersonsFromCSV("src/main/resources/CSV/acteurs.csv");
+        iPersonneRepository.saveAll(personnes);
+
+        List<Acteur> acteurs = ActorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv", personnes);
         iActeurRepository.saveAll(acteurs);
 
         // Populate Role table
