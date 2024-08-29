@@ -17,6 +17,6 @@ public class Pays {
     private Long id;
 
     @NotBlank(message = "Country name cannot be blank")
-    @Size(max = 255, message = "Country name should not exceed 255 characters")
+    @Size(max = 56, message = "Country name should not exceed 255 characters")
     private String name;
 }

@@ -11,6 +11,7 @@ import Persistence.Repository.IPaysRepository;
 import Web.Model.DTO.FilmDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -189,9 +190,18 @@ public class FilmService {
                 .orElseGet(() -> genreRepository.save(new Genre(null, genreName)));
     }
 
+
+    @Transactional
     public Pays findOrCreatePays(String paysName) {
         return paysRepository.findByName(paysName)
                 .orElseGet(() -> paysRepository.save(new Pays(null, paysName)));
+    }
+    public void saveAll(List<Film> films){
+        filmRepository.saveAll(films);
+    }
+
+    public void save(Film film) {
+        filmRepository.saveAndFlush(film);
     }
 
 }

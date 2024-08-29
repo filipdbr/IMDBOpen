@@ -59,6 +59,8 @@ public class RoleExtractor {
                     if (film != null && acteur != null) {
                         Role role = new Role();
                         role.setRoleName(roleName);
+                        role.setIdbmacteur(actorId);
+                        role.setIdbmfilm(filmId);
                         role.setFilm(film);
                         role.setActor(acteur);
 

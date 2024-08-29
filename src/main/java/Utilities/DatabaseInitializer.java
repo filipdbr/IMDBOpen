@@ -115,8 +115,8 @@ public class DatabaseInitializer {
 
     private void populateDatabase() {
         // Populate Film table
-        List<Film> films = filmExtractor.extractFilmsFromCSV("src/main/resources/CSV/films.csv");
-        iFilmRepository.saveAll(films);
+        filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
+
 
         // Populate Personne and Acteur tables
         List<Personne> personnes = actorExtractor.extractPersonsFromCSV("src/main/resources/CSV/acteurs.csv");
@@ -126,7 +126,7 @@ public class DatabaseInitializer {
         iActeurRepository.saveAll(acteurs);
 
         // Populate Role table
-        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv", films, acteurs);
+        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv", iFilmRepository.findAll(), acteurs);
         iRoleRepository.saveAll(roles);
     }
 }

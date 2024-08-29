@@ -4,6 +4,7 @@ import Entities.Business.Film.Film;
 import Entities.Business.Pays.Pays;
 import Persistence.Repository.IFilmRepository;
 import Persistence.Repository.IPaysRepository;
+import Service.FilmService;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -13,21 +14,17 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class FilmExtractor {
 
     @Autowired
-    private IFilmRepository filmRepository;
+    private FilmService filmService;
 
     @Autowired
     private IPaysRepository paysRepository;
 
-    public List<Film> extractFilmsFromCSV(String filePath) {
-        List<Film> films = new ArrayList<>();
-
+    public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())  // Set the separator to ';'
                 .build()) {
@@ -38,15 +35,15 @@ public class FilmExtractor {
             while ((line = reader.readNext()) != null) {
                 try {
                     // Parse and create a Film instance from the CSV data
-                    String imdb = line[0].isEmpty() ? null : line[0].trim();
-                    String nom = line[1].isEmpty() ? null : line[1].trim();
-                    String annee = line[2].isEmpty() ? null : line[2].trim();
-                    String rating = line[3].isEmpty() ? null : line[3].trim();
-                    String url = line[4].isEmpty() ? null : line[4].trim();
-                    String lieuTour = line[5].isEmpty() ? null : line[5].trim();
-                    String langue = line[7].isEmpty() ? null : line[7].trim();
-                    String resume = line[8].isEmpty() ? null : line[8].trim();
-                    String paysName = line[9].isEmpty() ? null : line[9].trim();
+                    String imdb = line[0].isEmpty() ? "N/A" : line[0].trim();
+                    String nom = line[1].isEmpty() ? "N/A" : line[1].trim();
+                    String annee = line[2].isEmpty() ? "N/A" : line[2].trim();
+                    String rating = line[3].isEmpty() ? "N/A" : line[3].trim();
+                    String url = line[4].isEmpty() ? "N/A" : line[4].trim();
+                    String lieuTour = line[5].isEmpty() ? "N/A" : line[5].trim();
+                    String langue = line[7].isEmpty() ? "N/A" : line[7].trim();
+                    String resume = line[8].isEmpty() ? "N/A" : line[8].trim();
+                    String paysName = line[9].isEmpty() ? "N/A" : line[9].trim();
 
                     // Check the length of the resume to avoid Data Truncation errors
                     if (resume != null && resume.length() > 10000) {
@@ -55,7 +52,7 @@ public class FilmExtractor {
                     }
 
                     // Create or find a Pays instance
-                    Pays pays = filmRepository.findOrCreatePays(paysName);
+                    Pays pays = filmService.findOrCreatePays(paysName);
 
                     // Create a new Film instance
                     Film film = new Film();
@@ -67,9 +64,11 @@ public class FilmExtractor {
                     film.setLieuTour(lieuTour);
                     film.setLangue(langue);
                     film.setResume(resume);
-                    film.setPays(pays.getName());  // Correctly set the Pays object
+                    film.setPays(paysName);  // Set the Pays object correctly
 
-                    films.add(film);
+                    // Save each film directly to the database
+                    filmService.save(film);
+
                 } catch (Exception e) {
                     System.err.println("Error processing line for film: " + (line.length > 1 ? line[1] : "Unknown") + " - " + e.getMessage());
                     e.printStackTrace();  // Print full stack trace for debugging
@@ -82,11 +81,5 @@ public class FilmExtractor {
             System.err.println("CSV validation error: " + e.getMessage());
             e.printStackTrace();
         }
-
-        return films;
-    }
-
-    public void saveFilms(List<Film> films) {
-        filmRepository.saveAll(films);
     }
 }

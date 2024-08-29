@@ -65,6 +65,5 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     List<Film> findFilmsByActor(@Param("actorId") Long actorId);
 
 
-    Pays findOrCreatePays(String paysName);
-    Genre findOrCreateGenre(String genreName);
+
 }

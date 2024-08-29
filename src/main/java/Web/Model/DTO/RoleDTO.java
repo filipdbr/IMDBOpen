@@ -11,19 +11,41 @@ public class RoleDTO {
     private String roleName;
     private Film film;
     private Acteur actor;
+    private String idbmacteur;
+
+
+
+    private String idbmfilm;
 
     // Default constructor
     public RoleDTO() {}
 
     // Parameterized constructor
-    public RoleDTO(Long id, String roleName, Film film, Acteur actor) {
+    public RoleDTO(Long id, String roleName, Film film, Acteur actor, String idbmacteur, String idbmfilm) {
         this.id = id;
         this.roleName = roleName;
         this.film = film;
         this.actor = actor;
+        this.idbmfilm = idbmfilm;
+        this.idbmacteur = idbmacteur;
     }
 
     // Getters and Setters
+    public String getIdbmfilm() {
+        return idbmfilm;
+    }
+
+    public void setIdbmfilm(String idbmfilm) {
+        this.idbmfilm = idbmfilm;
+    }
+
+    public String getIdbmacteur() {
+        return idbmacteur;
+    }
+
+    public void setIdbmacteur(String idbmacteur) {
+        this.idbmacteur = idbmacteur;
+    }
     public Long getId() {
         return id;
     }
@@ -62,7 +84,9 @@ public class RoleDTO {
                 role.getId(),
                 role.getRoleName(),
                 role.getImdb(),
-                role.getid_imdb()
+                role.getid_imdb(),
+                role.getIdbmacteur(),
+                role.getIdbmfilm()
         );
     }
 
@@ -73,6 +97,8 @@ public class RoleDTO {
         role.setRoleName(this.roleName);
         role.setFilm(this.film);
         role.setActor(this.actor);
+        role.setIdbmfilm(this.idbmfilm);
+        role.setIdbmacteur(this.idbmacteur);
         return role;
     }
 }
