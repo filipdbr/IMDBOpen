@@ -1,5 +1,6 @@
 package Entities.Business.Personne;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Personne implements IPersonne<Long> {
     @Setter
     @Getter
     @Column(name = "date_naissance")
-    private LocalDateTime dateNaissance;
+    private LocalDate dateNaissance;
 
     @Setter
     @Getter

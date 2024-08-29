@@ -3,7 +3,7 @@ package Web.Model.DTO;
 import Entities.Business.Personne.Acteur;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +13,7 @@ public class ActeurDTO {
     private String idImdb;
     private String nom;
     private String prenom;
-    private LocalDateTime dateNaissance;
+    private LocalDate dateNaissance;
     private List<FilmDTO> films; // Use FilmDTO instead of Film
     private List<RoleDTO> roles; // Use RoleDTO for roles
 

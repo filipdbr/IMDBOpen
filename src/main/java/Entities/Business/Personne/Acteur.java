@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,11 @@ public class Acteur extends Personne {
 
     @Column(name = "id_imdb")
     private String idImdb;
+
+
+
+    @Column(name ="taille")
+    private double taille;
 
     // Many-to-Many relationship with Film
     @ManyToMany
@@ -42,7 +48,7 @@ public class Acteur extends Personne {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Acteur(String idImdb, String nom, String prenom, LocalDateTime dateNaissance) {
+    public Acteur(String idImdb, String nom, String prenom, LocalDate dateNaissance) {
         super.setNom(nom);
         super.setPrenom(prenom);
         super.setDateNaissance(dateNaissance);
@@ -94,5 +100,13 @@ public class Acteur extends Personne {
     @Override
     public void setDeleted(boolean deleted) {
         // Implement as needed
+    }
+
+    public double getTaille() {
+        return taille;
+    }
+
+    public void setTaille(double taille) {
+        this.taille = taille;
     }
 }

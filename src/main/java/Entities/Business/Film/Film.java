@@ -58,9 +58,9 @@ public class Film implements IEntity<Long> {
     @Size(max = 100, message = "Language should not exceed 100 characters")
     private String langue;
 
-    @Column(name = "resume")
+    @Column(name = "resume", columnDefinition = "TEXT")
     @NotBlank(message = "Resume cannot be blank")
-    @Size(max = 10001, message = "Resume should not exceed 10001 characters")
+
     private String resume;
 
     @Column(name = "id_pays")

@@ -2,19 +2,30 @@ package Utilities.CSVExtractors;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Pays.Pays;
+import Persistence.Repository.IFilmRepository;
+import Persistence.Repository.IPaysRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class FilmExtractor {
 
-    public static List<Film> extractFilmsFromCSV(String filePath) {
+    @Autowired
+    private IFilmRepository filmRepository;
+
+    @Autowired
+    private IPaysRepository paysRepository;
+
+    public List<Film> extractFilmsFromCSV(String filePath) {
         List<Film> films = new ArrayList<>();
 
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
@@ -27,19 +38,24 @@ public class FilmExtractor {
             while ((line = reader.readNext()) != null) {
                 try {
                     // Parse and create a Film instance from the CSV data
-                    String imdb = line[0].isEmpty() ? "NA" : line[0];
-                    String nom = line[1].isEmpty() ? "NA" : line[1];
-                    String annee = line[2].isEmpty() ? "NA" : line[2];
-                    String rating = line[3].isEmpty() ? "NA" : line[3];
-                    String url = line[4].isEmpty() ? "NA" : line[4];
-                    String lieuTour = line[5].isEmpty() ? "NA" : line[5];
-                    String langue = line[7].isEmpty() ? "NA" : line[7];
-                    String resume = line[8].isEmpty() ? "NA" : line[8];
-                    String paysName = line[9].isEmpty() ? "NA" : line[9];
+                    String imdb = line[0].isEmpty() ? null : line[0].trim();
+                    String nom = line[1].isEmpty() ? null : line[1].trim();
+                    String annee = line[2].isEmpty() ? null : line[2].trim();
+                    String rating = line[3].isEmpty() ? null : line[3].trim();
+                    String url = line[4].isEmpty() ? null : line[4].trim();
+                    String lieuTour = line[5].isEmpty() ? null : line[5].trim();
+                    String langue = line[7].isEmpty() ? null : line[7].trim();
+                    String resume = line[8].isEmpty() ? null : line[8].trim();
+                    String paysName = line[9].isEmpty() ? null : line[9].trim();
 
-                    // Create a new Pays instance
-                    Pays pays = new Pays();
-                    pays.setName(paysName);
+                    // Check the length of the resume to avoid Data Truncation errors
+                    if (resume != null && resume.length() > 10000) {
+                        System.err.println("Resume too long for film: " + nom + ". Truncating to 10,000 characters.");
+                        resume = resume.substring(0, 10000);  // Truncate to max length
+                    }
+
+                    // Create or find a Pays instance
+                    Pays pays = filmRepository.findOrCreatePays(paysName);
 
                     // Create a new Film instance
                     Film film = new Film();
@@ -51,11 +67,12 @@ public class FilmExtractor {
                     film.setLieuTour(lieuTour);
                     film.setLangue(langue);
                     film.setResume(resume);
-                    film.setPays(String.valueOf(pays));
+                    film.setPays(pays.getName());  // Correctly set the Pays object
 
                     films.add(film);
                 } catch (Exception e) {
-                    System.err.println("Error processing line: " + e.getMessage());
+                    System.err.println("Error processing line for film: " + (line.length > 1 ? line[1] : "Unknown") + " - " + e.getMessage());
+                    e.printStackTrace();  // Print full stack trace for debugging
                 }
             }
         } catch (IOException e) {
@@ -67,5 +84,9 @@ public class FilmExtractor {
         }
 
         return films;
+    }
+
+    public void saveFilms(List<Film> films) {
+        filmRepository.saveAll(films);
     }
 }

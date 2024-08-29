@@ -28,10 +28,19 @@ public class DatabaseInitializer {
     private DataSource dataSource;
 
     @Autowired
-    private IActeurRepository iActeurRepository;
+    private FilmExtractor filmExtractor;
+
+    @Autowired
+    private ActorExtractor actorExtractor;
+
+    @Autowired
+    private RoleExtractor roleExtractor;
 
     @Autowired
     private IFilmRepository iFilmRepository;
+
+    @Autowired
+    private IActeurRepository iActeurRepository;
 
     @Autowired
     private IRoleRepository iRoleRepository;
@@ -55,55 +64,47 @@ public class DatabaseInitializer {
     private void createTablesIfNotExist(Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
 
-        // Check and create Film table
-        if (!tableExists(metaData, "film")) {
-            String createFilmTable = "CREATE TABLE film (" +
-                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                    "annee VARCHAR(10) NOT NULL, " +
-                    "langue VARCHAR(100) NOT NULL, " +
-                    "rating VARCHAR(4) NOT NULL, " +
-                    "resume VARCHAR(10001) NOT NULL, " +
-                    "url VARCHAR(500))";
-            connection.createStatement().executeUpdate(createFilmTable);
-            System.out.println("Film table created.");
-        }
+        // Create Film table if not exists
+        String createFilmTable = "CREATE TABLE IF NOT EXISTS film (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "annee VARCHAR(10) NOT NULL, " +
+                "langue VARCHAR(100) NOT NULL, " +
+                "rating VARCHAR(4) NOT NULL, " +
+                "resume TEXT NOT NULL, " +
+                "url VARCHAR(500))";
+        connection.createStatement().executeUpdate(createFilmTable);
+        System.out.println("Film table created or already exists.");
 
-        // Check and create Personne table
-        if (!tableExists(metaData, "personne")) {
-            String createPersonneTable = "CREATE TABLE personne (" +
-                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                    "nom VARCHAR(255) NOT NULL, " +
-                    "prenom VARCHAR(255), " +
-                    "date_naissance DATETIME, " +
-                    "lieu_naissance VARCHAR(255))";
-            connection.createStatement().executeUpdate(createPersonneTable);
-            System.out.println("Personne table created.");
-        }
+        // Create Personne table if not exists
+        String createPersonneTable = "CREATE TABLE IF NOT EXISTS personne (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "nom VARCHAR(255) NOT NULL, " +
+                "prenom VARCHAR(255), " +
+                "date_naissance DATETIME, " +
+                "lieu_naissance VARCHAR(255))";
+        connection.createStatement().executeUpdate(createPersonneTable);
+        System.out.println("Personne table created or already exists.");
 
-        // Check and create Acteur table
-        if (!tableExists(metaData, "acteur")) {
-            String createActeurTable = "CREATE TABLE acteur (" +
-                    "id_acteur BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                    "personne_id BIGINT, " +
-                    "id_imdb VARCHAR(255), " +
-                    "taille DOUBLE, " +
-                    "FOREIGN KEY (personne_id) REFERENCES personne(id))";
-            connection.createStatement().executeUpdate(createActeurTable);
-            System.out.println("Acteur table created.");
-        }
+        // Create Acteur table if not exists
+        String createActeurTable = "CREATE TABLE IF NOT EXISTS acteur (" +
+                "id_acteur BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "personne_id BIGINT, " +
+                "id_imdb VARCHAR(255), " +
+                "taille DOUBLE, " +
+                "FOREIGN KEY (personne_id) REFERENCES personne(id))";
+        connection.createStatement().executeUpdate(createActeurTable);
+        System.out.println("Acteur table created or already exists.");
 
-        // Check and create Role table
-        if (!tableExists(metaData, "role")) {
-            String createRoleTable = "CREATE TABLE role (" +
-                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                    "role_name VARCHAR(255) NOT NULL, " +
-                    "film_id BIGINT NOT NULL, " +
-                    "actor_id BIGINT NOT NULL, " +
-                    "FOREIGN KEY (film_id) REFERENCES film(id), " +
-                    "FOREIGN KEY (actor_id) REFERENCES acteur(id_acteur))";
-            connection.createStatement().executeUpdate(createRoleTable);
-            System.out.println("Role table created.");
-        }
+        // Create Role table if not exists
+        String createRoleTable = "CREATE TABLE IF NOT EXISTS role (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "role_name VARCHAR(255) NOT NULL, " +
+                "film_id BIGINT NOT NULL, " +
+                "actor_id BIGINT NOT NULL, " +
+                "FOREIGN KEY (film_id) REFERENCES film(id), " +
+                "FOREIGN KEY (actor_id) REFERENCES acteur(id_acteur))";
+        connection.createStatement().executeUpdate(createRoleTable);
+        System.out.println("Role table created or already exists.");
     }
 
     private boolean tableExists(DatabaseMetaData metaData, String tableName) throws SQLException {
@@ -114,18 +115,18 @@ public class DatabaseInitializer {
 
     private void populateDatabase() {
         // Populate Film table
-        List<Film> films = FilmExtractor.extractFilmsFromCSV("src/main/resources/CSV/films.csv");
+        List<Film> films = filmExtractor.extractFilmsFromCSV("src/main/resources/CSV/films.csv");
         iFilmRepository.saveAll(films);
 
         // Populate Personne and Acteur tables
-        List<Personne> personnes = ActorExtractor.extractPersonsFromCSV("src/main/resources/CSV/acteurs.csv");
+        List<Personne> personnes = actorExtractor.extractPersonsFromCSV("src/main/resources/CSV/acteurs.csv");
         iPersonneRepository.saveAll(personnes);
 
-        List<Acteur> acteurs = ActorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv", personnes);
+        List<Acteur> acteurs = actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv", personnes);
         iActeurRepository.saveAll(acteurs);
 
         // Populate Role table
-        List<Role> roles = RoleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv", films, acteurs);
+        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv", films, acteurs);
         iRoleRepository.saveAll(roles);
     }
 }

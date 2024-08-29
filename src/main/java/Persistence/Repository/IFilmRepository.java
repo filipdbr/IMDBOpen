@@ -1,6 +1,8 @@
 package Persistence.Repository;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Film.Genre;
+import Entities.Business.Pays.Pays;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -61,4 +63,8 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     // Custom query method to find films by actor
     @Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.id = :actorId")
     List<Film> findFilmsByActor(@Param("actorId") Long actorId);
+
+
+    Pays findOrCreatePays(String paysName);
+    Genre findOrCreateGenre(String genreName);
 }
