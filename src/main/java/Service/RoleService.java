@@ -1,9 +1,13 @@
 package Service;
 
 import Entities.Business.Role.Role;
+import Entities.Business.Film.Film;
+import Entities.Business.Personne.Acteur;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Persistence.Repository.IRoleRepository;
+import Persistence.Repository.IFilmRepository;
+import Persistence.Repository.IActeurRepository;
 import Web.Model.DTO.RoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,12 @@ public class RoleService {
 
     @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    private IFilmRepository filmRepository;
+
+    @Autowired
+    private IActeurRepository actorRepository;
 
     /**
      * Finds roles based on multiple filters.
@@ -37,12 +47,21 @@ public class RoleService {
         }
         if (filmId != null) {
             roles = roles.stream()
-                    .filter(role -> role.getFilm().getId().equals(filmId))
+                    .filter(role -> {
+                        Film film = filmRepository.findByImdb(role.getFilmImdb());
+                        if (film == null) {
+                            throw new EntityNotFoundException("No film found with IMDb ID: " + role.getFilmImdb());
+                        }
+                        return film.getId().equals(filmId);
+                    })
                     .collect(Collectors.toList());
         }
         if (actorId != null) {
             roles = roles.stream()
-                    .filter(role -> role.getActor().equals(actorId))
+                    .filter(role -> {
+                        Acteur actor = actorRepository.findByIdImdb(role.getActorImdb());
+                        return actor != null && actor.getId().equals(actorId);
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -52,7 +71,6 @@ public class RoleService {
 
         return roles.stream().map(RoleDTO::fromEntity).collect(Collectors.toList());
     }
-
     /**
      * Finds roles by role name.
      *
@@ -97,8 +115,8 @@ public class RoleService {
                 new EntityNotFoundException("Role not found with ID: " + id));
 
         existingRole.setRoleName(roleDTO.getRoleName());
-        existingRole.setFilm(roleDTO.getFilm());  // Assuming the DTO contains a Film object or FilmDTO
-        existingRole.setActor(roleDTO.getActor());  // Assuming the DTO contains an Actor object or ActorDTO
+        existingRole.setFilmImdb(roleDTO.getFilmImdb());
+        existingRole.setActorImdb(roleDTO.getActorImdb());
 
         Role updatedRole = roleRepository.save(existingRole);
         return RoleDTO.fromEntity(updatedRole);

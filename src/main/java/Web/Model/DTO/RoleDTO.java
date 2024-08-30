@@ -1,104 +1,42 @@
 package Web.Model.DTO;
 
-import Entities.Business.Film.Film;
-import Entities.Business.Personne.Acteur;
-import Entities.Business.Personne.Personne;
 import Entities.Business.Role.Role;
+import lombok.Getter;
+import lombok.Setter;
 
 public class RoleDTO {
 
+    @Setter
+    @Getter
     private Long id;
+
+    @Setter
+    @Getter
     private String roleName;
-    private Film film;
-    private Acteur actor;
-    private String idbmacteur;
 
+    @Setter
+    @Getter
+    private String filmImdb;
 
+    @Setter
+    @Getter
+    private String actorImdb;
 
-    private String idbmfilm;
-
-    // Default constructor
-    public RoleDTO() {}
-
-    // Parameterized constructor
-    public RoleDTO(Long id, String roleName, Film film, Acteur actor, String idbmacteur, String idbmfilm) {
-        this.id = id;
-        this.roleName = roleName;
-        this.film = film;
-        this.actor = actor;
-        this.idbmfilm = idbmfilm;
-        this.idbmacteur = idbmacteur;
-    }
-
-    // Getters and Setters
-    public String getIdbmfilm() {
-        return idbmfilm;
-    }
-
-    public void setIdbmfilm(String idbmfilm) {
-        this.idbmfilm = idbmfilm;
-    }
-
-    public String getIdbmacteur() {
-        return idbmacteur;
-    }
-
-    public void setIdbmacteur(String idbmacteur) {
-        this.idbmacteur = idbmacteur;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public Film getFilm() {
-        return film;
-    }
-
-    public void setFilm(Film film) {
-        this.film = film;
-    }
-
-    public Acteur getActor() {
-        return actor;
-    }
-
-    public void setActor(Acteur actor) {
-        this.actor = actor;
-    }
-
-    // Static method to convert a Role entity to a RoleDTO
     public static RoleDTO fromEntity(Role role) {
-        return new RoleDTO(
-                role.getId(),
-                role.getRoleName(),
-                role.getImdb(),
-                role.getid_imdb(),
-                role.getIdbmacteur(),
-                role.getIdbmfilm()
-        );
+        RoleDTO dto = new RoleDTO();
+        dto.setId(role.getId());
+        dto.setRoleName(role.getRoleName());
+        dto.setFilmImdb(role.getFilmImdb());
+        dto.setActorImdb(role.getActorImdb());
+        return dto;
     }
 
-    // Convert RoleDTO to Role entity
     public Role toEntity() {
         Role role = new Role();
-        role.setId(this.id);
-        role.setRoleName(this.roleName);
-        role.setFilm(this.film);
-        role.setActor(this.actor);
-        role.setIdbmfilm(this.idbmfilm);
-        role.setIdbmacteur(this.idbmacteur);
+        role.setId(this.getId());
+        role.setRoleName(this.getRoleName());
+        role.setFilmImdb(this.getFilmImdb());
+        role.setActorImdb(this.getActorImdb());
         return role;
     }
 }

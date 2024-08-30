@@ -27,4 +27,6 @@ public interface IActeurRepository extends JpaRepository<Acteur, Long> {
 
     // Find All Acteurs Ordered by Nom (Reverse Alphabetical Order)
     List<Acteur> findAllByOrderByNomDesc();
+
+    Acteur findByIdImdb(String IdImdb);
 }

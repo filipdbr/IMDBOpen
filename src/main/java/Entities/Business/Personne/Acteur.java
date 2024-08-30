@@ -3,10 +3,7 @@ package Entities.Business.Personne;
 import Entities.Business.Film.Film;
 import Entities.Business.Role.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,8 +21,8 @@ public class Acteur extends Personne {
     @Column(name = "id_imdb")
     private String idImdb;
 
-
-
+    @Getter
+    @Setter
     @Column(name ="taille")
     private double taille;
 
@@ -102,11 +99,4 @@ public class Acteur extends Personne {
         // Implement as needed
     }
 
-    public double getTaille() {
-        return taille;
-    }
-
-    public void setTaille(double taille) {
-        this.taille = taille;
-    }
 }

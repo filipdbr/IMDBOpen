@@ -3,8 +3,6 @@ package Utilities.CSVExtractors;
 import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Role.Role;
-import Persistence.Repository.IFilmRepository;
-import Persistence.Repository.IActeurRepository;
 import Persistence.Repository.IRoleRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
@@ -22,15 +20,9 @@ import java.util.List;
 public class RoleExtractor {
 
     @Autowired
-    private IFilmRepository filmRepository;
-
-    @Autowired
-    private IActeurRepository acteurRepository;
-
-    @Autowired
     private IRoleRepository roleRepository;
 
-    public List<Role> extractRolesFromCSV(String filePath, List<Film> films, List<Acteur> acteurs) {
+    public List<Role> extractRolesFromCSV(String filePath, List<Film> films, List<Acteur> actors) {
         List<Role> roles = new ArrayList<>();
 
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
@@ -42,33 +34,18 @@ public class RoleExtractor {
 
             while ((line = reader.readNext()) != null) {
                 try {
-                    String filmId = line[0].isEmpty() ? null : line[0].trim();
-                    String actorId = line[1].isEmpty() ? null : line[1].trim();
-                    String roleName = line[2].isEmpty() ? null : line[2].trim();
+                    String roleName = line[0].isEmpty() ? null : line[0].trim();
+                    String actorImdb = line[1].isEmpty() ? null : line[1].trim();
+                    String filmImdb = line[2].isEmpty() ? null : line[2].trim();
 
-                    // Compare IDs as strings, no parsing to Long
-                    Film film = films.stream()
-                            .filter(f -> f.getId().equals(filmId))
-                            .findFirst()
-                            .orElse(null);
+                    Role role = new Role();
+                    role.setRoleName(roleName);
+                    role.setActorImdb(actorImdb);
+                    role.setFilmImdb(filmImdb);
 
-                    Acteur acteur = acteurs.stream()
-                            .filter(a -> a.getId().equals(actorId))
-                            .findFirst()
-                            .orElse(null);
-
-                    if (film != null && acteur != null) {
-                        Role role = new Role();
-                        role.setRoleName(roleName);
-                        role.setIdbmacteur(actorId);
-                        role.setIdbmfilm(filmId);
-                        role.setFilm(film);
-                        role.setActor(acteur);
-
-                        roles.add(role);
-                    }
+                    roles.add(role);
                 } catch (Exception e) {
-                    System.err.println("Error processing line for role: " + (line.length > 2 ? line[2] : "Unknown") + " - " + e.getMessage());
+                    System.err.println("Error processing line for role: " + (line.length > 0 ? line[0] : "Unknown") + " - " + e.getMessage());
                     e.printStackTrace();
                 }
             }

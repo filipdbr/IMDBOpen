@@ -60,7 +60,6 @@ public class Film implements IEntity<Long> {
 
     @Column(name = "resume", columnDefinition = "TEXT")
     @NotBlank(message = "Resume cannot be blank")
-
     private String resume;
 
     @Column(name = "id_pays")
