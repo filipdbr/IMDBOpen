@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +41,10 @@ public class FilmService {
             films = films.stream().filter(film -> film.getRating().contains(rating)).collect(Collectors.toList());
         }
         if (StringUtils.hasText(paysName)) {
-            films = films.stream().filter(film -> film.getPaysList().stream().anyMatch(pays -> pays.getName().equalsIgnoreCase(paysName))).collect(Collectors.toList());
+            films = films.stream()
+                    .filter(film -> film.getPays() != null &&
+                            film.getPays().getName().equalsIgnoreCase(paysName))
+                    .collect(Collectors.toList());
         }
         if (StringUtils.hasText(genreName)) {
             films = films.stream().filter(film -> film.getGenres().stream().anyMatch(genre -> genre.getName().equalsIgnoreCase(genreName))).collect(Collectors.toList());
@@ -87,16 +91,12 @@ public class FilmService {
      * @return the FilmDTO object if found
      * @throws EntityNotFoundException if no film is found with the given IMDb ID
      */
-    public FilmDTO findFilmByImdb(String imdb) {
+    public Optional<FilmDTO> findFilmByImdb(String imdb) {
         Film film = filmRepository.findByImdb(imdb);
 
-        // If film is not found, throw an exception
-        if (film == null) {
-            throw new EntityNotFoundException("No film found with IMDb ID: " + imdb);
-        }
-
-        // Convert Film entity to FilmDTO
-        return FilmDTO.fromEntity(film);
+        // Convert Film entity to FilmDTO if film is found, otherwise return Optional.empty()
+        return Optional.ofNullable(film)
+                .map(FilmDTO::fromEntity);
     }
 
     public List<FilmDTO> findFilmsByName(String nom) {

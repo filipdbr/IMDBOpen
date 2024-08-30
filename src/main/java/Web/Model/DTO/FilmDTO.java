@@ -18,7 +18,7 @@ public class FilmDTO {
     private String lieuTour;
     private String langue;
     private String resume;
-    private String pays;
+    private Pays pays;
     private List<Genre> genres;
 
     public static FilmDTO fromEntity(Film film) {
@@ -48,7 +48,7 @@ public class FilmDTO {
         film.setLieuTour(this.lieuTour);
         film.setLangue(this.langue);
         film.setResume(this.resume);
-        film.setPays(String.valueOf(this.pays));
+        film.setPays(this.pays);
         film.setGenres(this.getGenres());
         return film;
     }

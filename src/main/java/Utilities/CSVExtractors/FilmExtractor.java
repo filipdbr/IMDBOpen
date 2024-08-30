@@ -4,6 +4,7 @@ import Entities.Business.Film.Film;
 import Entities.Business.Pays.Pays;
 import Service.FilmService;
 import Service.PaysService;
+import Web.Model.DTO.FilmDTO;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class FilmExtractor {
@@ -20,6 +22,8 @@ public class FilmExtractor {
     @Autowired
     private FilmService filmService;
 
+    @Autowired
+    private PaysService paysService;  // Assuming you need this service
 
     public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
@@ -43,19 +47,19 @@ public class FilmExtractor {
                     String paysName = line[9].isEmpty() ? "N/A" : line[9].trim();
 
                     // Check the length of the resume to avoid Data Truncation errors
-                    if (resume != null && resume.length() > 10000) {
+                    if (resume.length() > 10000) {
                         System.err.println("Resume too long for film: " + nom + ". Truncating to 10,000 characters.");
                         resume = resume.substring(0, 10000);  // Truncate to max length
                     }
 
                     // Validate if the film already exists by IMDb ID
-                    Film existingFilm = filmService.findFilmByImdb(imdb).toEntity() ;
+                    Optional<FilmDTO> existingFilmOpt = filmService.findFilmByImdb(imdb);
 
-                    if (existingFilm == null) {
+                    if (!existingFilmOpt.isPresent()) {
                         // If the film does not exist, create a new one
 
                         // Create or find a Pays instance
-                        Pays pays = filmService.findOrCreatePays(paysName);
+                        Pays pays = paysService.findOrCreatePays(paysName);
 
                         // Create a new Film instance
                         Film film = new Film();
@@ -67,7 +71,7 @@ public class FilmExtractor {
                         film.setLieuTour(lieuTour);
                         film.setLangue(langue);
                         film.setResume(resume);
-                        film.setPays(pays.getName());  // Set the Pays object correctly
+                        film.setPays(pays);  // Set the Pays object correctly
 
                         // Save the new film to the database
                         filmService.save(film);

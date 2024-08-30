@@ -1,7 +1,7 @@
 package Entities.Business.Role;
 
 import Entities.Business.Film.Film;
-import Entities.Business.Personne.Acteur; // Import the Acteur class
+import Entities.Business.Personne.Acteur;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,33 +12,23 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "film" )
-    private String idbmfilm;
+    @Column(name = "film_id")
+    private String filmId; // ID in the film table, referenced as a String
 
-    @Column(name = "acteur")
-    private String idbmacteur;
+    @Column(name = "acteur_id")
+    private String acteurId; // ID in the acteur table, referenced as a String
 
     @Column(name = "role_name", nullable = false)
     private String roleName;
-
-    @ManyToOne
-    @JoinColumn(name = "film_imdb", nullable = false)
-    private Film film;
-
-    @ManyToOne
-    @JoinColumn(name = "actor_id_imdb", nullable = false)
-    private Acteur actor; // Correctly reference Acteur
 
     // Default constructor
     public Role() {}
 
     // Parameterized constructor
-    public Role(String roleName, Film film, Acteur actor, String idbmacteur, String idbmfilm) {
+    public Role(String roleName, String filmId, String acteurId) {
         this.roleName = roleName;
-        this.film = film;
-        this.actor = actor;
-        this.idbmacteur = idbmacteur;
-        this.idbmfilm = idbmfilm;
+        this.filmId = filmId;
+        this.acteurId = acteurId;
     }
 
     // Getters and setters
@@ -50,20 +40,20 @@ public class Role {
         this.id = id;
     }
 
-    public String getIdbmacteur() {
-        return idbmacteur;
+    public String getFilmId() {
+        return filmId;
     }
 
-    public void setIdbmacteur(String idbmacteur) {
-        this.idbmacteur = idbmacteur;
+    public void setFilmId(String filmId) {
+        this.filmId = filmId;
     }
 
-    public String getIdbmfilm() {
-        return idbmfilm;
+    public String getActeurId() {
+        return acteurId;
     }
 
-    public void setIdbmfilm(String idbmfilm) {
-        this.idbmfilm = idbmfilm;
+    public void setActeurId(String acteurId) {
+        this.acteurId = acteurId;
     }
 
     public String getRoleName() {
@@ -74,29 +64,13 @@ public class Role {
         this.roleName = roleName;
     }
 
-    public Film getFilm() {
-        return film;
-    }
-
-    public void setFilm(Film film) {
-        this.film = film;
-    }
-
-    public Acteur getActor() {
-        return actor;
-    }
-
-    public void setActor(Acteur actor) {
-        this.actor = actor;
-    }
-
     @Override
     public String toString() {
         return "Role{" +
                 "id=" + id +
                 ", roleName='" + roleName + '\'' +
-                ", film=" + film +
-                ", actor=" + actor +
+                ", filmId='" + filmId + '\'' +
+                ", acteurId='" + acteurId + '\'' +
                 '}';
     }
 }

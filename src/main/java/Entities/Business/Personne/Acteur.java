@@ -1,7 +1,6 @@
 package Entities.Business.Personne;
 
 import Entities.Business.Film.Film;
-import Entities.Business.Role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,33 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+//@Table(name = "Acteur")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorValue("ACTEUR")
 public class Acteur extends Personne {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    private Long personnerId;
 
     @Column(name = "id_imdb")
     private String idImdb;
 
-
-
-    @Column(name ="taille")
+    @Column(name = "taille")
     private double taille;
 
-    // Many-to-Many relationship with Film
     @ManyToMany
     @JoinTable(
-            name = "Acteur_Film",
+            name = "Film_Acteur",
             joinColumns = @JoinColumn(name = "acteur_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id")
     )
     private List<Film> films = new ArrayList<>();
-
-    // One-to-Many relationship with Role
-    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Role> roles = new ArrayList<>();
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -48,28 +47,13 @@ public class Acteur extends Personne {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Acteur(String idImdb, String nom, String prenom, LocalDate dateNaissance) {
+    public Acteur(String nom, String prenom, LocalDate dateNaissance, double taille, String idImdb) {
         super.setNom(nom);
         super.setPrenom(prenom);
         super.setDateNaissance(dateNaissance);
+        this.taille = taille;
         this.idImdb = idImdb;
         this.createdDate = LocalDateTime.now();
-    }
-
-    public Long getIdActeur() {
-        return super.getId();
-    }
-
-    public void setIdActeur(Long id) {
-        super.setId(id);
-    }
-
-    public void setPersonne(Personne personne) {
-        this.setNom(personne.getNom());
-        this.setPrenom(personne.getPrenom());
-        this.setDateNaissance(personne.getDateNaissance());
-        this.setLieuNaissance(personne.getLieuNaissance());
-        this.setUrl(personne.getUrl());
     }
 
     @Override
@@ -100,13 +84,5 @@ public class Acteur extends Personne {
     @Override
     public void setDeleted(boolean deleted) {
         // Implement as needed
-    }
-
-    public double getTaille() {
-        return taille;
-    }
-
-    public void setTaille(double taille) {
-        this.taille = taille;
     }
 }

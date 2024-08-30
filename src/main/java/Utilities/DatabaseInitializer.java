@@ -119,14 +119,12 @@ public class DatabaseInitializer {
 
 
         // Populate Personne and Acteur tables
-        List<Personne> personnes = actorExtractor.extractPersonsFromCSV("src/main/resources/CSV/acteurs.csv");
-        iPersonneRepository.saveAll(personnes);
 
-        List<Acteur> acteurs = actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv", personnes);
-        iActeurRepository.saveAll(acteurs);
+        actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
+
 
         // Populate Role table
-        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv", iFilmRepository.findAll(), acteurs);
+        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
         iRoleRepository.saveAll(roles);
     }
 }

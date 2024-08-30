@@ -12,6 +12,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,15 +23,16 @@ import java.util.List;
 public class RoleExtractor {
 
     @Autowired
+    private IRoleRepository roleRepository;
+
+    @Autowired
     private IFilmRepository filmRepository;
 
     @Autowired
     private IActeurRepository acteurRepository;
 
-    @Autowired
-    private IRoleRepository roleRepository;
-
-    public List<Role> extractRolesFromCSV(String filePath, List<Film> films, List<Acteur> acteurs) {
+    @Transactional // Ensure each save operation is handled in its own transaction
+    public List<Role> extractRolesFromCSV(String filePath) {
         List<Role> roles = new ArrayList<>();
 
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
@@ -41,35 +43,29 @@ public class RoleExtractor {
             String[] line;
 
             while ((line = reader.readNext()) != null) {
-                try {
-                    String filmId = line[0].isEmpty() ? null : line[0].trim();
-                    String actorId = line[1].isEmpty() ? null : line[1].trim();
-                    String roleName = line[2].isEmpty() ? null : line[2].trim();
+                String filmId = line[0].isEmpty() ? null : line[0].trim();
+                String acteurId = line[1].isEmpty() ? null : line[1].trim();
+                String roleName = line[2].isEmpty() ? null : line[2].trim();
 
-                    // Compare IDs as strings, no parsing to Long
-                    Film film = films.stream()
-                            .filter(f -> f.getId().equals(filmId))
-                            .findFirst()
-                            .orElse(null);
+                // Check if Film and Acteur exist
+                Film film = filmRepository.findByImdb(filmId);
+                Acteur acteur = acteurRepository.findByImdb(acteurId);
 
-                    Acteur acteur = acteurs.stream()
-                            .filter(a -> a.getId().equals(actorId))
-                            .findFirst()
-                            .orElse(null);
+                if (film != null && acteur != null) {
+                    Role role = new Role();
+                    role.setRoleName(roleName);
+                    role.setFilmId(filmId);
+                    role.setActeurId(acteurId);
 
-                    if (film != null && acteur != null) {
-                        Role role = new Role();
-                        role.setRoleName(roleName);
-                        role.setIdbmacteur(actorId);
-                        role.setIdbmfilm(filmId);
-                        role.setFilm(film);
-                        role.setActor(acteur);
-
+                    try {
+                        roleRepository.save(role);
                         roles.add(role);
+                    } catch (Exception e) {
+                        System.err.println("Error saving role: " + roleName + " - " + e.getMessage());
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    System.err.println("Error processing line for role: " + (line.length > 2 ? line[2] : "Unknown") + " - " + e.getMessage());
-                    e.printStackTrace();
+                } else {
+                    System.err.println("Error: Film or Acteur not found for Role - Film ID: " + filmId + ", Acteur ID: " + acteurId);
                 }
             }
         } catch (IOException e) {

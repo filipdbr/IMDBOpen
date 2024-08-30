@@ -2,161 +2,78 @@ package Entities.Business.Personne;
 
 import Entities.Business.Film.Film;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.nio.MappedByteBuffer;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.*;
-
 @Entity
-@Table(name = "realisateur")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorValue("REALISATEUR")
 public class Realisateur extends Personne {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_realisateur")
-    private Long idRealisateur;
-
     @Column(name = "id_imdb")
-    private long idImdb;
+    private String idImdb;
 
-    @OneToMany(mappedBy = "realisateur", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Film> films;
+    @ManyToMany
+    @JoinTable(
+            name = "Film_Realisateur",
+            joinColumns = @JoinColumn(name = "realisateur_id"),
+            inverseJoinColumns = @JoinColumn(name = "film_id")
+    )
+    private List<Film> films = new ArrayList<>();
 
-    private LocalDateTime createdDate;
+    @Column(name = "created_date")
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Realisateur(String nom, String prenom, LocalDateTime datenaissance, long idRealisateur, long idImdb, LocalDateTime createdDate, LocalDateTime updatedDate){
+    public Realisateur(String nom, String prenom, LocalDate dateNaissance, String lieuNaissance, String url, String idImdb) {
         super.setNom(nom);
         super.setPrenom(prenom);
-        super.setDateNaissance(datenaissance);
-        this.idRealisateur = idRealisateur;
+        super.setDateNaissance(dateNaissance);
+        super.setLieuNaissance(lieuNaissance);
+        super.setUrl(url);
         this.idImdb = idImdb;
-        this.films = new ArrayList<>();
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
+        this.createdDate = LocalDateTime.now();
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public Long getId() {
-        return this.idRealisateur;
-    }
-
-    /**
-     * @param aLong
-     */
-    @Override
-    public void setId(Long aLong) {
-        this.idRealisateur = aLong;
-
-    }
-
-    /**
-     * @return
-     */
     @Override
     public LocalDateTime getCreatedDate() {
-        return this.createdDate;
+        return createdDate;
     }
 
-    /**
-     * @param createdDate
-     */
     @Override
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    /**
-     * @return
-     */
     @Override
     public LocalDateTime getUpdatedDate() {
-        return this.updatedDate;
+        return updatedDate;
     }
 
-    /**
-     * @param updatedDate
-     */
     @Override
     public void setUpdatedDate(LocalDateTime updatedDate) {
         this.updatedDate = updatedDate;
     }
 
-    /**
-     * @return
-     */
     @Override
     public boolean isDeleted() {
-        return false;
+        return false; // Modify as needed
     }
 
-    /**
-     * @param deleted
-     */
     @Override
     public void setDeleted(boolean deleted) {
+        // Implement as needed
     }
-
-    /**
-     * @return
-     */
-    @Override
-    public String getNom() {
-        return super.getNom();
-    }
-
-    /**
-     * @param nom
-     */
-    @Override
-    public void setNom(String nom) {
-        super.setNom(nom);
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public String getPrenom() {
-        return super.getPrenom();
-    }
-
-    /**
-     * @param prenom
-     */
-    @Override
-    public void setPrenom(String prenom) {
-        super.setPrenom(prenom);
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public LocalDateTime getDateNaissance() {
-        return super.getDateNaissance();
-    }
-
-    /**
-     * @param dateNaissance
-     */
-    @Override
-    public void setDateNaissance(LocalDateTime dateNaissance) {
-        super.setDateNaissance(dateNaissance);
-    }
-
-
-
 }

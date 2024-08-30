@@ -2,18 +2,17 @@ package Service;
 
 import Entities.Business.Personne.Realisateur;
 import Persistence.Repository.IRealisateurRepository;
+import Web.Model.DTO.RealisateurDTO;
+import Exceptions.EntityNotFoundException;
+import Exceptions.InvalidDataException;
+import Exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * Service class for managing Realisateur entities.
- *
- * This class provides methods to interact with RealisateurRepository and
- * includes business logic related to Realisateur.
- */
 @Service
 public class RealisateurService {
 
@@ -24,116 +23,83 @@ public class RealisateurService {
         this.realisateurRepository = realisateurRepository;
     }
 
-    /**
-     * Find all realisateurs.
-     *
-     * @return A list of all realisateurs.
-     */
-    public List<Realisateur> findAll() {
-        return realisateurRepository.findAll();
+    public List<RealisateurDTO> findAll() {
+        return realisateurRepository.findAll().stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Find a realisateur by ID.
-     *
-     * @param id The ID of the realisateur.
-     * @return An Optional containing the realisateur if found, or empty if not.
-     */
-    public Optional<Realisateur> findById(Long id) {
-        return realisateurRepository.findById(id);
+    public Optional<RealisateurDTO> findById(Long id) {
+        return realisateurRepository.findById(id)
+                .map(RealisateurDTO::fromEntity)
+                .or(() -> {
+                    throw new EntityNotFoundException("Realisateur not found with ID: " + id);
+                });
     }
 
-    /**
-     * Find realisateurs by IMDB ID.
-     *
-     * @param idImdb The IMDB ID of the realisateur.
-     * @return A list of realisateurs with the given IMDB ID.
-     */
-    public List<Realisateur> findByIdImdb(long idImdb) {
-        return realisateurRepository.findByIdImdb(idImdb);
+    public List<RealisateurDTO> findByIdImdb(String idImdb) {
+        return realisateurRepository.findByIdImdb(idImdb).stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Save a realisateur.
-     *
-     * @param realisateur The realisateur entity to save.
-     * @return The saved realisateur entity.
-     */
-    public Realisateur save(Realisateur realisateur) {
-        return realisateurRepository.save(realisateur);
-    }
-
-    /**
-     * Update an existing realisateur.
-     *
-     * @param realisateur The realisateur entity with updated information.
-     * @return The updated realisateur entity.
-     */
-    public Realisateur update(Realisateur realisateur) {
-        if (realisateurRepository.existsById(realisateur.getIdRealisateur())) {
-            return realisateurRepository.save(realisateur);
-        } else {
-            throw new IllegalArgumentException("Realisateur not found with ID: " + realisateur.getIdRealisateur());
+    public RealisateurDTO save(RealisateurDTO realisateurDTO) {
+        try {
+            Realisateur realisateur = realisateurDTO.toEntity();
+            return RealisateurDTO.fromEntity(realisateurRepository.save(realisateur));
+        } catch (Exception e) {
+            throw new ServiceException("Failed to save Realisateur: " + e.getMessage());
         }
     }
 
-    /**
-     * Delete a realisateur by ID.
-     *
-     * @param id The ID of the realisateur to delete.
-     */
+    public RealisateurDTO update(RealisateurDTO realisateurDTO) {
+        if (realisateurRepository.existsById(realisateurDTO.getId())) {
+            try {
+                Realisateur realisateur = realisateurDTO.toEntity();
+                return RealisateurDTO.fromEntity(realisateurRepository.save(realisateur));
+            } catch (Exception e) {
+                throw new ServiceException("Failed to update Realisateur: " + e.getMessage());
+            }
+        } else {
+            throw new EntityNotFoundException("Realisateur not found with ID: " + realisateurDTO.getId());
+        }
+    }
+
     public void deleteById(Long id) {
-        realisateurRepository.deleteById(id);
+        if (realisateurRepository.existsById(id)) {
+            realisateurRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Realisateur not found with ID: " + id);
+        }
     }
 
-    /**
-     * Find realisateurs by last name.
-     *
-     * @param nom The last name of the realisateur.
-     * @return A list of realisateurs with the given last name.
-     */
-    public List<Realisateur> findByNom(String nom) {
-        return realisateurRepository.findByNom(nom);
+    public List<RealisateurDTO> findByNom(String nom) {
+        return realisateurRepository.findByNom(nom).stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Find realisateurs by first name.
-     *
-     * @param prenom The first name of the realisateur.
-     * @return A list of realisateurs with the given first name.
-     */
-    public List<Realisateur> findByPrenom(String prenom) {
-        return realisateurRepository.findByPrenom(prenom);
+    public List<RealisateurDTO> findByPrenom(String prenom) {
+        return realisateurRepository.findByPrenom(prenom).stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Find realisateurs by last name and first name.
-     *
-     * @param nom The last name of the realisateur.
-     * @param prenom The first name of the realisateur.
-     * @return A list of realisateurs with the given last name and first name.
-     */
-    public List<Realisateur> findByNomAndPrenom(String nom, String prenom) {
-        return realisateurRepository.findByNomAndPrenom(nom, prenom);
+    public List<RealisateurDTO> findByNomAndPrenom(String nom, String prenom) {
+        return realisateurRepository.findByNomAndPrenom(nom, prenom).stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Find realisateurs by partial match of last name.
-     *
-     * @param partialNom The partial last name of the realisateur.
-     * @return A list of realisateurs with last names containing the given partial name.
-     */
-    public List<Realisateur> findByNomContaining(String partialNom) {
-        return realisateurRepository.findByNomContaining(partialNom);
+    public List<RealisateurDTO> findByNomContaining(String partialNom) {
+        return realisateurRepository.findByNomContaining(partialNom).stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Find realisateurs by partial match of first name.
-     *
-     * @param partialPrenom The partial first name of the realisateur.
-     * @return A list of realisateurs with first names containing the given partial name.
-     */
-    public List<Realisateur> findByPrenomContaining(String partialPrenom) {
-        return realisateurRepository.findByPrenomContaining(partialPrenom);
+    public List<RealisateurDTO> findByPrenomContaining(String partialPrenom) {
+        return realisateurRepository.findByPrenomContaining(partialPrenom).stream()
+                .map(RealisateurDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 }

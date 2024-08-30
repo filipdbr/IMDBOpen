@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
 
@@ -38,7 +39,7 @@ public interface IRealisateurRepository extends JpaRepository<Realisateur, Long>
 
      */
 
-    List<Realisateur> findByIdImdb(long idImdb);
+    List<Realisateur> findByIdImdb(String idImdb);
 
     /**
 
@@ -111,6 +112,8 @@ public interface IRealisateurRepository extends JpaRepository<Realisateur, Long>
      */
 
     List<Realisateur> findByPrenomContaining(String partialPrenom);
+
+
 
 }
 

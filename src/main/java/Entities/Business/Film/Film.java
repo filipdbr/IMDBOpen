@@ -2,6 +2,7 @@ package Entities.Business.Film;
 
 import Entities.Business.Pays.Pays;
 import Entities.Business.Personne.Acteur;
+import Entities.Business.Personne.Realisateur;
 import Entities.Business.Role.Role;
 import Entities.Generic.IEntity;
 import jakarta.persistence.*;
@@ -60,13 +61,18 @@ public class Film implements IEntity<Long> {
 
     @Column(name = "resume", columnDefinition = "TEXT")
     @NotBlank(message = "Resume cannot be blank")
-
     private String resume;
 
-    @Column(name = "id_pays")
-    private String pays;
+    @ManyToOne
+    @JoinColumn(name = "id_pays")
+    private Pays pays;
 
-    @ManyToMany(mappedBy = "films")
+    @ManyToMany
+    @JoinTable(
+            name = "Film_Acteur",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "acteur_id")
+    )
     private List<Acteur> acteurs = new ArrayList<>();
 
     @ManyToMany
@@ -75,18 +81,15 @@ public class Film implements IEntity<Long> {
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private List<Genre> genres;
+    private List<Genre> genres = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
-            name = "Film_Pays",
+            name = "Film_Realisateur",
             joinColumns = @JoinColumn(name = "film_id"),
-            inverseJoinColumns = @JoinColumn(name = "pays_id")
+            inverseJoinColumns = @JoinColumn(name = "realisateur_id")
     )
-    private List<Pays> paysList;
-
-    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Role> roles = new ArrayList<>();
+    private List<Realisateur> realisateurs = new ArrayList<>();
 
     @Override
     @Transient

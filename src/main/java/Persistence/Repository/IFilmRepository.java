@@ -26,7 +26,7 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     List<Film> findByRatingGreaterThanEqual(@NotBlank(message = "Rating cannot be blank") @Size(max = 4, message = "Rating should not exceed 4 characters") String rating);
 
     // Find films by country name (assuming 'paysList' contains 'Pays' entities)
-    @Query("SELECT f FROM Film f JOIN f.paysList p WHERE p.name = :paysName")
+    @Query("SELECT f FROM Film f WHERE f.pays.name = :paysName")
     List<Film> findByPaysName(@Param("paysName") String paysName);
 
     // Find films by genre name (assuming 'genres' contains 'Genre' entities)
@@ -40,11 +40,12 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     List<Film> findByLieuTourContainingIgnoreCase(String lieuTour);
 
     // Custom query to find films with multiple filters and sorting
-    @Query("SELECT f FROM Film f WHERE "
+    @Query("SELECT f FROM Film f "
+            + "WHERE "
             + "(:nom IS NULL OR LOWER(f.nom) LIKE LOWER(CONCAT('%', :nom, '%'))) AND "
             + "(:annee IS NULL OR f.annee = :annee) AND "
             + "(:rating IS NULL OR f.rating >= :rating) AND "
-            + "(:paysName IS NULL OR EXISTS (SELECT 1 FROM f.paysList p WHERE p.name = :paysName)) AND "
+            + "(:paysName IS NULL OR f.pays.name = :paysName) AND "
             + "(:genreName IS NULL OR EXISTS (SELECT 1 FROM f.genres g WHERE g.name = :genreName)) "
             + "ORDER BY "
             + "CASE WHEN :sortBy = 'nom' THEN f.nom END ASC, "

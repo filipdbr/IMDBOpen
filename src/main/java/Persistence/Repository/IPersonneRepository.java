@@ -4,8 +4,10 @@ import Entities.Business.Personne.Personne;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IPersonneRepository extends JpaRepository<Personne, Long> {
@@ -27,4 +29,6 @@ public interface IPersonneRepository extends JpaRepository<Personne, Long> {
 
     // Find All Personnes Ordered by Nom (Reverse Alphabetical Order)
     List<Personne> findAllByOrderByNomDesc();
+    // Method to find a Personne by nom, prenom, and dateNaissance
+   Optional<Personne> findByNomAndPrenomAndDateNaissance(String nom, String prenom, LocalDate dateNaissance);
 }

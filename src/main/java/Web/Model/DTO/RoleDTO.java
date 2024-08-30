@@ -2,50 +2,27 @@ package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
-import Entities.Business.Personne.Personne;
 import Entities.Business.Role.Role;
 
 public class RoleDTO {
 
     private Long id;
     private String roleName;
-    private Film film;
-    private Acteur actor;
-    private String idbmacteur;
-
-
-
-    private String idbmfilm;
+    private String filmId; // Use String for the foreign key ID
+    private String acteurId; // Use String for the foreign key ID
 
     // Default constructor
     public RoleDTO() {}
 
     // Parameterized constructor
-    public RoleDTO(Long id, String roleName, Film film, Acteur actor, String idbmacteur, String idbmfilm) {
+    public RoleDTO(Long id, String roleName, String filmId, String acteurId) {
         this.id = id;
         this.roleName = roleName;
-        this.film = film;
-        this.actor = actor;
-        this.idbmfilm = idbmfilm;
-        this.idbmacteur = idbmacteur;
+        this.filmId = filmId;
+        this.acteurId = acteurId;
     }
 
     // Getters and Setters
-    public String getIdbmfilm() {
-        return idbmfilm;
-    }
-
-    public void setIdbmfilm(String idbmfilm) {
-        this.idbmfilm = idbmfilm;
-    }
-
-    public String getIdbmacteur() {
-        return idbmacteur;
-    }
-
-    public void setIdbmacteur(String idbmacteur) {
-        this.idbmacteur = idbmacteur;
-    }
     public Long getId() {
         return id;
     }
@@ -62,20 +39,20 @@ public class RoleDTO {
         this.roleName = roleName;
     }
 
-    public Film getFilm() {
-        return film;
+    public String getFilmId() {
+        return filmId;
     }
 
-    public void setFilm(Film film) {
-        this.film = film;
+    public void setFilmId(String filmId) {
+        this.filmId = filmId;
     }
 
-    public Acteur getActor() {
-        return actor;
+    public String getActeurId() {
+        return acteurId;
     }
 
-    public void setActor(Acteur actor) {
-        this.actor = actor;
+    public void setActeurId(String acteurId) {
+        this.acteurId = acteurId;
     }
 
     // Static method to convert a Role entity to a RoleDTO
@@ -83,10 +60,8 @@ public class RoleDTO {
         return new RoleDTO(
                 role.getId(),
                 role.getRoleName(),
-                role.getImdb(),
-                role.getid_imdb(),
-                role.getIdbmacteur(),
-                role.getIdbmfilm()
+                role.getFilmId(),
+                role.getActeurId()
         );
     }
 
@@ -95,10 +70,8 @@ public class RoleDTO {
         Role role = new Role();
         role.setId(this.id);
         role.setRoleName(this.roleName);
-        role.setFilm(this.film);
-        role.setActor(this.actor);
-        role.setIdbmfilm(this.idbmfilm);
-        role.setIdbmacteur(this.idbmacteur);
+        role.setFilmId(this.filmId);
+        role.setActeurId(this.acteurId);
         return role;
     }
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "personne")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "personne_type")
 public class Personne implements IPersonne<Long> {
 

@@ -35,16 +35,6 @@ public class RoleService {
                     .filter(role -> role.getRoleName().toLowerCase().contains(roleName.toLowerCase()))
                     .collect(Collectors.toList());
         }
-        if (filmId != null) {
-            roles = roles.stream()
-                    .filter(role -> role.getFilm().getId().equals(filmId))
-                    .collect(Collectors.toList());
-        }
-        if (actorId != null) {
-            roles = roles.stream()
-                    .filter(role -> role.getActor().equals(actorId))
-                    .collect(Collectors.toList());
-        }
 
         if (roles.isEmpty()) {
             throw new EntityNotFoundException("No roles found matching the criteria");
@@ -97,8 +87,7 @@ public class RoleService {
                 new EntityNotFoundException("Role not found with ID: " + id));
 
         existingRole.setRoleName(roleDTO.getRoleName());
-        existingRole.setFilm(roleDTO.getFilm());  // Assuming the DTO contains a Film object or FilmDTO
-        existingRole.setActor(roleDTO.getActor());  // Assuming the DTO contains an Actor object or ActorDTO
+
 
         Role updatedRole = roleRepository.save(existingRole);
         return RoleDTO.fromEntity(updatedRole);
