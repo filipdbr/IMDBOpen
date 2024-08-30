@@ -80,12 +80,23 @@ public class FilmService {
         return ascending ? comparison : -comparison;
     }
 
-    public List<FilmDTO> findFilmsByImdb(String imdb) {
-        List<Film> films = filmRepository.findByImdb(imdb);
-        if (films.isEmpty()) {
-            throw new EntityNotFoundException("No films found with IMDb ID: " + imdb);
+    /**
+     * Finds a film by its IMDb ID and converts it to FilmDTO.
+     *
+     * @param imdb the IMDb ID of the film
+     * @return the FilmDTO object if found
+     * @throws EntityNotFoundException if no film is found with the given IMDb ID
+     */
+    public FilmDTO findFilmByImdb(String imdb) {
+        Film film = filmRepository.findByImdb(imdb);
+
+        // If film is not found, throw an exception
+        if (film == null) {
+            throw new EntityNotFoundException("No film found with IMDb ID: " + imdb);
         }
-        return films.stream().map(FilmDTO::fromEntity).collect(Collectors.toList());
+
+        // Convert Film entity to FilmDTO
+        return FilmDTO.fromEntity(film);
     }
 
     public List<FilmDTO> findFilmsByName(String nom) {
@@ -156,5 +167,8 @@ public class FilmService {
     public void save(Film film) {
         filmRepository.saveAndFlush(film);
     }
+
+
+
 
 }

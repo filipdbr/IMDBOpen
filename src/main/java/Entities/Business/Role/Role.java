@@ -12,10 +12,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-
     @Column(name = "film" )
     private String idbmfilm;
+
     @Column(name = "acteur")
     private String idbmacteur;
 
@@ -38,7 +37,7 @@ public class Role {
         this.roleName = roleName;
         this.film = film;
         this.actor = actor;
-        this.idbmacteur= idbmacteur;
+        this.idbmacteur = idbmacteur;
         this.idbmfilm = idbmfilm;
     }
 
@@ -46,6 +45,11 @@ public class Role {
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getIdbmacteur() {
         return idbmacteur;
     }
@@ -62,10 +66,6 @@ public class Role {
         this.idbmfilm = idbmfilm;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getRoleName() {
         return roleName;
     }
@@ -74,16 +74,16 @@ public class Role {
         this.roleName = roleName;
     }
 
-    public Film getImdb() {
-        return getImdb();
+    public Film getFilm() {
+        return film;
     }
 
     public void setFilm(Film film) {
         this.film = film;
     }
 
-    public Acteur getid_imdb() {
-        return getid_imdb();
+    public Acteur getActor() {
+        return actor;
     }
 
     public void setActor(Acteur actor) {
@@ -95,8 +95,8 @@ public class Role {
         return "Role{" +
                 "id=" + id +
                 ", roleName='" + roleName + '\'' +
-                ", film=" + getImdb() +
-                ", actor=" + getid_imdb() +
+                ", film=" + film +
+                ", actor=" + actor +
                 '}';
     }
 }

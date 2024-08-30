@@ -46,13 +46,14 @@ public class RoleExtractor {
                     String actorId = line[1].isEmpty() ? null : line[1].trim();
                     String roleName = line[2].isEmpty() ? null : line[2].trim();
 
+                    // Compare IDs as strings, no parsing to Long
                     Film film = films.stream()
-                            .filter(f -> f.getId().equals(Long.parseLong(filmId)))
+                            .filter(f -> f.getId().equals(filmId))
                             .findFirst()
                             .orElse(null);
 
                     Acteur acteur = acteurs.stream()
-                            .filter(a -> a.getId().equals(Long.parseLong(actorId)))
+                            .filter(a -> a.getId().equals(actorId))
                             .findFirst()
                             .orElse(null);
 
@@ -67,7 +68,7 @@ public class RoleExtractor {
                         roles.add(role);
                     }
                 } catch (Exception e) {
-                    System.err.println("Error processing line for role: " + (line.length > 1 ? line[2] : "Unknown") + " - " + e.getMessage());
+                    System.err.println("Error processing line for role: " + (line.length > 2 ? line[2] : "Unknown") + " - " + e.getMessage());
                     e.printStackTrace();
                 }
             }
