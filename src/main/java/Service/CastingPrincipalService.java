@@ -7,12 +7,14 @@ import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Exceptions.ServiceException;
 import Persistence.Repository.ICastingPrincipalRepository;
+import Web.Model.DTO.CastingPrincipalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CastingPrincipalService {
@@ -24,12 +26,14 @@ public class CastingPrincipalService {
         this.castingPrincipalRepository = castingPrincipalRepository;
     }
 
-    public List<CastingPrincipal> getCastingByFilm(Film film) {
+    public List<CastingPrincipalDTO> getCastingByFilm(Film film) {
         try {
             if (film == null) {
                 throw new InvalidDataException("Film cannot be null");
             }
-            return castingPrincipalRepository.findByFilm(film);
+            return castingPrincipalRepository.findByFilm(film).stream()
+                    .map(CastingPrincipalDTO::fromEntity)
+                    .collect(Collectors.toList());
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
@@ -37,12 +41,14 @@ public class CastingPrincipalService {
         }
     }
 
-    public List<CastingPrincipal> getCastingByActeur(Acteur acteur) {
+    public List<CastingPrincipalDTO> getCastingByActeur(Acteur acteur) {
         try {
             if (acteur == null) {
                 throw new InvalidDataException("Actor cannot be null");
             }
-            return castingPrincipalRepository.findByActeur(acteur);
+            return castingPrincipalRepository.findByActeur(acteur).stream()
+                    .map(CastingPrincipalDTO::fromEntity)
+                    .collect(Collectors.toList());
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
@@ -50,13 +56,14 @@ public class CastingPrincipalService {
         }
     }
 
-    public CastingPrincipal getCastingByFilmAndActeur(Film film, Acteur acteur) {
+    public CastingPrincipalDTO getCastingByFilmAndActeur(Film film, Acteur acteur) {
         try {
             if (film == null || acteur == null) {
                 throw new InvalidDataException("Film and Actor cannot be null");
             }
-            return castingPrincipalRepository.findByFilmAndActeur(film, acteur)
+            CastingPrincipal casting = castingPrincipalRepository.findByFilmAndActeur(film, acteur)
                     .orElseThrow(() -> new EntityNotFoundException("Casting not found for the provided film and actor"));
+            return CastingPrincipalDTO.fromEntity(casting);
         } catch (EntityNotFoundException | InvalidDataException e) {
             throw e;
         } catch (Exception e) {
@@ -64,12 +71,14 @@ public class CastingPrincipalService {
         }
     }
 
-    public List<CastingPrincipal> getCastingByCreatedDate(LocalDateTime createdDate) {
+    public List<CastingPrincipalDTO> getCastingByCreatedDate(LocalDateTime createdDate) {
         try {
             if (createdDate == null) {
                 throw new InvalidDataException("Created date cannot be null");
             }
-            return castingPrincipalRepository.findByCreatedDate(createdDate);
+            return castingPrincipalRepository.findByCreatedDate(createdDate).stream()
+                    .map(CastingPrincipalDTO::fromEntity)
+                    .collect(Collectors.toList());
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
@@ -77,12 +86,14 @@ public class CastingPrincipalService {
         }
     }
 
-    public List<CastingPrincipal> getCastingByUpdatedDate(LocalDateTime updatedDate) {
+    public List<CastingPrincipalDTO> getCastingByUpdatedDate(LocalDateTime updatedDate) {
         try {
             if (updatedDate == null) {
                 throw new InvalidDataException("Updated date cannot be null");
             }
-            return castingPrincipalRepository.findByUpdatedDate(updatedDate);
+            return castingPrincipalRepository.findByUpdatedDate(updatedDate).stream()
+                    .map(CastingPrincipalDTO::fromEntity)
+                    .collect(Collectors.toList());
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
@@ -90,8 +101,9 @@ public class CastingPrincipalService {
         }
     }
 
-    public void createCasting(CastingPrincipal castingPrincipal) {
+    public void createCasting(CastingPrincipalDTO castingPrincipalDTO) {
         try {
+            CastingPrincipal castingPrincipal = CastingPrincipalDTO.toEntity(castingPrincipalDTO);
             if (castingPrincipal.getFilm() == null || castingPrincipal.getActeur() == null) {
                 throw new InvalidDataException("Film and Actor are required to create a casting");
             }
@@ -105,8 +117,9 @@ public class CastingPrincipalService {
         }
     }
 
-    public void updateCasting(Long id, CastingPrincipal updatedCasting) {
+    public void updateCasting(Long id, CastingPrincipalDTO updatedCastingDTO) {
         try {
+            CastingPrincipal updatedCasting = CastingPrincipalDTO.toEntity(updatedCastingDTO);
             if (updatedCasting.getFilm() == null || updatedCasting.getActeur() == null) {
                 throw new InvalidDataException("Film and Actor are required to update casting");
             }

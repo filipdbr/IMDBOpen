@@ -6,6 +6,7 @@ import Entities.Business.Personne.Acteur;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Service.CastingPrincipalService;
+import Web.Model.DTO.CastingPrincipalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class CastingPrincipalController {
     @PostMapping
     public ResponseEntity<CastingPrincipal> createCastingPrincipal(@RequestBody CastingPrincipal castingPrincipal) {
         try {
-            castingPrincipalService.createCasting(castingPrincipal);
+            castingPrincipalService.createCasting(CastingPrincipalDTO.fromEntity(castingPrincipal));
             return ResponseEntity.status(HttpStatus.CREATED).body(castingPrincipal);
         } catch (InvalidDataException e) {
             return ResponseEntity.badRequest().body(null);
@@ -51,7 +52,7 @@ public class CastingPrincipalController {
     @PutMapping("/{id}")
     public ResponseEntity<CastingPrincipal> updateCastingPrincipal(@PathVariable Long id, @RequestBody CastingPrincipal updatedCasting) {
         try {
-            castingPrincipalService.updateCasting(id, updatedCasting);
+            castingPrincipalService.updateCasting(id, CastingPrincipalDTO.fromEntity(updatedCasting));
             return ResponseEntity.ok(updatedCasting);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -64,18 +65,19 @@ public class CastingPrincipalController {
 
     /**
      * Get a CastingPrincipal entity by film and actor.
-     * @param filmId The ID of the film.
+     *
+     * @param filmId   The ID of the film.
      * @param acteurId The ID of the actor.
      * @return The CastingPrincipal entity.
      */
     @GetMapping("/film/{filmId}/actor/{acteurId}")
-    public ResponseEntity<CastingPrincipal> getCastingPrincipalByFilmAndActor(@PathVariable Long filmId, @PathVariable Long acteurId) {
+    public ResponseEntity<CastingPrincipalDTO> getCastingPrincipalByFilmAndActor(@PathVariable Long filmId, @PathVariable Long acteurId) {
         try {
             Film film = new Film();
             film.setId(filmId);
             Acteur acteur = new Acteur();
             acteur.setId(acteurId);
-            CastingPrincipal castingPrincipal = castingPrincipalService.getCastingByFilmAndActeur(film, acteur);
+            CastingPrincipalDTO castingPrincipal = castingPrincipalService.getCastingByFilmAndActeur(film, acteur);
             return ResponseEntity.ok(castingPrincipal);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -112,13 +114,14 @@ public class CastingPrincipalController {
 
     /**
      * Get all CastingPrincipal entities created after a specific date.
+     *
      * @param date The date after which CastingPrincipal entities were created.
      * @return A list of CastingPrincipal entities.
      */
     @GetMapping("/created-after")
-    public ResponseEntity<List<CastingPrincipal>> getCastingPrincipalsCreatedAfter(@RequestParam("date") LocalDateTime date) {
+    public ResponseEntity<List<CastingPrincipalDTO>> getCastingPrincipalsCreatedAfter(@RequestParam("date") LocalDateTime date) {
         try {
-            List<CastingPrincipal> castingPrincipals = castingPrincipalService.getCastingByCreatedDate(date);
+            List<CastingPrincipalDTO> castingPrincipals = castingPrincipalService.getCastingByCreatedDate(date);
             return ResponseEntity.ok(castingPrincipals);
         } catch (InvalidDataException e) {
             return ResponseEntity.badRequest().body(null);
@@ -129,13 +132,14 @@ public class CastingPrincipalController {
 
     /**
      * Get all CastingPrincipal entities updated before a specific date.
+     *
      * @param date The date before which CastingPrincipal entities were updated.
      * @return A list of CastingPrincipal entities.
      */
     @GetMapping("/updated-before")
-    public ResponseEntity<List<CastingPrincipal>> getCastingPrincipalsUpdatedBefore(@RequestParam("date") LocalDateTime date) {
+    public ResponseEntity<List<CastingPrincipalDTO>> getCastingPrincipalsUpdatedBefore(@RequestParam("date") LocalDateTime date) {
         try {
-            List<CastingPrincipal> castingPrincipals = castingPrincipalService.getCastingByUpdatedDate(date);
+            List<CastingPrincipalDTO> castingPrincipals = castingPrincipalService.getCastingByUpdatedDate(date);
             return ResponseEntity.ok(castingPrincipals);
         } catch (InvalidDataException e) {
             return ResponseEntity.badRequest().body(null);
