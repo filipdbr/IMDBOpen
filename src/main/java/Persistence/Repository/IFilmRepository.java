@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -13,7 +15,7 @@ import jakarta.validation.constraints.Size;
 public interface IFilmRepository extends JpaRepository<Film, Long> {
 
     // Find films by IMDb ID
-    Film findByImdb(String imdb);
+    Optional<Film> findByImdb(String imdb);
 
 
     // Find films by name (partial match, case insensitive)

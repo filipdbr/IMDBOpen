@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IRoleRepository extends JpaRepository<Role, Long> {
@@ -76,8 +77,7 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param roleName The name of the role.
      * @return A list of roles associated with the given film ID, actor ID, and role name.
      */
-    @Query("SELECT r FROM Role r WHERE r.filmId = :filmId AND r.acteurId = :actorId AND r.roleName = :roleName")
-    List<Role> findByFilmIdAndActorIdAndRoleName(@Param("filmId") String filmId, @Param("actorId") String actorId, @Param("roleName") String roleName);
+
 
     /**
      * Find roles by the role's name with partial match.
@@ -87,4 +87,10 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      */
     @Query("SELECT r FROM Role r WHERE LOWER(r.roleName) LIKE LOWER(CONCAT('%', :partialRoleName, '%'))")
     List<Role> findByRoleNameContaining(@Param("partialRoleName") String partialRoleName);
+    @Query("SELECT r FROM Role r WHERE r.filmId = :filmId AND r.acteurId = :acteurId AND r.roleName = :roleName")
+    Optional<Role> findRoleByFilmIdAndActeurIdAndRoleName(
+            @Param("filmId") String filmId,
+            @Param("acteurId") String acteurId,
+            @Param("roleName") String roleName
+    );
 }

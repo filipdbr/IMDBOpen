@@ -18,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class RoleExtractor {
@@ -47,22 +48,28 @@ public class RoleExtractor {
                 String acteurId = line[1].isEmpty() ? null : line[1].trim();
                 String roleName = line[2].isEmpty() ? null : line[2].trim();
 
-                // Check if Film and Acteur exist
-                Film film = filmRepository.findByImdb(filmId);
-                Acteur acteur = acteurRepository.findByImdb(acteurId);
+                // Use Optional to handle the potential absence of Film and Acteur
+                Optional<Film> optionalFilm = filmRepository.findByImdb(filmId);
+                Optional<Acteur> optionalActeur = acteurRepository.findByImdb(acteurId);
 
-                if (film != null && acteur != null) {
+                if (optionalFilm.isPresent() && optionalActeur.isPresent()) {
                     Role role = new Role();
                     role.setRoleName(roleName);
-                    role.setFilmId(filmId);
-                    role.setActeurId(acteurId);
+                    role.setFilmId(filmId); // Set filmId directly
+                    role.setActeurId(acteurId); // Set acteurId directly
 
-                    try {
-                        roleRepository.save(role);
-                        roles.add(role);
-                    } catch (Exception e) {
-                        System.err.println("Error saving role: " + roleName + " - " + e.getMessage());
-                        e.printStackTrace();
+                    // Check for duplicates before saving
+                    Optional<Role> existingRole = roleRepository.findRoleByFilmIdAndActeurIdAndRoleName(filmId, acteurId, roleName);
+                    if (existingRole.isEmpty()) {
+                        try {
+                            roleRepository.save(role);
+                            roles.add(role);
+                        } catch (Exception e) {
+                            System.err.println("Error saving role: " + roleName + " - " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("Role already exists - Film ID: " + filmId + ", Actor ID: " + acteurId + ", Role Name: " + roleName);
                     }
                 } else {
                     System.err.println("Error: Film or Acteur not found for Role - Film ID: " + filmId + ", Acteur ID: " + acteurId);

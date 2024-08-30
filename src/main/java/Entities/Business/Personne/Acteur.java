@@ -25,8 +25,6 @@ public class Acteur extends Personne {
     @Column(name = "id")
     private Long id;
 
-    private Long personnerId;
-
     @Column(name = "id_imdb")
     private String idImdb;
 

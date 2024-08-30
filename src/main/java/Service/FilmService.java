@@ -92,11 +92,11 @@ public class FilmService {
      * @throws EntityNotFoundException if no film is found with the given IMDb ID
      */
     public Optional<FilmDTO> findFilmByImdb(String imdb) {
-        Film film = filmRepository.findByImdb(imdb);
+        // Find the film using the repository method, which returns an Optional<Film>
+        Optional<Film> filmOptional = filmRepository.findByImdb(imdb);
 
         // Convert Film entity to FilmDTO if film is found, otherwise return Optional.empty()
-        return Optional.ofNullable(film)
-                .map(FilmDTO::fromEntity);
+        return filmOptional.map(FilmDTO::fromEntity);
     }
 
     public List<FilmDTO> findFilmsByName(String nom) {

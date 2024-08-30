@@ -34,5 +34,5 @@ public interface IActeurRepository extends JpaRepository<Acteur, Long> {
     Optional<Acteur> findById(Long id);
 
     @Query("SELECT a FROM Acteur a WHERE a.idImdb = :imdb")
-    Acteur findByImdb(@Param("imdb") String imdb);
+    Optional<Acteur> findByImdb(@Param("imdb") String imdb);
 }
