@@ -3,6 +3,8 @@ package Utilities.CSVExtractors;
 import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Role.Role;
+import Persistence.Repository.IActeurRepository;
+import Persistence.Repository.IFilmRepository;
 import Persistence.Repository.IRoleRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;

@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class FilmExtractor {
@@ -26,6 +28,8 @@ public class FilmExtractor {
 
     @Autowired
     private PaysService paysService;  // Assuming you need this service
+    @Autowired
+    private GenreService genreService;
 
     public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))

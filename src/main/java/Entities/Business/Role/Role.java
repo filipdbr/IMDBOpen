@@ -23,8 +23,8 @@ public class Role {
 
     @Setter
     @Getter
-    @Column(name = "actor_imdb")
-    private String actorImdb;
+    @Column(name = "role_name")
+    private String roleName;
 
     // Default constructor
     public Role() {}
