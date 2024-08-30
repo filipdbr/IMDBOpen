@@ -4,7 +4,6 @@ import Entities.Business.Film.Film;
 import Entities.Business.Pays.Pays;
 import Service.FilmService;
 import Service.PaysService;
-
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -21,8 +20,6 @@ public class FilmExtractor {
     @Autowired
     private FilmService filmService;
 
-    @Autowired
-    private PaysService paysService;
 
     public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
