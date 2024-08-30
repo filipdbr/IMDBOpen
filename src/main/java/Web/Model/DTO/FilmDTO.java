@@ -1,20 +1,25 @@
 package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Film.Genre;
+import Entities.Business.Pays.Pays;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class FilmDTO {
     private Long id;
     private String imdb;
     private String nom;
-    private int annee;
-    private double rating;
+    private String annee;
+    private String rating;
     private String url;
     private String lieuTour;
     private String langue;
     private String resume;
     private String pays;
+    private List<Genre> genres;
 
     public static FilmDTO fromEntity(Film film) {
         FilmDTO dto = new FilmDTO();
@@ -28,6 +33,7 @@ public class FilmDTO {
         dto.setLangue(film.getLangue());
         dto.setResume(film.getResume());
         dto.setPays(film.getPays());
+        dto.setGenres(film.getGenres());
         return dto;
     }
 
@@ -42,7 +48,8 @@ public class FilmDTO {
         film.setLieuTour(this.lieuTour);
         film.setLangue(this.langue);
         film.setResume(this.resume);
-        film.setPays(this.pays);
+        film.setPays(String.valueOf(this.pays));
+        film.setGenres(this.getGenres());
         return film;
     }
 }

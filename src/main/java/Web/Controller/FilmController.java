@@ -1,5 +1,6 @@
 package Web.Controller;
 
+import Entities.Business.Film.Film;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Service.FilmService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/films")
+@RequestMapping("api/films")
 public class FilmController {
 
     @Autowired
@@ -23,8 +24,8 @@ public class FilmController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<FilmDTO>>> searchFilms(
             @RequestParam(required = false) String nom,
-            @RequestParam(required = false) Integer annee,
-            @RequestParam(required = false) Double rating,
+            @RequestParam(required = false) String annee,
+            @RequestParam(required = false) String rating,
             @RequestParam(required = false) String paysName,
             @RequestParam(required = false) String genreName,
             @RequestParam(required = false) String sortBy
@@ -41,20 +42,24 @@ public class FilmController {
     }
 
     @GetMapping("/imdb/{imdb}")
-    public ResponseEntity<ApiResponse<List<FilmDTO>>> getFilmsByImdb(@PathVariable String imdb) {
+    public ResponseEntity<ApiResponse<FilmDTO>> getFilmByImdb(@PathVariable String imdb) {
         try {
-            List<FilmDTO> films = filmService.findFilmsByImdb(imdb);
-            if (films.isEmpty()) {
-                throw new EntityNotFoundException("No films found with IMDb ID: " + imdb);
+            FilmDTO film = filmService.findFilmByImdb(imdb); // Assume this method returns a single FilmDTO
+
+            if (film == null) {
+                throw new EntityNotFoundException("No film found with IMDb ID: " + imdb);
             }
-            ApiResponse<List<FilmDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Films retrieved successfully", films);
+
+            ApiResponse<FilmDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Film retrieved successfully", film);
             return new ResponseEntity<>(response, HttpStatus.OK);
+
         } catch (EntityNotFoundException ex) {
-            throw ex;  // Handled by the Global Exception Handler
+            throw ex;  // This will be handled by the Global Exception Handler
         } catch (Exception ex) {
-            throw new RuntimeException("An error occurred while retrieving films by IMDb", ex);  // Handled by the Global Exception Handler
+            throw new RuntimeException("An error occurred while retrieving the film by IMDb", ex);  // Handled by the Global Exception Handler
         }
     }
+
 
     @GetMapping("/name/{nom}")
     public ResponseEntity<ApiResponse<List<FilmDTO>>> getFilmsByName(@PathVariable String nom) {
@@ -111,5 +116,11 @@ public class FilmController {
         } catch (Exception ex) {
             throw new RuntimeException("An error occurred while deleting the film", ex);  // Handled by the Global Exception Handler
         }
+    }
+
+    @GetMapping("/by-actor/{actorId}")
+    public ResponseEntity<List<Film>> getFilmsByActor(@PathVariable Long actorId) {
+        List<Film> films = filmService.findFilmsByActor(actorId);
+        return ResponseEntity.ok(films);
     }
 }

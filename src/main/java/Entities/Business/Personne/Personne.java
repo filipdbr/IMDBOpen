@@ -1,36 +1,84 @@
 package Entities.Business.Personne;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-public abstract class Personne implements IPersonne<Long> {
+@Entity
+@Table(name = "personne")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "personne_type")
+public class Personne implements IPersonne<Long> {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Setter
+    @Getter
+    @Column(name = "nom")
     private String nom;
+
+    @Setter
+    @Getter
+    @Column(name = "prenom")
     private String prenom;
-    private LocalDateTime dateNaissance;
 
-    // Getters and Setters
-    public String getNom() {
-        return nom;
+    @Setter
+    @Getter
+    @Column(name = "date_naissance")
+    private LocalDate dateNaissance;
+
+    @Setter
+    @Getter
+    @Column(name = "lieu_naissance")
+    private String lieuNaissance;
+
+    @Setter
+    @Getter
+    @Column(name = "url")
+    private String url;
+
+
+
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getPrenom() {
-        return prenom;
+    @Override
+    public LocalDateTime getCreatedDate() {
+        return null;
     }
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    @Override
+    public void setCreatedDate(LocalDateTime createdDate) {
     }
 
-    public LocalDateTime getDateNaissance() {
-        return dateNaissance;
+    @Override
+    public LocalDateTime getUpdatedDate() {
+        return null;
     }
 
-    public void setDateNaissance(LocalDateTime dateNaissance) {
-        this.dateNaissance = dateNaissance;
+    @Override
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+    }
+
+    @Override
+    public boolean isDeleted() {
+        return false;
+    }
+
+    @Override
+    public void setDeleted(boolean deleted) {
     }
 
 }

@@ -1,4 +1,4 @@
-package Entities.Business;
+package Entities.Business.Pays;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -18,8 +18,20 @@ public class Pays {
 
 <<<<<<< Updated upstream
     @NotBlank(message = "Country name cannot be blank")
-    @Size(max = 100, message = "Country name should not exceed 100 characters")
+    @Size(max = 56, message = "Country name should not exceed 255 characters")
     private String name;
+
+    public String getNom() {
+        return name;
+    }
+
+    public void setNom(String nom) {
+        this.name = nom;
+    }
+
+    public Pays orElseGet(Object o) {
+        return this;
+    }
 }
 =======
     public Pays() {

@@ -1,67 +1,75 @@
 package Entities.Business.Personne;
 
+import Entities.Business.Film.Film;
+import Entities.Business.Role.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Acteur")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorValue("ACTEUR")
 public class Acteur extends Personne {
 
-    // Primary key
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_acteur")
-    private Long idActeur;
-
-    // IMDB ID
     @Column(name = "id_imdb")
-    private long idImdb;
+    private String idImdb;
 
-    // Size attribute
-    @Column(name = "taille")
+
+
+    @Column(name ="taille")
     private double taille;
 
-    // Relationship with Role
-    @OneToMany(mappedBy = "acteur", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Many-to-Many relationship with Film
+    @ManyToMany
+    @JoinTable(
+            name = "Acteur_Film",
+            joinColumns = @JoinColumn(name = "acteur_id"),
+            inverseJoinColumns = @JoinColumn(name = "film_id")
+    )
+    private List<Film> films = new ArrayList<>();
+
+    // One-to-Many relationship with Role
+    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Role> roles = new ArrayList<>();
 
-    // Creation and update timestamps
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    // Custom constructor
-    public Acteur(long idImdb, String nom, String prenom, LocalDateTime dateNaissance, double taille) {
+    public Acteur(String idImdb, String nom, String prenom, LocalDate dateNaissance) {
         super.setNom(nom);
         super.setPrenom(prenom);
         super.setDateNaissance(dateNaissance);
         this.idImdb = idImdb;
-        this.taille = taille;
         this.createdDate = LocalDateTime.now();
     }
 
-    // Implementations for IEntity methods
-    @Override
-    public Long getId() {
-        return this.idActeur;
+    public Long getIdActeur() {
+        return super.getId();
     }
 
-    @Override
-    public void setId(Long id) {
-        this.idActeur = id;
+    public void setIdActeur(Long id) {
+        super.setId(id);
+    }
+
+    public void setPersonne(Personne personne) {
+        this.setNom(personne.getNom());
+        this.setPrenom(personne.getPrenom());
+        this.setDateNaissance(personne.getDateNaissance());
+        this.setLieuNaissance(personne.getLieuNaissance());
+        this.setUrl(personne.getUrl());
     }
 
     @Override
@@ -91,6 +99,14 @@ public class Acteur extends Personne {
 
     @Override
     public void setDeleted(boolean deleted) {
-        // Modify as needed
+        // Implement as needed
+    }
+
+    public double getTaille() {
+        return taille;
+    }
+
+    public void setTaille(double taille) {
+        this.taille = taille;
     }
 }
