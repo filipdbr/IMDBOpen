@@ -21,6 +21,9 @@ public class Role {
     @Column(name = "acteur_id")
     private String acteurId; // ID in the acteur table, referenced as a String
 
+    @Column(name = "role_name")
+    private String roleName;
+
     @Setter
     @Getter
     @Column(name = "role_name")
