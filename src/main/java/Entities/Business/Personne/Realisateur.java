@@ -2,7 +2,10 @@ package Entities.Business.Personne;
 
 import Entities.Business.Film.Film;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,43 +13,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@Table(name = "Acteur")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Acteur extends Personne {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@DiscriminatorValue("REALISATEUR")
+public class Realisateur extends Personne {
 
     @Column(name = "id_imdb")
     private String idImdb;
 
-    @Column(name = "taille")
-    private double taille;
-
     @ManyToMany
     @JoinTable(
-            name = "Film_Acteur",
-            joinColumns = @JoinColumn(name = "acteur_id"),
+            name = "Film_Realisateur",
+            joinColumns = @JoinColumn(name = "realisateur_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id")
     )
     private List<Film> films = new ArrayList<>();
 
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Acteur(String nom, String prenom, LocalDate dateNaissance, double taille, String idImdb) {
+    public Realisateur(String nom, String prenom, LocalDate dateNaissance, String lieuNaissance, String url, String idImdb) {
         super.setNom(nom);
         super.setPrenom(prenom);
         super.setDateNaissance(dateNaissance);
-        this.taille = taille;
+        super.setLieuNaissance(lieuNaissance);
+        super.setUrl(url);
         this.idImdb = idImdb;
         this.createdDate = LocalDateTime.now();
     }

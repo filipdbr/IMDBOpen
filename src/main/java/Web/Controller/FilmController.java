@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/films")
@@ -44,19 +45,24 @@ public class FilmController {
     @GetMapping("/imdb/{imdb}")
     public ResponseEntity<ApiResponse<FilmDTO>> getFilmByImdb(@PathVariable String imdb) {
         try {
-            FilmDTO film = filmService.findFilmByImdb(imdb); // Assume this method returns a single FilmDTO
+            // Call the service method that returns Optional<FilmDTO>
+            Optional<FilmDTO> filmOpt = filmService.findFilmByImdb(imdb);
 
-            if (film == null) {
-                throw new EntityNotFoundException("No film found with IMDb ID: " + imdb);
+            // Check if film is present in the Optional
+            if (filmOpt.isPresent()) {
+                FilmDTO film = filmOpt.get();
+                ApiResponse<FilmDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Film retrieved successfully", film);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                // Return a 404 Not Found response if the film is not found
+                ApiResponse<FilmDTO> response = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "No film found with IMDb ID: " + imdb, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            ApiResponse<FilmDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Film retrieved successfully", film);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (EntityNotFoundException ex) {
-            throw ex;  // This will be handled by the Global Exception Handler
         } catch (Exception ex) {
-            throw new RuntimeException("An error occurred while retrieving the film by IMDb", ex);  // Handled by the Global Exception Handler
+            // Handle unexpected errors
+            ApiResponse<FilmDTO> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while retrieving the film by IMDb", null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

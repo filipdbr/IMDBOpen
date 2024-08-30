@@ -15,38 +15,67 @@ public class Role {
     @Column(name = "id")
     private Long id;
 
-    @Setter
-    @Getter
-    @Column(name = "role_name")
-    private String roleName;
+    @Column(name = "film_id")
+    private String filmId; // ID in the film table, referenced as a String
 
-    @Setter
-    @Getter
-    @Column(name = "film_imdb")
-    private String filmImdb;
+    @Column(name = "acteur_id")
+    private String acteurId; // ID in the acteur table, referenced as a String
 
     @Setter
     @Getter
     @Column(name = "actor_imdb")
     private String actorImdb;
 
-    @Setter
-    @Getter
-    @ManyToOne
-    @JoinColumn(name = "film_id")
-    private Film film;
+    // Default constructor
+    public Role() {}
 
-    @Setter
-    @Getter
-    @ManyToOne
-    @JoinColumn(name = "actor_id")
-    private Acteur actor;
+    // Parameterized constructor
+    public Role(String roleName, String filmId, String acteurId) {
+        this.roleName = roleName;
+        this.filmId = filmId;
+        this.acteurId = acteurId;
+    }
 
+    // Getters and setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFilmId() {
+        return filmId;
+    }
+
+    public void setFilmId(String filmId) {
+        this.filmId = filmId;
+    }
+
+    public String getActeurId() {
+        return acteurId;
+    }
+
+    public void setActeurId(String acteurId) {
+        this.acteurId = acteurId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", roleName='" + roleName + '\'' +
+                ", filmId='" + filmId + '\'' +
+                ", acteurId='" + acteurId + '\'' +
+                '}';
     }
 }

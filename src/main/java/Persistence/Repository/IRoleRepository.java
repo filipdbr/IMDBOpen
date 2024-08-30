@@ -1,19 +1,14 @@
 package Persistence.Repository;
 
-
 import Entities.Business.Role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Repository interface for accessing Role entities.
- *
- * This interface extends JpaRepository to provide CRUD operations and query methods
- * for the Role entity. Spring Data JPA will generate the implementation automatically
- * based on the method names.
- */
 @Repository
 public interface IRoleRepository extends JpaRepository<Role, Long> {
 
@@ -23,7 +18,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param filmId The ID of the film.
      * @return A list of roles associated with the given film ID.
      */
-    List<Role> findByFilmId(Long filmId);
+    @Query("SELECT r FROM Role r WHERE r.filmId = :filmId")
+    List<Role> findByFilmId(@Param("filmId") String filmId);
 
     /**
      * Find roles by the actor's ID.
@@ -31,7 +27,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param actorId The ID of the actor.
      * @return A list of roles associated with the given actor ID.
      */
-    List<Role> findByActorId(Long actorId);
+    @Query("SELECT r FROM Role r WHERE r.acteurId = :actorId")
+    List<Role> findByActorId(@Param("actorId") String actorId);
 
     /**
      * Find roles by the role's name.
@@ -39,7 +36,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param roleName The name of the role.
      * @return A list of roles with the given role name.
      */
-    List<Role> findByRoleName(String roleName);
+    @Query("SELECT r FROM Role r WHERE r.roleName = :roleName")
+    List<Role> findByRoleName(@Param("roleName") String roleName);
 
     /**
      * Find roles by the film's ID and role's name.
@@ -48,7 +46,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param roleName The name of the role.
      * @return A list of roles associated with the given film ID and role name.
      */
-    List<Role> findByFilmIdAndRoleName(Long filmId, String roleName);
+    @Query("SELECT r FROM Role r WHERE r.filmId = :filmId AND r.roleName = :roleName")
+    List<Role> findByFilmIdAndRoleName(@Param("filmId") String filmId, @Param("roleName") String roleName);
 
     /**
      * Find roles by the actor's ID and role's name.
@@ -57,7 +56,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param roleName The name of the role.
      * @return A list of roles associated with the given actor ID and role name.
      */
-    List<Role> findByActorIdAndRoleName(Long actorId, String roleName);
+    @Query("SELECT r FROM Role r WHERE r.acteurId = :actorId AND r.roleName = :roleName")
+    List<Role> findByActorIdAndRoleName(@Param("actorId") String actorId, @Param("roleName") String roleName);
 
     /**
      * Find roles by the film's ID and actor's ID.
@@ -66,7 +66,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param actorId The ID of the actor.
      * @return A list of roles associated with the given film ID and actor ID.
      */
-    List<Role> findByFilmIdAndActorId(Long filmId, Long actorId);
+    @Query("SELECT r FROM Role r WHERE r.filmId = :filmId AND r.acteurId = :actorId")
+    List<Role> findByFilmIdAndActorId(@Param("filmId") String filmId, @Param("actorId") String actorId);
 
     /**
      * Find roles by the film's ID, actor's ID, and role's name.
@@ -76,7 +77,7 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param roleName The name of the role.
      * @return A list of roles associated with the given film ID, actor ID, and role name.
      */
-    List<Role> findByFilmIdAndActorIdAndRoleName(Long filmId, Long actorId, String roleName);
+
 
     /**
      * Find roles by the role's name with partial match.
@@ -84,5 +85,12 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * @param partialRoleName The partial name of the role.
      * @return A list of roles with names containing the given partial role name.
      */
-    List<Role> findByRoleNameContaining(String partialRoleName);
+    @Query("SELECT r FROM Role r WHERE LOWER(r.roleName) LIKE LOWER(CONCAT('%', :partialRoleName, '%'))")
+    List<Role> findByRoleNameContaining(@Param("partialRoleName") String partialRoleName);
+    @Query("SELECT r FROM Role r WHERE r.filmId = :filmId AND r.acteurId = :acteurId AND r.roleName = :roleName")
+    Optional<Role> findRoleByFilmIdAndActeurIdAndRoleName(
+            @Param("filmId") String filmId,
+            @Param("acteurId") String acteurId,
+            @Param("roleName") String roleName
+    );
 }

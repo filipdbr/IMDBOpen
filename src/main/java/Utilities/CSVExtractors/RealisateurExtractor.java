@@ -1,8 +1,8 @@
 package Utilities.CSVExtractors;
 
 import Entities.Business.Personne.Personne;
-import Entities.Business.Personne.Acteur;
-import Persistence.Repository.IActeurRepository;
+import Entities.Business.Personne.Realisateur;
+import Persistence.Repository.IRealisateurRepository;
 import Persistence.Repository.IPersonneRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
@@ -21,10 +21,10 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @Component
-public class ActorExtractor {
+public class RealisateurExtractor {
 
     @Autowired
-    private IActeurRepository acteurRepository;
+    private IRealisateurRepository realisateurRepository;
 
     @Autowired
     private IPersonneRepository personneRepository;
@@ -40,7 +40,7 @@ public class ActorExtractor {
     };
 
     @Transactional // Ensure each save operation is handled in its own transaction
-    public void extractActorsFromCSV(String filePath) {
+    public void extractRealisateursFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                 .build()) {
@@ -56,10 +56,8 @@ public class ActorExtractor {
                     String dateNaissanceStr = line[2].isEmpty() || "N/A".equals(line[2]) ? null : line[2].trim();
                     String lieuNaissance = line[3].isEmpty() || "N/A".equals(line[3]) ? null : line[3].trim();
                     String imdbId = line[4].isEmpty() || "N/A".equals(line[4]) ? null : line[4].trim();
-                    String tailleStr = line[5].isEmpty() || "N/A".equals(line[5]) ? null : line[5].trim();
 
                     LocalDate dateNaissance = parseDate(dateNaissanceStr);
-                    double taille = tailleStr != null ? parseDouble(tailleStr) : 0.0;
 
                     // Check if the Personne already exists
                     Optional<Personne> optionalPersonne = personneRepository.findByNomAndPrenomAndDateNaissance(nom, prenom, dateNaissance);
@@ -85,26 +83,25 @@ public class ActorExtractor {
                         }
                     }
 
-                    // Check if the Acteur already exists
-                    Optional<Acteur> optionalActeur = acteurRepository.findById(personne.getId());
+                    // Check if the Realisateur already exists
+                    Optional<Realisateur> optionalRealisateur = realisateurRepository.findById(personne.getId());
 
-                    if (optionalActeur.isEmpty()) {
-                        // Create a new Acteur if not already present
-                        Acteur acteur = new Acteur();
-                        acteur.setIdImdb(imdbId);
-                        acteur.setTaille(taille);
-                        acteur.setCreatedDate(LocalDateTime.now());
+                    if (optionalRealisateur.isEmpty()) {
+                        // Create a new Realisateur if not already present
+                        Realisateur realisateur = new Realisateur();
+                        realisateur.setIdImdb(imdbId);
+                        realisateur.setCreatedDate(LocalDateTime.now());
 
                         try {
-                            acteurRepository.save(acteur); // Save the new Acteur to the database
+                            realisateurRepository.save(realisateur); // Save the new Realisateur to the database
                         } catch (Exception e) {
-                            System.err.println("Error saving Acteur: " + nom + " " + prenom + " - " + e.getMessage());
+                            System.err.println("Error saving Realisateur: " + nom + " " + prenom + " - " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
 
                 } catch (Exception e) {
-                    System.err.println("Error processing line for actor: " + (line.length > 1 ? line[0] : "Unknown") + " - " + e.getMessage());
+                    System.err.println("Error processing line for realisateur: " + (line.length > 1 ? line[0] : "Unknown") + " - " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -130,14 +127,5 @@ public class ActorExtractor {
         }
         System.err.println("Unparseable date: " + dateStr);
         return null;
-    }
-
-    private double parseDouble(String str) {
-        try {
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            System.err.println("Unparseable number: " + str);
-            return 0.0; // Default value
-        }
     }
 }

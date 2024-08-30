@@ -45,25 +45,6 @@ public class RoleService {
                     .filter(role -> role.getRoleName().toLowerCase().contains(roleName.toLowerCase()))
                     .collect(Collectors.toList());
         }
-        if (filmId != null) {
-            roles = roles.stream()
-                    .filter(role -> {
-                        Film film = filmRepository.findByImdb(role.getFilmImdb());
-                        if (film == null) {
-                            throw new EntityNotFoundException("No film found with IMDb ID: " + role.getFilmImdb());
-                        }
-                        return film.getId().equals(filmId);
-                    })
-                    .collect(Collectors.toList());
-        }
-        if (actorId != null) {
-            roles = roles.stream()
-                    .filter(role -> {
-                        Acteur actor = actorRepository.findByIdImdb(role.getActorImdb());
-                        return actor != null && actor.getId().equals(actorId);
-                    })
-                    .collect(Collectors.toList());
-        }
 
         if (roles.isEmpty()) {
             throw new EntityNotFoundException("No roles found matching the criteria");
@@ -115,8 +96,7 @@ public class RoleService {
                 new EntityNotFoundException("Role not found with ID: " + id));
 
         existingRole.setRoleName(roleDTO.getRoleName());
-        existingRole.setFilmImdb(roleDTO.getFilmImdb());
-        existingRole.setActorImdb(roleDTO.getActorImdb());
+
 
         Role updatedRole = roleRepository.save(existingRole);
         return RoleDTO.fromEntity(updatedRole);
