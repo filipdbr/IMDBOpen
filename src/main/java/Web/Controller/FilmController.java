@@ -42,20 +42,24 @@ public class FilmController {
     }
 
     @GetMapping("/imdb/{imdb}")
-    public ResponseEntity<ApiResponse<List<FilmDTO>>> getFilmsByImdb(@PathVariable String imdb) {
+    public ResponseEntity<ApiResponse<FilmDTO>> getFilmByImdb(@PathVariable String imdb) {
         try {
-            List<FilmDTO> films = filmService.findFilmsByImdb(imdb);
-            if (films.isEmpty()) {
-                throw new EntityNotFoundException("No films found with IMDb ID: " + imdb);
+            FilmDTO film = filmService.findFilmByImdb(imdb); // Assume this method returns a single FilmDTO
+
+            if (film == null) {
+                throw new EntityNotFoundException("No film found with IMDb ID: " + imdb);
             }
-            ApiResponse<List<FilmDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Films retrieved successfully", films);
+
+            ApiResponse<FilmDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Film retrieved successfully", film);
             return new ResponseEntity<>(response, HttpStatus.OK);
+
         } catch (EntityNotFoundException ex) {
-            throw ex;  // Handled by the Global Exception Handler
+            throw ex;  // This will be handled by the Global Exception Handler
         } catch (Exception ex) {
-            throw new RuntimeException("An error occurred while retrieving films by IMDb", ex);  // Handled by the Global Exception Handler
+            throw new RuntimeException("An error occurred while retrieving the film by IMDb", ex);  // Handled by the Global Exception Handler
         }
     }
+
 
     @GetMapping("/name/{nom}")
     public ResponseEntity<ApiResponse<List<FilmDTO>>> getFilmsByName(@PathVariable String nom) {

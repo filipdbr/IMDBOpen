@@ -2,9 +2,9 @@ package Utilities.CSVExtractors;
 
 import Entities.Business.Film.Film;
 import Entities.Business.Pays.Pays;
-import Persistence.Repository.IFilmRepository;
-import Persistence.Repository.IPaysRepository;
 import Service.FilmService;
+import Service.PaysService;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -51,23 +51,34 @@ public class FilmExtractor {
                         resume = resume.substring(0, 10000);  // Truncate to max length
                     }
 
-                    // Create or find a Pays instance
-                    Pays pays = filmService.findOrCreatePays(paysName);
+                    // Validate if the film already exists by IMDb ID
+                    Film existingFilm = filmService.findFilmByImdb(imdb).toEntity() ;
 
-                    // Create a new Film instance
-                    Film film = new Film();
-                    film.setImdb(imdb);
-                    film.setNom(nom);
-                    film.setAnnee(annee);
-                    film.setRating(rating);
-                    film.setUrl(url);
-                    film.setLieuTour(lieuTour);
-                    film.setLangue(langue);
-                    film.setResume(resume);
-                    film.setPays(paysName);  // Set the Pays object correctly
+                    if (existingFilm == null) {
+                        // If the film does not exist, create a new one
 
-                    // Save each film directly to the database
-                    filmService.save(film);
+                        // Create or find a Pays instance
+                        Pays pays = filmService.findOrCreatePays(paysName);
+
+                        // Create a new Film instance
+                        Film film = new Film();
+                        film.setImdb(imdb);
+                        film.setNom(nom);
+                        film.setAnnee(annee);
+                        film.setRating(rating);
+                        film.setUrl(url);
+                        film.setLieuTour(lieuTour);
+                        film.setLangue(langue);
+                        film.setResume(resume);
+                        film.setPays(pays.getName());  // Set the Pays object correctly
+
+                        // Save the new film to the database
+                        filmService.save(film);
+
+                    } else {
+                        // Optionally handle duplicates (e.g., update existing records, log a warning, etc.)
+                        System.out.println("Film with IMDb ID " + imdb + " already exists. Skipping...");
+                    }
 
                 } catch (Exception e) {
                     System.err.println("Error processing line for film: " + (line.length > 1 ? line[1] : "Unknown") + " - " + e.getMessage());

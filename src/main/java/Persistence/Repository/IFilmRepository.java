@@ -13,7 +13,8 @@ import jakarta.validation.constraints.Size;
 public interface IFilmRepository extends JpaRepository<Film, Long> {
 
     // Find films by IMDb ID
-    List<Film> findByImdb(String imdb);
+    Film findByImdb(String imdb);
+
 
     // Find films by name (partial match, case insensitive)
     List<Film> findByNomContainingIgnoreCase(String nom);
@@ -61,7 +62,6 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     // Custom query method to find films by actor
     @Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.id = :actorId")
     List<Film> findFilmsByActor(@Param("actorId") Long actorId);
-
 
 
 }
