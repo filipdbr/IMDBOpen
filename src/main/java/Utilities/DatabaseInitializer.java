@@ -128,7 +128,7 @@ public class DatabaseInitializer {
 
 
         // Populate Role table
-        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
-        iRoleRepository.saveAll(roles);
+         roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
+
     }
 }

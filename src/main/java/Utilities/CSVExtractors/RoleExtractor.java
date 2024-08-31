@@ -17,8 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class RoleExtractor {
@@ -32,49 +33,59 @@ public class RoleExtractor {
     @Autowired
     private IActeurRepository acteurRepository;
 
-    @Transactional // Ensure each save operation is handled in its own transaction
-    public List<Role> extractRolesFromCSV(String filePath) {
-        List<Role> roles = new ArrayList<>();
+    private static final int BATCH_SIZE = 500; // Adjust batch size as needed
+
+    @Transactional
+    public void extractRolesFromCSV(String filePath) {
+        List<Role> rolesToSave = new ArrayList<>();
+        Set<String> uniqueRoleIdentifiers = new HashSet<>();
 
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                 .build()) {
 
-            String[] header = reader.readNext(); // Read the header row
-            String[] line;
+            // Read the header row
+            reader.readNext();
 
+            String[] line;
             while ((line = reader.readNext()) != null) {
                 String filmId = line[0].isEmpty() ? null : line[0].trim();
                 String acteurId = line[1].isEmpty() ? null : line[1].trim();
                 String roleName = line[2].isEmpty() ? null : line[2].trim();
 
-                // Use Optional to handle the potential absence of Film and Acteur
-                Optional<Film> optionalFilm = filmRepository.findByImdb(filmId);
-                Optional<Acteur> optionalActeur = acteurRepository.findByImdb(acteurId);
+                // Create a unique identifier for the role
+                String roleIdentifier = filmId + "-" + acteurId + "-" + roleName;
 
-                if (optionalFilm.isPresent() && optionalActeur.isPresent()) {
-                    Role role = new Role();
-                    role.setRoleName(roleName);
-                    role.setFilmId(filmId); // Set filmId directly
-                    role.setActeurId(acteurId); // Set acteurId directly
-
-                    // Check for duplicates before saving
-                    Optional<Role> existingRole = roleRepository.findRoleByFilmIdAndActeurIdAndRoleName(filmId, acteurId, roleName);
-                    if (existingRole.isEmpty()) {
-                        try {
-                            roleRepository.save(role);
-                            roles.add(role);
-                        } catch (Exception e) {
-                            System.err.println("Error saving role: " + roleName + " - " + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    } else {
+                // Check if the Role already exists
+                if (uniqueRoleIdentifiers.add(roleIdentifier)) {
+                    // Check if the Role already exists in the database
+                    if (roleRepository.existsByFilmIdAndActeurIdAndRoleName(filmId, acteurId, roleName)) {
                         System.out.println("Role already exists - Film ID: " + filmId + ", Actor ID: " + acteurId + ", Role Name: " + roleName);
+                    } else {
+                        // Create a new Role entity
+                        Role role = new Role();
+                        role.setRoleName(roleName);
+                        role.setFilmId(filmId); // Set filmId directly
+                        role.setActeurId(acteurId); // Set acteurId directly
+
+                        rolesToSave.add(role);
+
+                        // Process batch every BATCH_SIZE entries or so
+                        if (rolesToSave.size() >= BATCH_SIZE) {
+                            roleRepository.saveAll(rolesToSave);
+                            roleRepository.flush();
+                            rolesToSave.clear();
+                        }
                     }
-                } else {
-                    System.err.println("Error: Film or Acteur not found for Role - Film ID: " + filmId + ", Acteur ID: " + acteurId);
                 }
             }
+
+            // Save any remaining roles in the batch
+            if (!rolesToSave.isEmpty()) {
+                roleRepository.saveAll(rolesToSave);
+                roleRepository.flush();
+            }
+
         } catch (IOException e) {
             System.err.println("Error reading the CSV file: " + e.getMessage());
             e.printStackTrace();
@@ -82,7 +93,5 @@ public class RoleExtractor {
             System.err.println("CSV validation error: " + e.getMessage());
             e.printStackTrace();
         }
-
-        return roles;
     }
 }
