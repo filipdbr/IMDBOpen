@@ -53,6 +53,9 @@ public class RoleExtractor {
                         // Create a new Role entity
                         Role role = new Role();
                         role.setRoleName(roleName);
+                        role.setFilmId(filmId);
+                        role.setActeurId(acteurId);
+                        
 
                         // Set Film and Acteur based on IDs if they exist
                         Optional<Film> optionalFilm = filmRepository.findByImdb(filmId);
