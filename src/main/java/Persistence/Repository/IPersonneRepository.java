@@ -2,6 +2,7 @@ package Persistence.Repository;
 
 import Entities.Business.Personne.Personne;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -13,22 +14,15 @@ import java.util.Optional;
 public interface IPersonneRepository extends JpaRepository<Personne, Long> {
 
     // Find by Nom
-    List<Personne> findByNom(String nom);
+    List<Personne> findByIdentite(String nom);
 
-    // Find by Date of Birth after a specific date
-    List<Personne> findByDateNaissanceAfter(LocalDateTime date);
-
-    // Find by Date of Birth before a specific date
-    List<Personne> findByDateNaissanceBefore(LocalDateTime date);
-
-    // Find by Date of Birth Range
-    List<Personne> findByDateNaissanceBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     // Find All Personnes Ordered by Nom (Alphabetical Order)
-    List<Personne> findAllByOrderByNomAsc();
+    List<Personne> findAllByOrderByIdentiteAsc();
 
     // Find All Personnes Ordered by Nom (Reverse Alphabetical Order)
-    List<Personne> findAllByOrderByNomDesc();
+    List<Personne> findAllByOrderByIdentiteDesc();
     // Method to find a Personne by nom, prenom, and dateNaissance
-   Optional<Personne> findByNomAndPrenomAndDateNaissance(String nom, String prenom, LocalDate dateNaissance);
+    @Query("SELECT p FROM Personne p WHERE p.identite = :identite AND p.dateNaissance = :dateNaissance")
+   Optional<Personne> findByIdentiteAndDateNaissance(String identite, String dateNaissance);
 }

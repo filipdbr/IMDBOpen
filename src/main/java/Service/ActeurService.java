@@ -1,13 +1,17 @@
 package Service;
 
 import Entities.Business.Personne.Acteur;
+import Entities.Business.Personne.Personne;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Persistence.Repository.IActeurRepository;
+import Persistence.Repository.IPersonneRepository;
 import Web.Model.DTO.ActeurDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,10 +20,12 @@ import java.util.stream.Collectors;
 public class ActeurService {
 
     private final IActeurRepository acteurRepository;
+    private final IPersonneRepository personneRepository;
 
     @Autowired
-    public ActeurService(IActeurRepository acteurRepository) {
+    public ActeurService(IActeurRepository acteurRepository, IPersonneRepository personneRepository) {
         this.acteurRepository = acteurRepository;
+        this.personneRepository = personneRepository;
     }
 
     // Convert Entity to DTO
@@ -32,36 +38,20 @@ public class ActeurService {
         return acteurDTO.toEntity();
     }
 
-    public List<ActeurDTO> findActeursWithFiltersAndSorting(String nom, String dateNaissance, String sortBy) {
-        List<Acteur> acteurs = acteurRepository.findAll();
-        return acteurs.stream()
-                .filter(acteur -> (nom == null || acteur.getNom().equalsIgnoreCase(nom)) &&
-                        (dateNaissance == null || acteur.getDateNaissance().toString().equals(dateNaissance)))
-                .sorted((a1, a2) -> {
-                    if (sortBy == null) return 0;
-                    switch (sortBy) {
-                        case "nom":
-                            return a1.getNom().compareToIgnoreCase(a2.getNom());
-                        case "dateNaissance":
-                            return a1.getDateNaissance().compareTo(a2.getDateNaissance());
-                        default:
-                            return 0;
-                    }
-                })
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public void save(Acteur acteur) {
+        acteurRepository.saveAndFlush(acteur);
     }
 
-    public List<ActeurDTO> findActeursByNom(String nom) {
-        List<Acteur> acteurs = acteurRepository.findByNom(nom);
-        if (acteurs.isEmpty()) {
-            throw new EntityNotFoundException("No acteurs found with nom: " + nom);
-        }
-        return acteurs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    public void savePersonne(Personne personne){
+
+     personneRepository.saveAndFlush(personne)   ;
     }
 
+
+
+    // Method to create a new acteur
     public ActeurDTO createActeur(ActeurDTO acteurDTO) {
-        if (acteurDTO == null || acteurDTO.getNom() == null) {
+        if (acteurDTO == null || acteurDTO.getIdentite() == null || acteurDTO.getDateNaissance() == null) {
             throw new InvalidDataException("Invalid acteur data");
         }
         Acteur acteur = convertToEntity(acteurDTO);
@@ -69,22 +59,27 @@ public class ActeurService {
         return convertToDTO(savedActeur);
     }
 
+    // Method to update an existing acteur
     public ActeurDTO updateActeur(Long id, ActeurDTO acteurDTO) {
         Optional<Acteur> existingActeurOpt = acteurRepository.findById(id);
         if (!existingActeurOpt.isPresent()) {
             throw new EntityNotFoundException("Acteur not found with id: " + id);
         }
         Acteur existingActeur = existingActeurOpt.get();
-        existingActeur.setNom(acteurDTO.getNom());
-        existingActeur.setDateNaissance(acteurDTO.getDateNaissance());
+        existingActeur.setTaille(acteurDTO.getTaille());
+        existingActeur.setIdImdb(acteurDTO.getIdImdb());
         Acteur updatedActeur = acteurRepository.save(existingActeur);
         return convertToDTO(updatedActeur);
     }
 
+    // Method to delete an acteur
     public void deleteActeur(Long id) {
         if (!acteurRepository.existsById(id)) {
             throw new EntityNotFoundException("Acteur not found with id: " + id);
         }
         acteurRepository.deleteById(id);
     }
+
+
+
 }
