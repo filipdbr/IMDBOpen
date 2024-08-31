@@ -6,11 +6,12 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.*;
 
-@Setter
-@Getter
+
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Genre")
 public class Genre {
 
@@ -27,8 +28,7 @@ public class Genre {
     @ManyToMany(mappedBy = "genres")
     private List<Film> films;
 
-    // Default constructor
-    public Genre() {}
+
 
 
     public Genre(Object o, String genreName) {
