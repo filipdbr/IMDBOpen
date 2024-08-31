@@ -93,9 +93,9 @@
         </dependency>-->
 
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>12.2.0.jre11</version> <!-- Version compatible with Java 11 and above -->
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.4.1</version>
         </dependency>
 
     </dependencies>

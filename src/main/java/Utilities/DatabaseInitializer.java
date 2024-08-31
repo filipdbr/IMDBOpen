@@ -117,7 +117,7 @@ public class DatabaseInitializer {
 
     private void populateDatabase() {
         // Populate Film table
-   //     filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
+filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
 
 
         // Populate Personne and Acteur tables
