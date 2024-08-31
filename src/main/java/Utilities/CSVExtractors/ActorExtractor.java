@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -31,13 +29,8 @@ public class ActorExtractor {
     @Autowired
     private IPersonneRepository personneRepository;
 
-    private static final int BATCH_SIZE = 500; // Adjust batch size based on your needs
-
     @Transactional
     public void extractActorsFromCSV(String filePath) {
-        List<Personne> personnesToSave = new ArrayList<>();
-        List<Acteur> acteursToSave = new ArrayList<>();
-
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                 .build()) {
@@ -71,13 +64,13 @@ public class ActorExtractor {
                         personne.setLieuNaissance(lieuNaissance);
                         personne.setUrl(url);
 
-                        personnesToSave.add(personne);
-
-                        // Save in batches
-                        if (personnesToSave.size() >= BATCH_SIZE) {
-                            personneRepository.saveAll(personnesToSave);
-                            personneRepository.flush();
-                            personnesToSave.clear();
+                        try {
+                            // Save the new Personne to the database
+                            acteurService.savePersonne(personne);
+                        } catch (Exception e) {
+                            System.err.println("Error saving Personne: " + identite + " - " + e.getMessage());
+                            e.printStackTrace();
+                            continue; // Skip to the next line
                         }
                     }
 
@@ -94,13 +87,12 @@ public class ActorExtractor {
                         acteur.setIdImdb(imdbId);
                         acteur.setTaille(tailleStr);
 
-                        acteursToSave.add(acteur);
-
-                        // Save in batches
-                        if (acteursToSave.size() >= BATCH_SIZE) {
-                            acteurRepository.saveAll(acteursToSave);
-                            acteurRepository.flush();
-                            acteursToSave.clear();
+                        try {
+                            // Save the new Acteur to the database
+                            acteurService.save(acteur);
+                        } catch (Exception e) {
+                            System.err.println("Error saving Acteur: " + identite + " - " + e.getMessage());
+                            e.printStackTrace();
                         }
                     }
 
@@ -109,17 +101,6 @@ public class ActorExtractor {
                     e.printStackTrace();
                 }
             }
-
-            // Save remaining entities
-            if (!personnesToSave.isEmpty()) {
-                personneRepository.saveAll(personnesToSave);
-                personneRepository.flush();
-            }
-            if (!acteursToSave.isEmpty()) {
-                acteurRepository.saveAll(acteursToSave);
-                acteurRepository.flush();
-            }
-
         } catch (IOException e) {
             System.err.println("Error reading the CSV file: " + e.getMessage());
             e.printStackTrace();
