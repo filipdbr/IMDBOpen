@@ -24,12 +24,7 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
-    @Setter
-    @Getter
-    @Column(name = "role_name")
-    private String roleName;
-
-    // Default constructor
+     // Default constructor
     public Role() {}
 
     // Parameterized constructor
