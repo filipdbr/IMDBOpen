@@ -19,7 +19,7 @@ public class ActeurController {
     @Autowired
     private ActeurService acteurService;
 
-    @GetMapping("/search")
+    /*@GetMapping("/search")
     public ResponseEntity<ApiResponse<List<ActeurDTO>>> searchActeurs(
             @RequestParam(required = false) String nom,
             @RequestParam(required = false) String dateNaissance,
@@ -37,11 +37,11 @@ public class ActeurController {
     }
 
     @GetMapping("/nom/{nom}")
-    public ResponseEntity<ApiResponse<List<ActeurDTO>>> getActeursByNom(@PathVariable String nom) {
+    public ResponseEntity<ApiResponse<List<ActeurDTO>>> getActeursByNom(@PathVariable String identite) {
         try {
-            List<ActeurDTO> acteurs = acteurService.findActeursByNom(nom);
+            List<ActeurDTO> acteurs = acteurService.findActeursByIdentite(identite);
             if (acteurs.isEmpty()) {
-                throw new EntityNotFoundException("No acteurs found with nom: " + nom);
+                throw new EntityNotFoundException("No acteurs found with nom: " + identite);
             }
             ApiResponse<List<ActeurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Acteurs retrieved successfully", acteurs);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -50,7 +50,7 @@ public class ActeurController {
         } catch (Exception ex) {
             throw new RuntimeException("An error occurred while retrieving acteurs by nom", ex);  // Handled by the Global Exception Handler
         }
-    }
+    }*/
 
     @PostMapping
     public ResponseEntity<ApiResponse<ActeurDTO>> createActeur(@RequestBody ActeurDTO acteurDTO) {

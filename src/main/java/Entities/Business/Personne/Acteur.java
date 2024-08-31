@@ -2,85 +2,60 @@ package Entities.Business.Personne;
 
 import Entities.Business.Film.Film;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@Table(name = "Acteur")
+@Table(name = "acteur")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Acteur extends Personne {
+public class Acteur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "personne_id", referencedColumnName = "id")
+    private Personne personne;
+
+    @Getter
+    @Setter
     @Column(name = "id_imdb")
     private String idImdb;
 
+    @Getter
+    @Setter
     @Column(name = "taille")
-    private double taille;
+    private String taille;
 
     @ManyToMany
     @JoinTable(
-            name = "Film_Acteur",
+            name = "film_acteur",
             joinColumns = @JoinColumn(name = "acteur_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id")
     )
     private List<Film> films = new ArrayList<>();
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
-
-    @Column(name = "updated_date")
-    private LocalDateTime updatedDate;
-
-    public Acteur(String nom, String prenom, LocalDate dateNaissance, double taille, String idImdb) {
-        super.setNom(nom);
-        super.setPrenom(prenom);
-        super.setDateNaissance(dateNaissance);
+    public Acteur(String identite, String dateNaissance, String taille, String idImdb) {
+        this.personne = new Personne();
+        this.personne.setIdentite(identite);
+        this.personne.setDateNaissance(dateNaissance);
         this.taille = taille;
         this.idImdb = idImdb;
-        this.createdDate = LocalDateTime.now();
     }
 
-    @Override
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    @Override
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
-    }
-
-    @Override
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    @Override
-    public boolean isDeleted() {
-        return false; // Modify as needed
-    }
-
-    @Override
-    public void setDeleted(boolean deleted) {
-        // Implement as needed
-    }
 }

@@ -6,10 +6,10 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 public interface IPersonne <ID extends Serializable> extends IEntity<ID> {
-    String getNom();
-    void setNom(String nom);
-    String getPrenom();
-    void setPrenom(String prenom);
-    LocalDate getDateNaissance();
-    void setDateNaissance(LocalDate dateNaissance);
+    String getIdentite();
+    void setIdentite(String nom);
+
+
+    String getDateNaissance();
+    void setDateNaissance(String dateNaissance);
 }

@@ -73,33 +73,5 @@ public class RealisateurService {
         }
     }
 
-    public List<RealisateurDTO> findByNom(String nom) {
-        return realisateurRepository.findByNom(nom).stream()
-                .map(RealisateurDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
 
-    public List<RealisateurDTO> findByPrenom(String prenom) {
-        return realisateurRepository.findByPrenom(prenom).stream()
-                .map(RealisateurDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<RealisateurDTO> findByNomAndPrenom(String nom, String prenom) {
-        return realisateurRepository.findByNomAndPrenom(nom, prenom).stream()
-                .map(RealisateurDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<RealisateurDTO> findByNomContaining(String partialNom) {
-        return realisateurRepository.findByNomContaining(partialNom).stream()
-                .map(RealisateurDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<RealisateurDTO> findByPrenomContaining(String partialPrenom) {
-        return realisateurRepository.findByPrenomContaining(partialPrenom).stream()
-                .map(RealisateurDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
 }

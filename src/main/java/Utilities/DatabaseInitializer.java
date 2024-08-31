@@ -3,6 +3,7 @@ package Utilities;
 import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Personne.Personne;
+import Entities.Business.Personne.Realisateur;
 import Entities.Business.Role.Role;
 import Persistence.Repository.IActeurRepository;
 import Persistence.Repository.IFilmRepository;
@@ -10,6 +11,7 @@ import Persistence.Repository.IPersonneRepository;
 import Persistence.Repository.IRoleRepository;
 import Utilities.CSVExtractors.ActorExtractor;
 import Utilities.CSVExtractors.FilmExtractor;
+import Utilities.CSVExtractors.RealisateurExtractor;
 import Utilities.CSVExtractors.RoleExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,8 @@ public class DatabaseInitializer {
     private RoleExtractor roleExtractor;
 
     @Autowired
+    private RealisateurExtractor realisateurExtractor;
+    @Autowired
     private IFilmRepository iFilmRepository;
 
     @Autowired
@@ -54,14 +58,14 @@ public class DatabaseInitializer {
             String sql = "CREATE SCHEMA IF NOT EXISTS bq6m2mlrafs4wqh3gcgt";
             statement.executeUpdate(sql);
             System.out.println("Database created or already exists.");
-            createTablesIfNotExist(connection);
+          //  createTablesIfNotExist(connection);
             populateDatabase();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void createTablesIfNotExist(Connection connection) throws SQLException {
+   private void createTablesIfNotExist(Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
 
         // Create Film table if not exists
@@ -100,9 +104,7 @@ public class DatabaseInitializer {
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "role_name VARCHAR(255) NOT NULL, " +
                 "film_id BIGINT NOT NULL, " +
-                "actor_id BIGINT NOT NULL, " +
-                "FOREIGN KEY (film_id) REFERENCES film(id), " +
-                "FOREIGN KEY (actor_id) REFERENCES acteur(id_acteur))";
+                "actor_id BIGINT NOT NULL, ";
         connection.createStatement().executeUpdate(createRoleTable);
         System.out.println("Role table created or already exists.");
     }
@@ -115,12 +117,14 @@ public class DatabaseInitializer {
 
     private void populateDatabase() {
         // Populate Film table
-        filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
+   //     filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
 
 
         // Populate Personne and Acteur tables
 
-        actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
+       actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
+
+        realisateurExtractor.extractRealisateursFromCSV("src/main/resources/CSV/realisateurs.csv");
 
 
         // Populate Role table

@@ -96,38 +96,6 @@ public class RealisateurController {
         }
     }
 
-    @GetMapping("/nom/{nom}")
-    public ResponseEntity<ApiResponse<List<RealisateurDTO>>> getRealisateursByNom(@PathVariable String nom) {
-        List<RealisateurDTO> realisateurs = realisateurService.findByNom(nom);
-        ApiResponse<List<RealisateurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Realisateurs fetched successfully", realisateurs);
-        return ResponseEntity.ok(response);
-    }
 
-    @GetMapping("/prenom/{prenom}")
-    public ResponseEntity<ApiResponse<List<RealisateurDTO>>> getRealisateursByPrenom(@PathVariable String prenom) {
-        List<RealisateurDTO> realisateurs = realisateurService.findByPrenom(prenom);
-        ApiResponse<List<RealisateurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Realisateurs fetched successfully", realisateurs);
-        return ResponseEntity.ok(response);
-    }
 
-    @GetMapping("/nom/{nom}/prenom/{prenom}")
-    public ResponseEntity<ApiResponse<List<RealisateurDTO>>> getRealisateursByNomAndPrenom(@PathVariable String nom, @PathVariable String prenom) {
-        List<RealisateurDTO> realisateurs = realisateurService.findByNomAndPrenom(nom, prenom);
-        ApiResponse<List<RealisateurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Realisateurs fetched successfully", realisateurs);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/nom/contains/{partialNom}")
-    public ResponseEntity<ApiResponse<List<RealisateurDTO>>> getRealisateursByNomContaining(@PathVariable String partialNom) {
-        List<RealisateurDTO> realisateurs = realisateurService.findByNomContaining(partialNom);
-        ApiResponse<List<RealisateurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Realisateurs fetched successfully", realisateurs);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/prenom/contains/{partialPrenom}")
-    public ResponseEntity<ApiResponse<List<RealisateurDTO>>> getRealisateursByPrenomContaining(@PathVariable String partialPrenom) {
-        List<RealisateurDTO> realisateurs = realisateurService.findByPrenomContaining(partialPrenom);
-        ApiResponse<List<RealisateurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Realisateurs fetched successfully", realisateurs);
-        return ResponseEntity.ok(response);
-    }
 }

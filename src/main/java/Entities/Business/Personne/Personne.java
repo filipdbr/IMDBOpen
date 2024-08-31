@@ -1,48 +1,40 @@
 package Entities.Business.Personne;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "personne")
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "personne_type")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Personne implements IPersonne<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Setter
+    @Column(name = "identite")
     @Getter
-    @Column(name = "nom")
-    private String nom;
+    @Setter
+    private String identite;
 
-    @Setter
     @Getter
-    @Column(name = "prenom")
-    private String prenom;
-
     @Setter
-    @Getter
     @Column(name = "date_naissance")
-    private LocalDate dateNaissance;
+    private String dateNaissance;
 
-    @Setter
     @Getter
+    @Setter
     @Column(name = "lieu_naissance")
     private String lieuNaissance;
 
-    @Setter
     @Getter
+    @Setter
     @Column(name = "url")
     private String url;
-
-
 
     @Override
     public Long getId() {
@@ -61,6 +53,7 @@ public class Personne implements IPersonne<Long> {
 
     @Override
     public void setCreatedDate(LocalDateTime createdDate) {
+        // No implementation needed
     }
 
     @Override
@@ -70,6 +63,7 @@ public class Personne implements IPersonne<Long> {
 
     @Override
     public void setUpdatedDate(LocalDateTime updatedDate) {
+        // No implementation needed
     }
 
     @Override
@@ -79,6 +73,6 @@ public class Personne implements IPersonne<Long> {
 
     @Override
     public void setDeleted(boolean deleted) {
+        // No implementation needed
     }
-
 }

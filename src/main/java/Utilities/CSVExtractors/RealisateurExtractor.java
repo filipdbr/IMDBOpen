@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @Component
@@ -29,17 +26,7 @@ public class RealisateurExtractor {
     @Autowired
     private IPersonneRepository personneRepository;
 
-    private static final DateTimeFormatter[] DATE_FORMATTERS = {
-            DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-            DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-            DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-            DateTimeFormatter.ofPattern("MMMM d yyyy"),  // For "February 19 1940"
-            DateTimeFormatter.ofPattern("d MMMM yyyy"),  // For "19 February 1940"
-            DateTimeFormatter.ofPattern("yyyy/MM/dd"),  // Additional patterns if needed
-            DateTimeFormatter.ofPattern("d MMM yyyy")    // For formats like "19 Feb 1940"
-    };
-
-    @Transactional // Ensure each save operation is handled in its own transaction
+    @Transactional // Ensure all database operations within this method are transactional
     public void extractRealisateursFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
@@ -51,16 +38,14 @@ public class RealisateurExtractor {
             while ((line = reader.readNext()) != null) {
                 try {
                     // Parse CSV line
-                    String nom = line[0].isEmpty() || "N/A".equals(line[0]) ? null : line[0].trim();
-                    String prenom = line[1].isEmpty() || "N/A".equals(line[1]) ? null : line[1].trim();
+                    String url = line[4].isEmpty() || "N/A".equals(line[4]) ? null : line[4].trim();
+                    String identite = line[1].isEmpty() || "N/A".equals(line[1]) ? null : line[1].trim();
                     String dateNaissanceStr = line[2].isEmpty() || "N/A".equals(line[2]) ? null : line[2].trim();
                     String lieuNaissance = line[3].isEmpty() || "N/A".equals(line[3]) ? null : line[3].trim();
-                    String imdbId = line[4].isEmpty() || "N/A".equals(line[4]) ? null : line[4].trim();
-
-                    LocalDate dateNaissance = parseDate(dateNaissanceStr);
+                    String imdbId = line[0].isEmpty() || "N/A".equals(line[0]) ? null : line[0].trim();
 
                     // Check if the Personne already exists
-                    Optional<Personne> optionalPersonne = personneRepository.findByNomAndPrenomAndDateNaissance(nom, prenom, dateNaissance);
+                    Optional<Personne> optionalPersonne = personneRepository.findByIdentiteAndDateNaissance(identite, dateNaissanceStr);
 
                     Personne personne;
                     if (optionalPersonne.isPresent()) {
@@ -69,33 +54,41 @@ public class RealisateurExtractor {
                     } else {
                         // Personne does not exist, create a new one
                         personne = new Personne();
-                        personne.setNom(nom);
-                        personne.setPrenom(prenom);
-                        personne.setDateNaissance(dateNaissance);
+                        personne.setIdentite(identite);
+                        personne.setDateNaissance(dateNaissanceStr); // Treat date as a plain string
                         personne.setLieuNaissance(lieuNaissance);
+                        personne.setUrl(url);
 
                         try {
-                            personneRepository.save(personne); // Save the new Personne to the database
+                            personne = personneRepository.save(personne); // Save and retrieve the saved Personne
+                            if (personne.getId() == null) {
+                                throw new IllegalStateException("Failed to save Personne: ID is null after save.");
+                            }
                         } catch (Exception e) {
-                            System.err.println("Error saving Personne: " + nom + " " + prenom + " - " + e.getMessage());
+                            System.err.println("Error saving Personne: " + identite + " - " + e.getMessage());
                             e.printStackTrace();
-                            continue; // Skip to the next line
+                            continue; // Skip to the next line if saving Personne fails
                         }
                     }
 
-                    // Check if the Realisateur already exists
-                    Optional<Realisateur> optionalRealisateur = realisateurRepository.findById(personne.getId());
+                    // Use the new findByPersonne method to check if the Realisateur already exists
+                    Optional<Realisateur> optionalRealisateur = realisateurRepository.findByPersonne(personne);
 
-                    if (optionalRealisateur.isEmpty()) {
-                        // Create a new Realisateur if not already present
+                    if (optionalRealisateur.isPresent()) {
+                        // Realisateur already exists, skip it
+                        System.out.println("Realisateur with Personne ID " + personne.getId() + " already exists. Skipping...");
+                    } else {
+                        // Realisateur does not exist, create a new one
                         Realisateur realisateur = new Realisateur();
+                        realisateur.setPersonne(personne); // Ensure Realisateur has a valid Personne reference
                         realisateur.setIdImdb(imdbId);
                         realisateur.setCreatedDate(LocalDateTime.now());
 
                         try {
-                            realisateurRepository.save(realisateur); // Save the new Realisateur to the database
+                            realisateurRepository.save(realisateur);
+                            realisateurRepository.flush();// Save the new Realisateur to the database
                         } catch (Exception e) {
-                            System.err.println("Error saving Realisateur: " + nom + " " + prenom + " - " + e.getMessage());
+                            System.err.println("Error saving Realisateur: " + identite + " - " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
@@ -112,20 +105,5 @@ public class RealisateurExtractor {
             System.err.println("CSV validation error: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private LocalDate parseDate(String dateStr) {
-        if (dateStr == null || "N/A".equals(dateStr)) {
-            return null;
-        }
-        for (DateTimeFormatter formatter : DATE_FORMATTERS) {
-            try {
-                return LocalDate.parse(dateStr, formatter);
-            } catch (DateTimeParseException e) {
-                // Continue to try other formats
-            }
-        }
-        System.err.println("Unparseable date: " + dateStr);
-        return null;
     }
 }
