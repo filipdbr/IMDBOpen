@@ -66,8 +66,6 @@ public class CastingPrincipalDTO {
         castingPrincipal.setIdCasting(dto.getIdCasting());
         castingPrincipal.setFilmId(dto.getFilmId());
         castingPrincipal.setActeurId(dto.getActeurId());
-        castingPrincipal.setCreatedDate(dto.getCreatedDate());
-        castingPrincipal.setUpdatedDate(dto.getUpdatedDate());
         return castingPrincipal;
     }
 }

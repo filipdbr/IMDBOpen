@@ -130,7 +130,7 @@ public class DatabaseInitializer {
         //roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
 
         //Populate Cating Principal table
-        castingPrincipalExtractor.extractCastingPrincipalsFromCSV("src/main/resources/CSV/casting_principals.csv");
+        castingPrincipalExtractor.extractCastingPrincipalsFromCSV("src/main/resources/CSV/castingPrincipal.csv");
 
     }
 }
