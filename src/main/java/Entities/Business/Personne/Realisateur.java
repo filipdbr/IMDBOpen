@@ -6,7 +6,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "realisateur")
@@ -30,13 +32,9 @@ public class Realisateur  {
     @Column(name = "id_imdb")
     private String idImdb;
 
-    @ManyToMany
-    @JoinTable(
-            name = "film_realisateur",
-            joinColumns = @JoinColumn(name = "realisateur_id_imdb"),
-            inverseJoinColumns = @JoinColumn(name = "film_imdb")
-    )
-    private List<Film> films = new ArrayList<>();
+    @ManyToMany(mappedBy = "realisateurs")
+    private Set<Film> films = new HashSet<>();
+
 
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();

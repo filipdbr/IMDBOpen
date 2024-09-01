@@ -3,7 +3,6 @@ package Entities.Business.Film;
 import Entities.Business.Pays.Pays;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Personne.Realisateur;
-import Entities.Business.Role.Role;
 import Entities.Generic.IEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -11,7 +10,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Film")
@@ -63,6 +64,10 @@ public class Film implements IEntity<Long> {
     @NotBlank(message = "Resume cannot be blank")
     private String resume;
 
+    @Column(name = "genres")
+    @Size(max = 255, message = "Genres string should not exceed 255 characters")
+    private String genres; // For search features
+
     @ManyToOne
     @JoinColumn(name = "id_pays")
     private Pays pays;
@@ -75,54 +80,49 @@ public class Film implements IEntity<Long> {
     )
     private List<Acteur> acteurs = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "Film_Genre",
+            name = "film_genre",
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private List<Genre> genres = new ArrayList<>();
+    private Set<Genre> genresl = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "Film_Realisateur",
+            name = "film_realisateur",
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "realisateur_id")
     )
-    private List<Realisateur> realisateurs = new ArrayList<>();
+    private Set<Realisateur> realisateurs = new HashSet<>();
 
-    @Override
-    @Transient
+
     public LocalDateTime getCreatedDate() {
         return null; // Implement as needed
     }
 
-    @Override
-    @Transient
+
+
     public void setCreatedDate(LocalDateTime createdDate) {
         // Implement as needed
     }
 
-    @Override
-    @Transient
+
     public LocalDateTime getUpdatedDate() {
         return null; // Implement as needed
     }
 
-    @Override
-    @Transient
+
     public void setUpdatedDate(LocalDateTime updatedDate) {
         // Implement as needed
     }
 
-    @Override
-    @Transient
+
     public boolean isDeleted() {
         return false; // Implement as needed
     }
 
-    @Override
-    @Transient
+
     public void setDeleted(boolean deleted) {
         // Implement as needed
     }

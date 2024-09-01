@@ -84,7 +84,8 @@ public class FilmExtractor {
                         film.setLieuTour(lieuTour);
                         film.setLangue(langue);
                         film.setResume(resume);
-                        film.setPays(pays);  // Set the Pays object correctly
+                        film.setPays(pays);
+                        film.setGenres(genre);// Set the Pays object correctly
 
                         // Save the new film to the database
                         filmService.save(film);

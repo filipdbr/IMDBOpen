@@ -3,7 +3,11 @@ package Entities.Business.Film;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import lombok.*;
 
 
@@ -26,7 +30,7 @@ public class Genre {
     private String name;
 
     @ManyToMany(mappedBy = "genres")
-    private List<Film> films;
+    private Set<Film> films = new HashSet<>();
 
 
 

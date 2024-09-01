@@ -19,7 +19,7 @@ public class FilmDTO {
     private String langue;
     private String resume;
     private Pays pays;
-    private List<Genre> genres;
+    private String genres;
 
     public static FilmDTO fromEntity(Film film) {
         FilmDTO dto = new FilmDTO();

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,7 +48,15 @@ public class FilmService {
                     .collect(Collectors.toList());
         }
         if (StringUtils.hasText(genreName)) {
-            films = films.stream().filter(film -> film.getGenres().stream().anyMatch(genre -> genre.getName().equalsIgnoreCase(genreName))).collect(Collectors.toList());
+            films = films.stream()
+                    .filter(film -> {
+                        // Split the genres string by the delimiter (e.g., comma)
+                        String[] genresArray = film.getGenres().split(",\\s*"); // Adjust delimiter if needed
+                        // Check if the genreName is present in the genresArray
+                        return Arrays.stream(genresArray)
+                                .anyMatch(genre -> genre.equalsIgnoreCase(genreName));
+                    })
+                    .collect(Collectors.toList());
         }
 
         if (StringUtils.hasText(sortBy)) {
