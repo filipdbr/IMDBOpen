@@ -66,4 +66,6 @@ public interface ICastingPrincipalRepository extends JpaRepository<CastingPrinci
 
     // Delete by film and actor
     void deleteByFilmAndActeur(Film film, Acteur acteur);
+
+    boolean existsByFilmIdAndActeurId(String filmId, String acteurId);
 }
