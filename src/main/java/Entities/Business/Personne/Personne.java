@@ -1,36 +1,78 @@
 package Entities.Business.Personne;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import lombok.*;
 
-public abstract class Personne implements IPersonne<Long> {
+@Entity
+@Table(name = "personne")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Personne implements IPersonne<Long> {
 
-    private String nom;
-    private String prenom;
-    private LocalDateTime dateNaissance;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    // Getters and Setters
-    public String getNom() {
-        return nom;
+    @Column(name = "identite")
+    @Getter
+    @Setter
+    private String identite;
+
+    @Getter
+    @Setter
+    @Column(name = "date_naissance")
+    private String dateNaissance;
+
+    @Getter
+    @Setter
+    @Column(name = "lieu_naissance")
+    private String lieuNaissance;
+
+    @Getter
+    @Setter
+    @Column(name = "url")
+    private String url;
+
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getPrenom() {
-        return prenom;
+    @Override
+    public LocalDateTime getCreatedDate() {
+        return null;
     }
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    @Override
+    public void setCreatedDate(LocalDateTime createdDate) {
+        // No implementation needed
     }
 
-    public LocalDateTime getDateNaissance() {
-        return dateNaissance;
+    @Override
+    public LocalDateTime getUpdatedDate() {
+        return null;
     }
 
-    public void setDateNaissance(LocalDateTime dateNaissance) {
-        this.dateNaissance = dateNaissance;
+    @Override
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        // No implementation needed
     }
 
+    @Override
+    public boolean isDeleted() {
+        return false;
+    }
+
+    @Override
+    public void setDeleted(boolean deleted) {
+        // No implementation needed
+    }
 }

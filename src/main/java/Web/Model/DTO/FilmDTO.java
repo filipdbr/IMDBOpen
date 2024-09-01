@@ -1,6 +1,7 @@
 package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Pays.Pays;
 import lombok.Data;
 
 @Data
@@ -8,13 +9,14 @@ public class FilmDTO {
     private Long id;
     private String imdb;
     private String nom;
-    private int annee;
-    private double rating;
+    private String annee;
+    private String rating;
     private String url;
     private String lieuTour;
     private String langue;
     private String resume;
-    private String pays;
+    private Pays pays;
+    private String genres;
 
     public static FilmDTO fromEntity(Film film) {
         FilmDTO dto = new FilmDTO();
@@ -28,6 +30,7 @@ public class FilmDTO {
         dto.setLangue(film.getLangue());
         dto.setResume(film.getResume());
         dto.setPays(film.getPays());
+        dto.setGenres(film.getGenres());
         return dto;
     }
 
@@ -43,6 +46,7 @@ public class FilmDTO {
         film.setLangue(this.langue);
         film.setResume(this.resume);
         film.setPays(this.pays);
+        film.setGenres(this.getGenres());
         return film;
     }
 }
