@@ -32,8 +32,13 @@ public class Realisateur  {
     @Column(name = "id_imdb")
     private String idImdb;
 
-    @ManyToMany(mappedBy = "realisateurs")
-    private Set<Film> films = new HashSet<>();
+    //@ManyToMany
+    //@JoinTable(
+    //        name = "film_realisateur",
+    //        joinColumns = @JoinColumn(name = "realisateur_id_imdb"),
+    //        inverseJoinColumns = @JoinColumn(name = "film_imdb")
+    //)
+    //private List<Film> films = new ArrayList<>();
 
 
     @Column(name = "created_date")

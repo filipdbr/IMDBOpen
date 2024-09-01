@@ -1,11 +1,11 @@
-package Entities.Business.Film;
+package Entities.Business.Genre;
 
+import Entities.Business.Film.Film;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import lombok.*;
@@ -29,7 +29,7 @@ public class Genre {
     @Size(max = 100, message = "Genre name should not exceed 100 characters")
     private String name;
 
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany(mappedBy = "genresl", fetch = FetchType.EAGER)
     private Set<Film> films = new HashSet<>();
 
 

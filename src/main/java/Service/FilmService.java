@@ -1,7 +1,7 @@
 package Service;
 
 import Entities.Business.Film.Film;
-import Entities.Business.Film.Genre;
+import Entities.Business.Genre.Genre;
 import Entities.Business.Pays.Pays;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
@@ -144,9 +144,9 @@ public class FilmService {
         filmRepository.delete(film);
     }
 
-    public List<Film> findFilmsByActor(Long actorId) {
-        return filmRepository.findFilmsByActor(actorId);
-    }
+    ////public List<Film> findFilmsByActor(Long actorId) {
+    //    return filmRepository.findFilmsByActor(actorId);
+    //}
 
     public Genre findOrCreateGenre(String genreName) {
         return genreRepository.findByName(genreName)

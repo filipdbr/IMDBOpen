@@ -1,6 +1,6 @@
 package Web.Controller;
 
-import Entities.Business.Film.Genre; // Correct import statement
+import Entities.Business.Genre.Genre; // Correct import statement
 import Service.GenreService;
 import Web.Model.DTO.GenreDTO;
 import org.springframework.beans.factory.annotation.Autowired;

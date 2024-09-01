@@ -124,9 +124,9 @@ public class FilmController {
         }
     }
 
-    @GetMapping("/by-actor/{actorId}")
-    public ResponseEntity<List<Film>> getFilmsByActor(@PathVariable Long actorId) {
-        List<Film> films = filmService.findFilmsByActor(actorId);
-        return ResponseEntity.ok(films);
-    }
+    //@GetMapping("/by-actor/{actorId}")
+    //public ResponseEntity<List<Film>> getFilmsByActor(@PathVariable Long actorId) {
+    //    List<Film> films = filmService.findFilmsByActor(actorId);
+    //    return ResponseEntity.ok(films);
+    //}
 }

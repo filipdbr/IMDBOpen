@@ -1,11 +1,8 @@
 package Web.Model.DTO;
 
 import Entities.Business.Film.Film;
-import Entities.Business.Film.Genre;
 import Entities.Business.Pays.Pays;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class FilmDTO {

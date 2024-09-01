@@ -1,6 +1,6 @@
 package Service;
 
-import Entities.Business.Film.Genre;
+import Entities.Business.Genre.Genre;
 import Persistence.Repository.IGenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

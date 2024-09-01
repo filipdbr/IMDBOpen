@@ -32,7 +32,7 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     List<Film> findByPaysName(@Param("paysName") String paysName);
 
     // Find films by genre name (assuming 'genres' contains 'Genre' entities)
-    @Query("SELECT f FROM Film f JOIN f.genres g WHERE g.name = :genreName")
+    @Query("SELECT f FROM Film f JOIN f.genresl g WHERE g.name = :genreName")
     List<Film> findByGenreName(@Param("genreName") String genreName);
 
     // Find films by language
@@ -48,7 +48,7 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
             + "(:annee IS NULL OR f.annee = :annee) AND "
             + "(:rating IS NULL OR f.rating >= :rating) AND "
             + "(:paysName IS NULL OR f.pays.name = :paysName) AND "
-            + "(:genreName IS NULL OR EXISTS (SELECT 1 FROM f.genres g WHERE g.name = :genreName)) "
+            + "(:genre IS NULL OR EXISTS (SELECT 1 FROM f.genresl g WHERE g.name = :genreName)) "
             + "ORDER BY "
             + "CASE WHEN :sortBy = 'nom' THEN f.nom END ASC, "
             + "CASE WHEN :sortBy = 'annee' THEN f.annee END ASC, "
@@ -63,8 +63,8 @@ public interface IFilmRepository extends JpaRepository<Film, Long> {
     );
 
     // Custom query method to find films by actor
-    @Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.id = :actorId")
-    List<Film> findFilmsByActor(@Param("actorId") Long actorId);
+    //@Query("SELECT f FROM Film f JOIN f.acteurs a WHERE a.id = :actorId")
+    //List<Film> findFilmsByActor(@Param("actorId") Long actorId);
 
 
 }

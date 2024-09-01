@@ -1,5 +1,6 @@
 package Entities.Business.Film;
 
+import Entities.Business.Genre.Genre;
 import Entities.Business.Pays.Pays;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Personne.Realisateur;
@@ -72,13 +73,13 @@ public class Film implements IEntity<Long> {
     @JoinColumn(name = "id_pays")
     private Pays pays;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Film_Acteur",
-            joinColumns = @JoinColumn(name = "film_id"),
-            inverseJoinColumns = @JoinColumn(name = "acteur_id")
-    )
-    private List<Acteur> acteurs = new ArrayList<>();
+    //@ManyToMany
+    //@JoinTable(
+    //        name = "Film_Acteur",
+    //        joinColumns = @JoinColumn(name = "film_imdb"),
+    //        inverseJoinColumns = @JoinColumn(name = "acteur_id_imdb")
+    //)
+    //private List<Acteur> acteurs = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -88,13 +89,13 @@ public class Film implements IEntity<Long> {
     )
     private Set<Genre> genresl = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "film_realisateur",
-            joinColumns = @JoinColumn(name = "film_id"),
-            inverseJoinColumns = @JoinColumn(name = "realisateur_id")
-    )
-    private Set<Realisateur> realisateurs = new HashSet<>();
+    //@ManyToMany(cascade = CascadeType.ALL)
+    //@JoinTable(
+    //        name = "film_realisateur",
+    //        joinColumns = @JoinColumn(name = "film_imdb"),
+    //        inverseJoinColumns = @JoinColumn(name = "realisateur_id_imdb")
+    //)
+    //private Set<Realisateur> realisateurs = new HashSet<>();
 
 
     public LocalDateTime getCreatedDate() {

@@ -37,6 +37,7 @@ public class DatabaseInitializer {
 
     @Autowired
     private RealisateurExtractor realisateurExtractor;
+
     @Autowired
     private IFilmRepository iFilmRepository;
 
@@ -48,8 +49,12 @@ public class DatabaseInitializer {
 
     @Autowired
     private IPersonneRepository iPersonneRepository;
+
     @Autowired
     private CastingPrincipalExtractor castingPrincipalExtractor;
+
+    @Autowired
+    private FilmRealisateurExtractor filmRealisateurExtractor;
 
     public void createDatabase() {
         try (Connection connection = dataSource.getConnection()) {
@@ -57,14 +62,17 @@ public class DatabaseInitializer {
             String sql = "CREATE SCHEMA IF NOT EXISTS bq6m2mlrafs4wqh3gcgt";
             statement.executeUpdate(sql);
             System.out.println("Database created or already exists.");
-          //  createTablesIfNotExist(connection);
+
+            // Ensure tables are created
+            createTablesIfNotExist(connection);
+
             populateDatabase();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-   private void createTablesIfNotExist(Connection connection) throws SQLException {
+    private void createTablesIfNotExist(Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
 
         // Create Film table if not exists
@@ -103,9 +111,25 @@ public class DatabaseInitializer {
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "role_name VARCHAR(255) NOT NULL, " +
                 "film_id BIGINT NOT NULL, " +
-                "actor_id BIGINT NOT NULL, ";
+                "actor_id BIGINT NOT NULL)";
         connection.createStatement().executeUpdate(createRoleTable);
         System.out.println("Role table created or already exists.");
+
+        // Create Film_Realisateur table if not exists
+        String createFilmRealisateurTable = "CREATE TABLE IF NOT EXISTS film_realisateur (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "realisateur_id_imdb VARCHAR(255), " +
+                "film_imdb VARCHAR(255))";
+        connection.createStatement().executeUpdate(createFilmRealisateurTable);
+        System.out.println("Film_Realisateur table created or already exists.");
+
+        // Create Film_Acteur table if not exists
+        String createFilmActeurTable = "CREATE TABLE IF NOT EXISTS film_acteur (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "acteur_id_imdb VARCHAR(255), " +
+                "film_imdb VARCHAR(255))";
+        connection.createStatement().executeUpdate(createFilmActeurTable);
+        System.out.println("Film_Acteur table created or already exists.");
     }
 
     private boolean tableExists(DatabaseMetaData metaData, String tableName) throws SQLException {
@@ -118,19 +142,19 @@ public class DatabaseInitializer {
         // Populate Film table
         //filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
 
+        // Populate Realisateur table
+        //realisateurExtractor.extractRealisateursFromCSV("src/main/resources/CSV/realisateurs.csv");
+
+        // Populate Film_Realisateur table
+        //filmRealisateurExtractor.extractAndSaveFilmRealisateurFromCSV("src/main/resources/CSV/film_realisateurs.csv");
+
+        // Populate Casting Principal table
+        //castingPrincipalExtractor.extractCastingPrincipalsFromCSV("src/main/resources/CSV/castingPrincipal.csv");
 
         // Populate Personne and Acteur tables
         //actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
 
-        // Populate Realisateur table
-        //realisateurExtractor.extractRealisateursFromCSV("src/main/resources/CSV/realisateurs.csv");
-
-
         // Populate Role table
-        //roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
-
-        //Populate Cating Principal table
-        castingPrincipalExtractor.extractCastingPrincipalsFromCSV("src/main/resources/CSV/castingPrincipal.csv");
-
+        roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
     }
 }

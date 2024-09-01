@@ -1,7 +1,7 @@
 package Utilities.CSVExtractors;
 
 import Entities.Business.Film.Film;
-import Entities.Business.Film.Genre;
+import Entities.Business.Genre.Genre;
 import Entities.Business.Pays.Pays;
 import Service.FilmService;
 import Service.GenreService;
@@ -13,6 +13,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class FilmExtractor {
     @Autowired
     private GenreService genreService;
 
+    @Transactional
     public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())

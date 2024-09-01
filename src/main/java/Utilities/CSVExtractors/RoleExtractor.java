@@ -1,7 +1,5 @@
 package Utilities.CSVExtractors;
 
-import Entities.Business.Film.Film;
-import Entities.Business.Personne.Acteur;
 import Entities.Business.Role.Role;
 import Persistence.Repository.IActeurRepository;
 import Persistence.Repository.IFilmRepository;
@@ -11,12 +9,12 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class RoleExtractor {
@@ -29,6 +27,9 @@ public class RoleExtractor {
 
     @Autowired
     private IActeurRepository acteurRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Transactional
     public void extractRolesFromCSV(String filePath) {
@@ -55,25 +56,13 @@ public class RoleExtractor {
                         role.setRoleName(roleName);
                         role.setFilmId(filmId);
                         role.setActeurId(acteurId);
-                        
 
-                        // Set Film and Acteur based on IDs if they exist
-                        Optional<Film> optionalFilm = filmRepository.findByImdb(filmId);
-                        Optional<Acteur> optionalActeur = acteurRepository.findByImdb(acteurId);
+                        // Save the new Role to the database
+                        roleRepository.save(role);
 
-                        if (optionalFilm.isPresent() && optionalActeur.isPresent()) {
-
-
-                            try {
-                                // Save the new Role to the database
-                                roleRepository.save(role);
-                            } catch (Exception e) {
-                                System.err.println("Error saving Role - Film ID: " + filmId + ", Actor ID: " + acteurId + ", Role Name: " + roleName);
-                                e.printStackTrace();
-                            }
-                        } else {
-                            System.err.println("Film or Actor not found for Role - Film ID: " + filmId + ", Actor ID: " + acteurId);
-                        }
+                        // Insert into film_acteur table
+                        String sql = "INSERT INTO film_acteur (acteur_id_imdb, film_imdb) VALUES (?, ?)";
+                        jdbcTemplate.update(sql, acteurId, filmId);
                     }
                 } catch (Exception e) {
                     System.err.println("Error processing line for role - Film ID: " + filmId + ", Actor ID: " + acteurId + ", Role Name: " + roleName + ": " + e.getMessage());
