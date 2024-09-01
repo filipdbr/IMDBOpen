@@ -93,4 +93,5 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
             @Param("acteurId") String acteurId,
             @Param("roleName") String roleName
     );
+    boolean existsByFilmIdAndActeurIdAndRoleName(String filmId, String acteurId, String roleName);
 }

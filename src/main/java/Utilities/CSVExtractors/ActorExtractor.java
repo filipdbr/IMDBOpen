@@ -22,9 +22,9 @@ public class ActorExtractor {
 
     @Autowired
     private IActeurRepository acteurRepository;
+
     @Autowired
     private ActeurService acteurService;
-
 
     @Autowired
     private IPersonneRepository personneRepository;
@@ -65,8 +65,8 @@ public class ActorExtractor {
                         personne.setUrl(url);
 
                         try {
-                           acteurService.savePersonne(personne);
-                           // Save the new Personne to the database
+                            // Save the new Personne to the database
+                            acteurService.savePersonne(personne);
                         } catch (Exception e) {
                             System.err.println("Error saving Personne: " + identite + " - " + e.getMessage());
                             e.printStackTrace();
@@ -88,8 +88,8 @@ public class ActorExtractor {
                         acteur.setTaille(tailleStr);
 
                         try {
+                            // Save the new Acteur to the database
                             acteurService.save(acteur);
-                           // Save the new Acteur to the database
                         } catch (Exception e) {
                             System.err.println("Error saving Acteur: " + identite + " - " + e.getMessage());
                             e.printStackTrace();

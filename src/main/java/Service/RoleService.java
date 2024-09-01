@@ -1,9 +1,13 @@
 package Service;
 
 import Entities.Business.Role.Role;
+import Entities.Business.Film.Film;
+import Entities.Business.Personne.Acteur;
 import Exceptions.EntityNotFoundException;
 import Exceptions.InvalidDataException;
 import Persistence.Repository.IRoleRepository;
+import Persistence.Repository.IFilmRepository;
+import Persistence.Repository.IActeurRepository;
 import Web.Model.DTO.RoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,12 @@ public class RoleService {
 
     @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    private IFilmRepository filmRepository;
+
+    @Autowired
+    private IActeurRepository actorRepository;
 
     /**
      * Finds roles based on multiple filters.
@@ -42,7 +52,6 @@ public class RoleService {
 
         return roles.stream().map(RoleDTO::fromEntity).collect(Collectors.toList());
     }
-
     /**
      * Finds roles by role name.
      *

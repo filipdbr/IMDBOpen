@@ -3,10 +3,17 @@ package Web.Model.DTO;
 import Entities.Business.Film.Film;
 import Entities.Business.Personne.Acteur;
 import Entities.Business.Role.Role;
+import lombok.Getter;
+import lombok.Setter;
 
 public class RoleDTO {
 
+    @Setter
+    @Getter
     private Long id;
+
+    @Setter
+    @Getter
     private String roleName;
     private String filmId; // Use String for the foreign key ID
     private String acteurId; // Use String for the foreign key ID
@@ -65,7 +72,6 @@ public class RoleDTO {
         );
     }
 
-    // Convert RoleDTO to Role entity
     public Role toEntity() {
         Role role = new Role();
         role.setId(this.id);

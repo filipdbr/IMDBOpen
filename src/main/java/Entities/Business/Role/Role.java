@@ -1,15 +1,15 @@
 package Entities.Business.Role;
 
-import Entities.Business.Film.Film;
-import Entities.Business.Personne.Acteur;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "Roles")
+@Table(name = "role")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "film_id")
@@ -18,7 +18,9 @@ public class Role {
     @Column(name = "acteur_id")
     private String acteurId; // ID in the acteur table, referenced as a String
 
-    @Column(name = "role_name", nullable = false)
+    @Setter
+    @Getter
+    @Column(name = "role_name")
     private String roleName;
 
     // Default constructor

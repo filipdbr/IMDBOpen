@@ -117,7 +117,7 @@ public class DatabaseInitializer {
 
     private void populateDatabase() {
         // Populate Film table
-   //     filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
+filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
 
 
         // Populate Personne and Acteur tables
@@ -128,7 +128,7 @@ public class DatabaseInitializer {
 
 
         // Populate Role table
-        List<Role> roles = roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
-        iRoleRepository.saveAll(roles);
+         roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
+
     }
 }

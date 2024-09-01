@@ -29,4 +29,15 @@ public class GenreService {
     public void deleteById(Long id) {
         genreRepository.deleteById(id);
     }
+
+    public Genre findOrCreateGenre(String genreName) {
+        Optional<Genre> genreOptional = Optional.ofNullable(genreRepository.findByName(genreName));
+        if (genreOptional.isPresent()) {
+            return genreOptional.get();
+        } else {
+            Genre newGenre = new Genre();
+            newGenre.setName(genreName);
+            return genreRepository.save(newGenre);
+        }
+    }
 }

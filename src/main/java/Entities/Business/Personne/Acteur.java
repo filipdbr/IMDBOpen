@@ -14,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Acteur {
 
+    @Setter
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,8 +37,8 @@ public class Acteur {
     @ManyToMany
     @JoinTable(
             name = "film_acteur",
-            joinColumns = @JoinColumn(name = "acteur_id"),
-            inverseJoinColumns = @JoinColumn(name = "film_id")
+            joinColumns = @JoinColumn(name = "acteur_id_imdb"),
+            inverseJoinColumns = @JoinColumn(name = "film_imdb")
     )
     private List<Film> films = new ArrayList<>();
 
@@ -48,14 +50,5 @@ public class Acteur {
         this.idImdb = idImdb;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
 }

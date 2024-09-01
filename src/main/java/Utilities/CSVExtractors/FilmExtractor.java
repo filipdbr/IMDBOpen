@@ -1,8 +1,10 @@
 package Utilities.CSVExtractors;
 
 import Entities.Business.Film.Film;
+import Entities.Business.Film.Genre;
 import Entities.Business.Pays.Pays;
 import Service.FilmService;
+import Service.GenreService;
 import Service.PaysService;
 import Web.Model.DTO.FilmDTO;
 import com.opencsv.CSVReader;
@@ -14,7 +16,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class FilmExtractor {
@@ -24,10 +28,12 @@ public class FilmExtractor {
 
     @Autowired
     private PaysService paysService;  // Assuming you need this service
+    @Autowired
+    private GenreService genreService;
 
     public void extractAndSaveFilmsFromCSV(String filePath) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
-                .withCSVParser(new CSVParserBuilder().withSeparator(';').build())  // Set the separator to ';'
+                .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                 .build()) {
 
             String[] header = reader.readNext(); // Read the header row
@@ -42,6 +48,7 @@ public class FilmExtractor {
                     String rating = line[3].isEmpty() ? "N/A" : line[3].trim();
                     String url = line[4].isEmpty() ? "N/A" : line[4].trim();
                     String lieuTour = line[5].isEmpty() ? "N/A" : line[5].trim();
+                    String genre = line[6].isEmpty() ? "N/A" : line[6].trim();
                     String langue = line[7].isEmpty() ? "N/A" : line[7].trim();
                     String resume = line[8].isEmpty() ? "N/A" : line[8].trim();
                     String paysName = line[9].isEmpty() ? "N/A" : line[9].trim();
@@ -60,6 +67,12 @@ public class FilmExtractor {
 
                         // Create or find a Pays instance
                         Pays pays = paysService.findOrCreatePays(paysName);
+
+                        // Create or find Genre instances
+                        Set<Genre> genres = new HashSet<>();
+                        for (String genreName : genre.split(",")) {
+                            genres.add(genreService.findOrCreateGenre(genreName.trim()));
+                        }
 
                         // Create a new Film instance
                         Film film = new Film();
