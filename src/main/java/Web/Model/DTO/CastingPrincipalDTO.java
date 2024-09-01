@@ -1,58 +1,73 @@
 package Web.Model.DTO;
 
 import Entities.Business.CastingPrincipal.CastingPrincipal;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-/**
- * Data Transfer Object (DTO) for the CastingPrincipal entity.
- * <p>
- * This class is used to transfer data between different layers of the application
- * without exposing the full entity.
- * </p>
- *
- * @author mbenyahia, fbellin, fdabrowski
- */
-@Data
 public class CastingPrincipalDTO {
-
-    private Long id;
-    private FilmDTO film;
-    private ActeurDTO acteur;
+    private Long idCasting;
+    private String filmId;
+    private String acteurId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
-    /**
-     * Converts a CastingPrincipal entity to a CastingPrincipalDTO.
-     *
-     * @param castingPrincipal the CastingPrincipal entity to be converted
-     * @return the corresponding CastingPrincipalDTO
-     */
+    // Getters and Setters
+    public Long getIdCasting() {
+        return idCasting;
+    }
+
+    public void setIdCasting(Long idCasting) {
+        this.idCasting = idCasting;
+    }
+
+    public String getFilmId() {
+        return filmId;
+    }
+
+    public void setFilmId(String filmId) {
+        this.filmId = filmId;
+    }
+
+    public String getActeurId() {
+        return acteurId;
+    }
+
+    public void setActeurId(String acteurId) {
+        this.acteurId = acteurId;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    // Convert from Entity to DTO
     public static CastingPrincipalDTO fromEntity(CastingPrincipal castingPrincipal) {
         CastingPrincipalDTO dto = new CastingPrincipalDTO();
-        dto.setId(castingPrincipal.getIdCasting());
-        dto.setFilm(FilmDTO.fromEntity(castingPrincipal.getFilm()));
-        dto.setActeur(ActeurDTO.fromEntity(castingPrincipal.getActeur()));
-        dto.setCreatedDate(castingPrincipal.getCreatedDate());
-        dto.setUpdatedDate(castingPrincipal.getUpdatedDate());
+        dto.setIdCasting(castingPrincipal.getIdCasting());
+        dto.setFilmId(castingPrincipal.getFilmId());
+        dto.setActeurId(castingPrincipal.getActeurId());
         return dto;
     }
 
-    /**
-     * Converts a CastingPrincipalDTO back to a CastingPrincipal entity.
-     *
-     * @param dto the CastingPrincipalDTO to be converted
-     * @return the corresponding CastingPrincipal entity
-     */
+    // Convert from DTO to Entity
     public static CastingPrincipal toEntity(CastingPrincipalDTO dto) {
         CastingPrincipal castingPrincipal = new CastingPrincipal();
-        castingPrincipal.setIdCasting(dto.getId());
-        castingPrincipal.setFilm(dto.getFilm().toEntity());
-        castingPrincipal.setActeur(dto.getActeur().toEntity());
+        castingPrincipal.setIdCasting(dto.getIdCasting());
+        castingPrincipal.setFilmId(dto.getFilmId());
+        castingPrincipal.setActeurId(dto.getActeurId());
         castingPrincipal.setCreatedDate(dto.getCreatedDate());
         castingPrincipal.setUpdatedDate(dto.getUpdatedDate());
-
         return castingPrincipal;
     }
 }

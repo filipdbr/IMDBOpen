@@ -1,11 +1,7 @@
 package Utilities.CSVExtractors;
 
 import Entities.Business.CastingPrincipal.CastingPrincipal;
-import Entities.Business.Film.Film;
-import Entities.Business.Personne.Acteur;
 import Persistence.Repository.ICastingPrincipalRepository;
-import Persistence.Repository.IFilmRepository;
-import Persistence.Repository.IActeurRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
@@ -16,19 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class CastingPrincipalExtractor {
 
     @Autowired
     private ICastingPrincipalRepository castingPrincipalRepository;
-
-    @Autowired
-    private IFilmRepository filmRepository;
-
-    @Autowired
-    private IActeurRepository acteurRepository;
 
     @Transactional
     public void extractCastingPrincipalsFromCSV(String filePath) {
@@ -54,21 +43,8 @@ public class CastingPrincipalExtractor {
                         castingPrincipal.setFilmId(filmId);
                         castingPrincipal.setActeurId(acteurId);
 
-                        // Set Film and Acteur based on IDs if they exist
-                        Optional<Film> optionalFilm = filmRepository.findByImdb(filmId);
-                        Optional<Acteur> optionalActeur = acteurRepository.findByImdb(acteurId);
-
-                        if (optionalFilm.isPresent() && optionalActeur.isPresent()) {
-                            try {
-                                // Save the new CastingPrincipal to the database
-                                castingPrincipalRepository.save(castingPrincipal);
-                            } catch (Exception e) {
-                                System.err.println("Error saving CastingPrincipal - Film ID: " + filmId + ", Actor ID: " + acteurId);
-                                e.printStackTrace();
-                            }
-                        } else {
-                            System.err.println("Film or Actor not found for CastingPrincipal - Film ID: " + filmId + ", Actor ID: " + acteurId);
-                        }
+                        // Save the new CastingPrincipal to the database
+                        castingPrincipalRepository.save(castingPrincipal);
                     }
                 } catch (Exception e) {
                     System.err.println("Error processing line for CastingPrincipal - Film ID: " + filmId + ", Actor ID: " + acteurId + ": " + e.getMessage());

@@ -9,10 +9,7 @@ import Persistence.Repository.IActeurRepository;
 import Persistence.Repository.IFilmRepository;
 import Persistence.Repository.IPersonneRepository;
 import Persistence.Repository.IRoleRepository;
-import Utilities.CSVExtractors.ActorExtractor;
-import Utilities.CSVExtractors.FilmExtractor;
-import Utilities.CSVExtractors.RealisateurExtractor;
-import Utilities.CSVExtractors.RoleExtractor;
+import Utilities.CSVExtractors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +48,8 @@ public class DatabaseInitializer {
 
     @Autowired
     private IPersonneRepository iPersonneRepository;
+    @Autowired
+    private CastingPrincipalExtractor castingPrincipalExtractor;
 
     public void createDatabase() {
         try (Connection connection = dataSource.getConnection()) {
@@ -117,18 +116,21 @@ public class DatabaseInitializer {
 
     private void populateDatabase() {
         // Populate Film table
-filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
+        //filmExtractor.extractAndSaveFilmsFromCSV("src/main/resources/CSV/films.csv");
 
 
         // Populate Personne and Acteur tables
+        //actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
 
-       actorExtractor.extractActorsFromCSV("src/main/resources/CSV/acteurs.csv");
-
-        realisateurExtractor.extractRealisateursFromCSV("src/main/resources/CSV/realisateurs.csv");
+        // Populate Realisateur table
+        //realisateurExtractor.extractRealisateursFromCSV("src/main/resources/CSV/realisateurs.csv");
 
 
         // Populate Role table
-         roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
+        //roleExtractor.extractRolesFromCSV("src/main/resources/CSV/roles.csv");
+
+        //Populate Cating Principal table
+        castingPrincipalExtractor.extractCastingPrincipalsFromCSV("src/main/resources/CSV/casting_principals.csv");
 
     }
 }

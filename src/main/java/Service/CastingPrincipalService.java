@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,13 +30,13 @@ public class CastingPrincipalService {
             if (film == null) {
                 throw new InvalidDataException("Film cannot be null");
             }
-            return castingPrincipalRepository.findByFilm(film).stream()
+            return castingPrincipalRepository.findByFilm(String.valueOf(film)).stream()
                     .map(CastingPrincipalDTO::fromEntity)
                     .collect(Collectors.toList());
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to retrieve casting by film", e);
+            throw new ServiceException("Failed to retrieve casting by film");
         }
     }
 
@@ -46,17 +45,17 @@ public class CastingPrincipalService {
             if (acteur == null) {
                 throw new InvalidDataException("Actor cannot be null");
             }
-            return castingPrincipalRepository.findByActeur(acteur).stream()
+            return castingPrincipalRepository.findByActeur(String.valueOf(acteur)).stream()
                     .map(CastingPrincipalDTO::fromEntity)
                     .collect(Collectors.toList());
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to retrieve casting by actor", e);
+            throw new ServiceException("Failed to retrieve casting by actor");
         }
     }
 
-    public CastingPrincipalDTO getCastingByFilmAndActeur(Film film, Acteur acteur) {
+    public CastingPrincipalDTO getCastingByFilmAndActeur(String film, String acteur) {
         try {
             if (film == null || acteur == null) {
                 throw new InvalidDataException("Film and Actor cannot be null");
@@ -67,7 +66,7 @@ public class CastingPrincipalService {
         } catch (EntityNotFoundException | InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to retrieve casting by film and actor", e);
+            throw new ServiceException("Failed to retrieve casting by film and actor");
         }
     }
 
@@ -82,7 +81,7 @@ public class CastingPrincipalService {
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to retrieve casting by created date", e);
+            throw new ServiceException("Failed to retrieve casting by created date");
         }
     }
 
@@ -97,7 +96,7 @@ public class CastingPrincipalService {
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to retrieve casting by updated date", e);
+            throw new ServiceException("Failed to retrieve casting by updated date");
         }
     }
 
@@ -113,7 +112,7 @@ public class CastingPrincipalService {
         } catch (InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to create casting", e);
+            throw new ServiceException("Failed to create casting");
         }
     }
 
@@ -135,11 +134,11 @@ public class CastingPrincipalService {
         } catch (EntityNotFoundException | InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to update casting", e);
+            throw new ServiceException("Failed to update casting");
         }
     }
 
-    public void deleteCastingByFilmAndActeur(Film film, Acteur acteur) {
+    public void deleteCastingByFilmAndActeur(String film, String acteur) {
         try {
             if (film == null || acteur == null) {
                 throw new InvalidDataException("Film and Actor cannot be null");
@@ -151,7 +150,7 @@ public class CastingPrincipalService {
         } catch (EntityNotFoundException | InvalidDataException e) {
             throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to delete casting", e);
+            throw new ServiceException("Failed to delete casting");
         }
     }
 }
