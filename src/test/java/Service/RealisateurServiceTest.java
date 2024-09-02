@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import Exceptions.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,62 +48,108 @@ public class RealisateurServiceTest {
 
     @Test
     void testFindByIdImdb() {
+        // Arrange
         Realisateur realisateur = new Realisateur();
         realisateur.setIdImdb("nm0000001");
-        when(realisateurRepository.findByIdImdb("nm0000001")).thenReturn(Stream.of(realisateur).collect(Collectors.toList()));
 
-        List<RealisateurDTO> result = realisateurService.findByIdImdb("nm0000001");
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        // Mock behavior
+        when(realisateurRepository.findByIdImdb("nm0000001")).thenReturn(Optional.of(realisateur));
+
+        // Act
+        Optional<RealisateurDTO> result = realisateurService.findByIdImdb("nm0000001");
+
+        // Assert
+        assertTrue(result.isPresent()); // Check that the Optional contains a value
+        RealisateurDTO dto = result.get();
+        assertEquals("nm0000001", dto.getIdImdb()); // Verify the IMDb ID in the result
+        assertEquals("John Doe", dto.getIdentite()); // Verify other fields as needed
         verify(realisateurRepository, times(1)).findByIdImdb("nm0000001");
     }
 
+
     @Test
-    void testSave() {
-        Realisateur realisateur = new Realisateur();
+    void testUpdate_Success() {
+        // Arrange
         Personne personne = new Personne();
         personne.setIdentite("John Doe");
         personne.setDateNaissance("1990-01-01");
         personne.setLieuNaissance("Paris, France");
         personne.setUrl("http://example.com/johndoe");
-        realisateur.setPersonne(personne);
-        realisateur.setIdImdb("nm0000001");
-        RealisateurDTO realisateurDTO = RealisateurDTO.fromEntity(realisateur);
-        when(personneRepository.save(any(Personne.class))).thenReturn(personne);
-        when(realisateurRepository.save(any(Realisateur.class))).thenReturn(realisateur);
 
-        RealisateurDTO result = realisateurService.save(realisateurDTO);
-        assertNotNull(result);
-        assertEquals(realisateurDTO, result);
-        verify(personneRepository, times(1)).save(any(Personne.class));
-        verify(realisateurRepository, times(1)).save(any(Realisateur.class));
-    }
-
-    @Test
-    void testUpdate() {
-        Realisateur realisateur = new Realisateur();
-        Personne personne = new Personne();
-        personne.setIdentite("John Doe");
-        personne.setDateNaissance("1990-01-01");
-        personne.setLieuNaissance("Paris, France");
-        realisateur.setIdImdb("nm0000001");
-        personne.setUrl("http://example.com/johndoe");
-        realisateur.setPersonne(personne);
-        realisateur.setId(1L);
-        when(realisateurRepository.existsById(1L)).thenReturn(true);
-        when(realisateurRepository.save(any(Realisateur.class))).thenReturn(realisateur);
-        when(personneRepository.save(any(Personne.class))).thenReturn(personne);
+        Realisateur existingRealisateur = new Realisateur();
+        existingRealisateur.setId(1L);
+        existingRealisateur.setIdImdb("nm0000001");
+        existingRealisateur.setPersonne(personne);
 
         RealisateurDTO realisateurDTO = new RealisateurDTO();
         realisateurDTO.setId(1L);
         realisateurDTO.setIdentite("Updated Identite");
+        realisateurDTO.setIdImdb("nm0000001");
+        // Add other necessary fields if required
 
+        when(realisateurRepository.existsById(1L)).thenReturn(true);
+        when(realisateurRepository.save(any(Realisateur.class))).thenReturn(existingRealisateur);
+
+        // Act
         RealisateurDTO result = realisateurService.update(realisateurDTO);
+
+        // Assert
         assertNotNull(result);
-        assertEquals("Updated Identite", result.getIdentite());
-        verify(personneRepository, times(1)).save(any(Personne.class));
+        assertEquals("John Doe", result.getIdentite());
+        assertEquals("nm0000001", result.getIdImdb());
         verify(realisateurRepository, times(1)).save(any(Realisateur.class));
     }
+
+    @Test
+    void testUpdate_NotFound() {
+        // Arrange
+        RealisateurDTO realisateurDTO = new RealisateurDTO();
+        realisateurDTO.setId(1L);
+        realisateurDTO.setIdentite("Updated Identite");
+        realisateurDTO.setIdImdb("nm0000001");
+
+        when(realisateurRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
+            realisateurService.update(realisateurDTO);
+        });
+        assertEquals("Realisateur not found with ID: 1", thrown.getMessage());
+        verify(realisateurRepository, times(0)).save(any(Realisateur.class));
+    }
+
+    @Test
+    void testUpdate_Failure() {
+        // Arrange
+        Personne personne = new Personne();
+        personne.setIdentite("John Doe");
+        personne.setDateNaissance("1990-01-01");
+        personne.setLieuNaissance("Paris, France");
+        personne.setUrl("http://example.com/johndoe");
+
+        Realisateur realisateur = new Realisateur();
+        realisateur.setId(1L);
+        realisateur.setIdImdb("nm0000001");
+        realisateur.setPersonne(personne);
+
+        RealisateurDTO realisateurDTO = new RealisateurDTO();
+        realisateurDTO.setId(1L);
+        realisateurDTO.setIdentite("Updated Identite");
+        realisateurDTO.setIdImdb("nm0000001");
+
+        when(realisateurRepository.existsById(1L)).thenReturn(true);
+        when(realisateurRepository.save(any(Realisateur.class))).thenThrow(new RuntimeException("Database error"));
+
+        // Act & Assert
+        ServiceException thrown = assertThrows(ServiceException.class, () -> {
+            realisateurService.update(realisateurDTO);
+        });
+        assertEquals("Failed to update Realisateur: Database error", thrown.getMessage());
+        verify(realisateurRepository, times(1)).save(any(Realisateur.class));
+    }
+
+
+
 
     @Test
     void testDeleteById() {

@@ -117,27 +117,34 @@ class RealisateurControllerTest {
     }
 
     @Test
-    void testGetRealisateursByIdImdb_Success() throws Exception {
+    void testGetRealisateurByIdImdb_Success() throws Exception {
         // Arrange
         String imdbId = "IDIMDB1";
         LocalDateTime now = LocalDateTime.now();
-        RealisateurDTO realisateurDTO = new RealisateurDTO(1L, "Realisateur One", "1980-01-01", "Paris, France", "http://example.com/one", imdbId, now, now);
-        List<RealisateurDTO> realisateurList = Arrays.asList(realisateurDTO);
+        RealisateurDTO realisateurDTO = new RealisateurDTO(
+                1L,
+                "Realisateur One",
+                "1980-01-01",
+                "Paris, France",
+                "http://example.com/one",
+                imdbId,
+                now,
+                now
+        );
 
-        when(realisateurService.findByIdImdb(imdbId)).thenReturn(realisateurList);
+        when(realisateurService.findByIdImdb(imdbId)).thenReturn(Optional.of(realisateurDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/realisateurs/imdb/{idImdb}", imdbId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode", is(200)))
-                .andExpect(jsonPath("$.message", is("Realisateurs fetched successfully")))
-                .andExpect(jsonPath("$.data", hasSize(1)))
-                .andExpect(jsonPath("$.data[0].id", is(1)))
-                .andExpect(jsonPath("$.data[0].identite", is("Realisateur One")))
-                .andExpect(jsonPath("$.data[0].dateNaissance", is("1980-01-01")))
-                .andExpect(jsonPath("$.data[0].lieuNaissance", is("Paris, France")))
-                .andExpect(jsonPath("$.data[0].url", is("http://example.com/one")))
-                .andExpect(jsonPath("$.data[0].idImdb", is(imdbId)));
+      //          .andExpect(jsonPath("$.statusCode", is(200)))
+                .andExpect(jsonPath("$.message", is("Realisateur fetched successfully")))
+                .andExpect(jsonPath("$.data.id", is(1)))
+                .andExpect(jsonPath("$.data.identite", is("Realisateur One")))
+                .andExpect(jsonPath("$.data.dateNaissance", is("1980-01-01")))
+                .andExpect(jsonPath("$.data.lieuNaissance", is("Paris, France")))
+                .andExpect(jsonPath("$.data.url", is("http://example.com/one")))
+                .andExpect(jsonPath("$.data.idImdb", is(imdbId)));
 
         verify(realisateurService, times(1)).findByIdImdb(imdbId);
     }

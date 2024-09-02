@@ -37,10 +37,12 @@ public class RealisateurService {
                 });
     }
 
-    public List<RealisateurDTO> findByIdImdb(String idImdb) {
-        return realisateurRepository.findByIdImdb(idImdb).stream()
-                .map(RealisateurDTO::fromEntity)
-                .collect(Collectors.toList());
+    public Optional<RealisateurDTO> findByIdImdb(String idImdb) {
+        // Retrieve the Realisateur entity wrapped in an Optional
+        Optional<Realisateur> realisateurOpt = realisateurRepository.findByIdImdb(idImdb);
+
+        // Convert the Realisateur entity to RealisateurDTO if present
+        return realisateurOpt.map(RealisateurDTO::fromEntity);
     }
 
     public RealisateurDTO save(RealisateurDTO realisateurDTO) {
