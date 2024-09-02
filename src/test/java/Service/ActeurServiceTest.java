@@ -12,8 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
+import Exceptions.*;
 import java.util.Optional;
 
 public class ActeurServiceTest {
@@ -32,84 +34,181 @@ public class ActeurServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
+
+
     @Test
-    void testSave() {
-        Acteur acteur = new Acteur();
+    void testCreateActeur_Success() {
+        // Arrange
         Personne personne = new Personne();
         personne.setIdentite("John Doe");
         personne.setDateNaissance("1990-01-01");
         personne.setLieuNaissance("Paris, France");
-        acteur.setIdImdb("nm0000001");
         personne.setUrl("http://example.com/johndoe");
+
+        Acteur acteur = new Acteur();
+        acteur.setId(1L);
+        acteur.setIdImdb("nm0000001");
+        acteur.setTaille("1.80m");
         acteur.setPersonne(personne);
-        when(personneRepository.save(any(Personne.class))).thenReturn(personne);
-        when(acteurRepository.saveAndFlush(any(Acteur.class))).thenReturn(acteur);
 
         ActeurDTO acteurDTO = new ActeurDTO();
         acteurDTO.setIdentite("John Doe");
         acteurDTO.setDateNaissance("1990-01-01");
+        acteurDTO.setTaille("1.80m");
+        acteurDTO.setIdImdb("nm0000001");
 
-        acteurService.save(acteurDTO.toEntity()); // Adjusted to match the return type of the save method
-        verify(personneRepository, times(1)).save(any(Personne.class));
-        verify(acteurRepository, times(1)).saveAndFlush(any(Acteur.class));
+        // Mock ActeurRepository
+        when(acteurRepository.save(any(Acteur.class))).thenReturn(acteur);
+
+        // Mock static method ActeurDTO.fromEntity
+        try (MockedStatic<ActeurDTO> mockedStatic = mockStatic(ActeurDTO.class)) {
+            mockedStatic.when(() -> ActeurDTO.fromEntity(any(Acteur.class))).thenReturn(acteurDTO);
+
+            // Act
+            ActeurDTO result = acteurService.createActeur(acteurDTO);
+
+            // Assert
+            assertNotNull(result);
+            assertEquals("John Doe", result.getIdentite());
+            assertEquals("1990-01-01", result.getDateNaissance());
+            assertEquals("1.80m", result.getTaille());
+            assertEquals("nm0000001", result.getIdImdb());
+            verify(acteurRepository, times(1)).save(any(Acteur.class));
+        }
     }
 
     @Test
-    void testCreateActeur() {
+    void testCreateActeur_InvalidData() {
+        // Arrange
+        ActeurDTO acteurDTO = new ActeurDTO(); // Missing required data
+
+        // Act & Assert
+        InvalidDataException thrown = assertThrows(InvalidDataException.class, () -> {
+            acteurService.createActeur(acteurDTO);
+        });
+        assertEquals("Invalid acteur data", thrown.getMessage());
+        verify(acteurRepository, never()).save(any(Acteur.class));
+    }
+
+
+    @Test
+    void testUpdateActeur_Success() {
+        // Arrange
         Acteur acteur = new Acteur();
         Personne personne = new Personne();
         personne.setIdentite("John Doe");
         personne.setDateNaissance("1990-01-01");
         personne.setLieuNaissance("Paris, France");
-        acteur.setIdImdb("nm0000001");
         personne.setUrl("http://example.com/johndoe");
         acteur.setPersonne(personne);
         acteur.setId(1L);
-        when(personneRepository.save(any(Personne.class))).thenReturn(personne);
-        when(acteurRepository.saveAndFlush(any(Acteur.class))).thenReturn(acteur);
-
-        ActeurDTO acteurDTO = new ActeurDTO();
-        acteurDTO.setIdentite("John Doe");
-        acteurDTO.setDateNaissance("1990-01-01");
-
-        ActeurDTO result = acteurService.createActeur(acteurDTO);
-        assertNotNull(result);
-        assertEquals("John Doe", result.getIdentite());
-        verify(personneRepository, times(1)).save(any(Personne.class));
-        verify(acteurRepository, times(1)).saveAndFlush(any(Acteur.class));
-    }
-
-    @Test
-    void testUpdateActeur() {
-        Acteur acteur = new Acteur();
-        Personne personne = new Personne();
-        personne.setIdentite("John Doe");
-        personne.setDateNaissance("1990-01-01");
-        personne.setLieuNaissance("Paris, France");
         acteur.setIdImdb("nm0000001");
-        personne.setUrl("http://example.com/johndoe");
-        acteur.setPersonne(personne);
-        acteur.setId(1L);
-        when(personneRepository.save(any(Personne.class))).thenReturn(personne);
-        when(acteurRepository.findById(1L)).thenReturn(Optional.of(acteur));
-        when(acteurRepository.saveAndFlush(any(Acteur.class))).thenReturn(acteur);
 
         ActeurDTO acteurDTO = new ActeurDTO();
         acteurDTO.setTaille("1,80m");
         acteurDTO.setIdImdb("nm0000001");
 
+        // Mock repository behavior
+        when(acteurRepository.findById(1L)).thenReturn(Optional.of(acteur));
+        when(acteurRepository.save(any(Acteur.class))).thenReturn(acteur);
+
+        // Act
         ActeurDTO result = acteurService.updateActeur(1L, acteurDTO);
+
+        // Assert
         assertNotNull(result);
         assertEquals("1,80m", result.getTaille());
-        verify(personneRepository, times(1)).save(any(Personne.class));
-        verify(acteurRepository, times(1)).saveAndFlush(any(Acteur.class));
+        assertEquals("nm0000001", result.getIdImdb());
+        verify(acteurRepository, times(1)).findById(1L);
+        verify(acteurRepository, times(1)).save(any(Acteur.class));
     }
+
+    @Test
+    void testUpdateActeur_ActeurNotFound() {
+        // Arrange
+        ActeurDTO acteurDTO = new ActeurDTO();
+        acteurDTO.setTaille("1,80m");
+        acteurDTO.setIdImdb("nm0000001");
+
+        // Mock repository behavior
+        when(acteurRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
+            acteurService.updateActeur(1L, acteurDTO);
+        });
+        assertEquals("Acteur not found with id: 1", thrown.getMessage());
+        verify(acteurRepository, times(1)).findById(1L);
+        verify(acteurRepository, never()).save(any(Acteur.class));
+    }
+    @Test
+    void testUpdateActeur_SavesCorrectly() {
+        // Arrange
+        Acteur acteur = new Acteur();
+        Personne personne = new Personne();
+        personne.setIdentite("John Doe");
+        personne.setDateNaissance("1990-01-01");
+        personne.setLieuNaissance("Paris, France");
+        personne.setUrl("http://example.com/johndoe");
+        acteur.setPersonne(personne);
+        acteur.setId(1L);
+        acteur.setIdImdb("nm0000001");
+
+        ActeurDTO acteurDTO = new ActeurDTO();
+        acteurDTO.setTaille("1,80m");
+        acteurDTO.setIdImdb("nm0000001");
+
+        // Mock repository behavior
+        when(acteurRepository.findById(1L)).thenReturn(Optional.of(acteur));
+        when(acteurRepository.save(any(Acteur.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        ActeurDTO result = acteurService.updateActeur(1L, acteurDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("1,80m", result.getTaille());
+        assertEquals("nm0000001", result.getIdImdb());
+        verify(acteurRepository, times(1)).findById(1L);
+        verify(acteurRepository, times(1)).save(any(Acteur.class));
+    }
+
+
+
 
     @Test
     void testDeleteActeur() {
         when(acteurRepository.existsById(1L)).thenReturn(true);
 
         acteurService.deleteActeur(1L);
+        verify(acteurRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteActeur_EntityNotFoundException() {
+        // Arrange
+        when(acteurRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
+            acteurService.deleteActeur(1L);
+        });
+        assertEquals("Acteur not found with id: 1", thrown.getMessage());
+        verify(acteurRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void testDeleteActeur_Exception() {
+        // Arrange
+        when(acteurRepository.existsById(1L)).thenReturn(true);
+        doThrow(new RuntimeException("Database error")).when(acteurRepository).deleteById(1L);
+
+        // Act & Assert
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            acteurService.deleteActeur(1L);
+        });
+        assertEquals("Database error", thrown.getMessage());
         verify(acteurRepository, times(1)).deleteById(1L);
     }
 }
