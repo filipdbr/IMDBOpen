@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,11 +48,29 @@ public class RealisateurController {
     }
 
     @GetMapping("/imdb/{idImdb}")
-    public ResponseEntity<ApiResponse<List<RealisateurDTO>>> getRealisateursByIdImdb(@PathVariable String idImdb) {
-        List<RealisateurDTO> realisateurs = realisateurService.findByIdImdb(idImdb);
-        ApiResponse<List<RealisateurDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), "Realisateurs fetched successfully", realisateurs);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse<RealisateurDTO>> getRealisateursByIdImdb(@PathVariable String idImdb) {
+        // Call the service method to get the Optional<RealisateurDTO>
+        Optional<RealisateurDTO> realisateurOpt = realisateurService.findByIdImdb(idImdb);
+
+        if (realisateurOpt.isPresent()) {
+            // If present, return the DTO wrapped in ApiResponse
+            ApiResponse<RealisateurDTO> response = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "Realisateur fetched successfully",
+                    realisateurOpt.get()
+            );
+            return ResponseEntity.ok(response);
+        } else {
+            // If not present, return a 404 response with a suitable message
+            ApiResponse<RealisateurDTO> response = new ApiResponse<>(
+                    HttpStatus.NOT_FOUND.value(),
+                    "Realisateur not found with IMDb ID: " + idImdb,
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
+
 
     @PostMapping
     public ResponseEntity<ApiResponse<RealisateurDTO>> createRealisateur(@RequestBody RealisateurDTO realisateurDTO) {

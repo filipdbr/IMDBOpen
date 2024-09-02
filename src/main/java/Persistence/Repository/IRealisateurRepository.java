@@ -40,7 +40,7 @@ public interface IRealisateurRepository extends JpaRepository<Realisateur, Long>
 
      */
 
-    List<Realisateur> findByIdImdb(String idImdb);
+    Optional<Realisateur> findByIdImdb(String idImdb);
     Optional<Realisateur> findByPersonne(Personne personne);
 
 
