@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    image: filipdab/imdb_open:latest
+    ports:
+      - "8080:8080"  # Exposes port 8080 of the application for external access. Port 8080 locally and for the image
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}  # URL for connecting to the database
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}  # Username for the database
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}  # Password for the database
+    depends_on:
+      - db  # The app service depends on the 'db' service (MariaDB)
+
+  db:
+    image: mariadb:latest  # Uses the official MariaDB image
+    environment:
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}  # Password for the root user of MariaDB
+      MYSQL_DATABASE: testimdb  # Creates the 'testimdb' database on startup
+      MYSQL_USER: ${SPRING_DATASOURCE_USERNAME}  # Username for MariaDB
+      MYSQL_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}  # Password for the specified user
+    ports:
+      - "3308:3306"  # Maps port 3306 (inside the container) to port 3308 (on the host)
+    volumes:
+      - db_data:/var/lib/mysql  # Maps the database storage to a Docker volume for data persistence
+
+volumes:
+  db_data:  # Defines the volume for storing MariaDB data persistently
